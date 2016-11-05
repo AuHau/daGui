@@ -1,13 +1,13 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "electron-react-boilerplate",
-  "version": "1.0.0",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "name": "dataflow-gui",
+  "productName": "DataFlow GUI",
+  "version": "0.0.1",
+  "description": "Desktop application for constructing Big Data programs through building DAG",
   "main": "./main.js",
   "author": {
-    "name": "C. T. Lin",
-    "email": "chentsulin@gmail.com",
-    "url": "https://github.com/chentsulin"
+    "name": "Adam Uhlíř",
+    "email": "hello@adam-uhlir.me",
+    "url": "https://www.adam-uhlir.me"
   },
   "license": "MIT",
   "dependencies": {

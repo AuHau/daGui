@@ -1,9 +1,9 @@
 
 {
-  "name": "electron-react-boilerplate",
-  "productName": "ElectronReact",
-  "version": "0.10.0",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "name": "dataflow-gui",
+  "productName": "DataFlow GUI",
+  "version": "0.0.1",
+  "description": "Desktop application for constructing Big Data programs through building DAG",
   "main": "main.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 mocha --retries 2 --compilers js:babel-register --recursive --require ./test/setup.js test/**/*.spec.js",
@@ -24,7 +24,7 @@
     "package-all": "npm run build && build -mwl"
   },
   "build": {
-    "appId": "org.develar.ElectronReact",
+    "appId": "cz.auhau.dataflowGui",
     "category": "public.app-category.tools",
     "dmg": {
       "contents": [
@@ -60,27 +60,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chentsulin/electron-react-boilerplate.git"
+    "url": "git+https://github.com/AuHau/dataflow-gui"
   },
   "author": {
-    "name": "C. T. Lin",
-    "email": "chentsulin@gmail.com",
-    "url": "https://github.com/chentsulin"
+    "name": "Adam Uhlíř",
+    "email": "hello@adam-uhlir.me",
+    "url": "https://www.adam-uhlir.me"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/chentsulin/electron-react-boilerplate/issues"
+    "url": "https://github.com/AuHau/dataflow-gui"
   },
   "keywords": [
-    "electron",
-    "boilerplate",
-    "react",
-    "react-router",
-    "flux",
-    "webpack",
-    "react-hot"
+    "dataflow",
+    "dag",
+    "big-data",
+    "spark"
   ],
-  "homepage": "https://github.com/chentsulin/electron-react-boilerplate#readme",
+  "homepage": "https://github.com/AuHau/dataflow-gui",
   "devDependencies": {
     "asar": "^0.12.3",
     "babel-core": "^6.18.0",
