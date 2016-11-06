@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import styles from './StartupDialog.css';
+import styles from './StartupDialog.scss';
 
 
 export default class StartupDialog extends Component {

@@ -1,9 +1,11 @@
+@import "../../variables.scss";
+
 .container{
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
-  padding: 4px;
+  height: $menu-height;
 
   background-color: #eaeaea;
 

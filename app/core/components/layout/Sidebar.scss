@@ -1,0 +1,13 @@
+@import "../../variables";
+
+.container {
+  position: absolute;
+  top: $menu-height;
+  left: 0;
+  width: $sidebar-width;
+  height: calc(100% - #{$menu-height});
+
+  background-color: #c09875;
+
+  border-right: 1px solid black;
+}
