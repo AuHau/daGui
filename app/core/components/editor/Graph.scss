@@ -1,0 +1,9 @@
+@import "../../variables";
+
+.container {
+  position: absolute;
+  top: $menu-height;
+  left: $sidebar-width;
+  width: calc(100% - #{$sidebar-width});
+  height: calc(100% - #{$menu-height});
+}

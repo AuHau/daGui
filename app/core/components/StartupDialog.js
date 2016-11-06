@@ -9,7 +9,10 @@ export default class StartupDialog extends Component {
     return (
       <div>
         <div className={styles.container}>
-          <h1>Hello!</h1>
+          <h1>Welcome to DataFlow GUI!</h1>
+          <ul>
+            <li><Link to="/newFile">Create new file</Link></li>
+          </ul>
         </div>
       </div>
     );
