@@ -1,0 +1,26 @@
+.container{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  padding: 4px;
+
+  background-color: #eaeaea;
+
+  border-bottom: 1px solid black;
+}
+
+.container ul{
+  display: inline-block;
+  margin-right: 5px;
+  border-right: 1px solid black;
+}
+
+.container ul li{
+  display: inline-block;
+  margin-right: 7px;
+}
+.container a{
+  color: #000;
+}
+

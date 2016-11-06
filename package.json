@@ -137,6 +137,7 @@
     "webpack-validator": "^2.2.9"
   },
   "dependencies": {
+    "bootstrap": "^3.3.7",
     "electron-debug": "^1.0.1",
     "electron-redux": "^1.2.1",
     "font-awesome": "^4.7.0",
