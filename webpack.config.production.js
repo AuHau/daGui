@@ -15,7 +15,7 @@ const config = validate(merge(baseConfig, {
 
   entry: [
     'babel-polyfill',
-    './app/index'
+    './app/core/index'
   ],
 
   output: {

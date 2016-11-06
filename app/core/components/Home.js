@@ -9,6 +9,7 @@ export default class Home extends Component {
     return (
       <div>
         <div className={styles.container}>
+          <h1>Hello!</h1>
         </div>
       </div>
     );

@@ -10,12 +10,12 @@ import baseConfig from './webpack.config.base';
 export default validate(merge(baseConfig, {
   devtool: 'source-map',
 
-  entry: ['babel-polyfill', './app/main.development'],
+  entry: ['babel-polyfill', './app/core/main.development'],
 
   // 'main.js' in root
   output: {
     path: __dirname,
-    filename: './app/main.js'
+    filename: './app/core/main.js'
   },
 
   plugins: [
