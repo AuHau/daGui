@@ -4,7 +4,11 @@ import { hashHistory } from 'react-router';
 import { routerMiddleware, push } from 'react-router-redux';
 import createLogger from 'redux-logger';
 import rootReducer from '../reducers';
-
+import {
+  forwardToRenderer,
+  triggerAlias,
+  replayActionMain,
+} from 'electron-redux';
 
 const actionCreators = {
   push,

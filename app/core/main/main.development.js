@@ -1,8 +1,11 @@
 import { app, BrowserWindow, Menu, shell } from 'electron';
+import path from 'path';
 
 let menu;
 let template;
 let mainWindow = null;
+
+const mainHtml = path.join(__dirname, '../renderer/app.html');
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support'); // eslint-disable-line
@@ -47,7 +50,7 @@ app.on('ready', async () => {
     height: 728
   });
 
-  mainWindow.loadURL(`file://${__dirname}/app.html`);
+  mainWindow.loadURL(`file://${mainHtml}`);
 
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show();
