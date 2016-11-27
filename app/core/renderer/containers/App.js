@@ -2,7 +2,7 @@
 import React, {Component, PropTypes} from 'react';
 
 import Menu from '../components/layout/Menu'
-import Sidebar from '../components/layout/Sidebar'
+import NodesSidebar from '../components/sidebar_node/NodesSidebar'
 
 export default class App extends Component {
   static propTypes = {
@@ -13,7 +13,7 @@ export default class App extends Component {
     return (
       <div>
         <Menu />
-        <Sidebar />
+        <NodesSidebar />
         {this.props.children}
       </div>
     );

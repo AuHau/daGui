@@ -29,6 +29,7 @@ export default class SparkAdapter extends BaseAdapter{
       {
         name: 'Actions',
         nodes: [
+          Filter,
           Filter
         ]
       }
