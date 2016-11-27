@@ -1,16 +1,13 @@
 // @flow
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { connect } from 'react-redux'
 import styles from './NodesSidebar.scss';
 
 import NodesGroup from './NodesGroup';
 
-// TODO: Rework for adapter specified in future File
-import SparkAdapter from '../../../../adapters/spark';
-
-export default class NodesSidebar extends Component {
+class NodesSidebar extends Component {
   render() {
-    const groups = SparkAdapter.getGroupedNodeTemplates();
+    const groups = this.props.adapter.getGroupedNodeTemplates();
     const renderedGroups = groups.map((group, index) => <NodesGroup key={index} name={group.name} nodes={group.nodes} />);
 
     return (
@@ -20,3 +17,11 @@ export default class NodesSidebar extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+      return {
+        adapter: state.files.opened[state.files.active].adapter
+      };
+};
+
+export default connect(mapStateToProps)(NodesSidebar);

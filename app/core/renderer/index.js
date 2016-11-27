@@ -8,7 +8,27 @@ import routes from './routes';
 import configureStore from '../shared/store/configureStore';
 import './app.global.scss';
 
-const store = configureStore();
+// TODO: Not hardcoded
+import SparkAdapter from '../../adapters/spark';
+import Scala from '../languages/Scala';
+const initState = {
+  routing: {},
+  files: {
+    active: 0, // Index of active file
+    opened: [
+      {
+        name: 'Test.scala',
+        adapter: SparkAdapter,
+        language: Scala
+      }
+    ]
+  },
+  graphs: [
+    []
+  ]
+};
+
+const store = configureStore(initState);
 const history = syncHistoryWithStore(hashHistory, store);
 
 render(
