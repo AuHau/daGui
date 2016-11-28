@@ -3,7 +3,7 @@ import joint from 'jointjs';
 
 const MODEL = joint.shapes.basic.Circle.extend({
   defaults: Object.assign({
-    type: 'spark.Filter',
+    type: 'spark.filter',
     attrs: {
       circle: { 'stroke-width': 3 },
       text: { 'font-weight': '800' }
@@ -13,8 +13,8 @@ const MODEL = joint.shapes.basic.Circle.extend({
 
 export default class Filter extends NodeTemplate{
 
-  static getNID(){
-    return 1;
+  static getNodeType(){
+    return 'spark.filter';
   }
 
   static getName(){

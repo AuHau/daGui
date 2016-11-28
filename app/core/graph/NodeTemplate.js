@@ -1,7 +1,7 @@
 
 export default class NodeTemplate{
-  static getNID(){
-    throw new TypeError("Method 'getGroupedNodeTemplates' has to be implemented!");
+  static getNodeType(){
+    throw new TypeError("Method 'getNodeType' has to be implemented!");
   }
 
   static getName(){

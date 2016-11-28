@@ -24,7 +24,27 @@ const initState = {
     ]
   },
   graphs: [
-    []
+    {
+      cells: [// Array of cells (ie. links and elements).
+        {
+          id: '3d90f661-fe5f-45dc-a938-bca137691eeb',// Some randomly generated UUID.
+          type: 'basic.Rect',
+          attrs: {
+            'stroke': '#000'
+          },
+          position: {
+            x: 0,
+            y: 50
+          },
+          angle: 90,
+          size: {
+            width: 100,
+            height: 50
+          },
+          z: 2
+        }
+      ]
+    }
   ]
 };
 
