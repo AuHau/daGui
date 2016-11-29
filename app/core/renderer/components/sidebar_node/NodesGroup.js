@@ -13,6 +13,59 @@ export default class NodesGroup extends Component {
   constructor(props) {
     super(props);
     this.graph = new joint.dia.Graph();
+    this.state = {isDragging: false};
+  }
+
+  onDrag(cellView, e, x, y) {
+    const dragElem = findDOMNode(this.refs.flyPaper);
+
+    const flyGraph = new joint.dia.Graph;
+    new joint.dia.Paper({
+      el: dragElem,
+      model: flyGraph,
+      interactive: false
+    });
+    const flyShape = cellView.model.clone();
+    const offset = {
+      x: x - cellView.model.position().x,
+      y: y - cellView.model.position().y
+    };
+
+    flyShape.position(0, 0);
+    flyGraph.addCell(flyShape);
+    dragElem.style.left = e.pageX - offset.x + 'px';
+    dragElem.style.top = e.pageY - offset.y + 'px';
+
+    // Moving flyPaper
+    const moveHandler = (e) => {
+      dragElem.style.left = e.clientX - offset.x + 'px';
+      dragElem.style.top = e.clientY - offset.y + 'px';
+    };
+
+    // Dropping element
+    const dropHandler = (e) => {
+      var x = e.clientX,
+        y = e.clientY,
+        canvas = this.props.canvasContainerSpec;
+
+      // Dropped over paper ?
+      if (x > canvas.left && x < canvas.left + canvas.width && y > canvas.top && y < canvas.top + canvas.height) {
+        var s = flyShape.clone();
+        s.position(x - canvas.left - offset.x, y - canvas.top - offset.y);
+
+        // TODO: Redux send action
+        console.log(s.toJSON());
+      }
+
+      // Cleap up
+      flyShape.remove();
+      document.body.removeEventListener('mousemove', moveHandler);
+      document.body.removeEventListener('mouseup', dropHandler);
+      this.setState({isDragging: false})
+    };
+
+    document.body.addEventListener('mousemove', moveHandler);
+    document.body.addEventListener('mouseup', dropHandler);
   }
 
   filterOutNodes(){
@@ -51,6 +104,12 @@ export default class NodesGroup extends Component {
         interactive: false
       });
 
+      // Drag&drop of nodes with hack for props to propagate and create dragged div
+      this.paper.on('cell:pointerdown', function(cellView, e, x, y) {
+        this.setState({isDragging: true});
+        this.onDrag(cellView, e, x, y);
+      }.bind(this));
+
       this.renderNodes(nodes);
     }, 0);
   }
@@ -69,6 +128,7 @@ export default class NodesGroup extends Component {
       <div className={styles.container}>
         <div className={styles.groupName}>{this.props.name}</div>
         <div ref="placeholder"></div>
+        {this.state.isDragging && <div ref="flyPaper" style={{cursor: 'default', position:'fixed', zIndex:100, opacity:.7, pointerEvent:'none'}}></div>}
       </div>
     )
   }
@@ -77,5 +137,6 @@ export default class NodesGroup extends Component {
 NodesGroup.propTypes = {
   name: React.PropTypes.string.isRequired,
   nodes: React.PropTypes.array.isRequired,
+  canvasContainerSpec: React.PropTypes.object.isRequired,
   searchedText: React.PropTypes.string
 };
