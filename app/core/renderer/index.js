@@ -46,7 +46,10 @@ const initState = {
         }
       ]
     }
-  ]
+  ],
+  ui: {
+    canvasContainerSpec: {}
+  }
 };
 
 const store = configureStore(initState);

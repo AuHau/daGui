@@ -14,6 +14,7 @@ export default class NodesGroup extends Component {
     super(props);
     this.graph = new joint.dia.Graph();
     this.state = {isDragging: false};
+    this.lastSearch = '';
   }
 
   onDrag(cellView, e, x, y) {
@@ -92,17 +93,19 @@ export default class NodesGroup extends Component {
   componentDidMount() {
     this.wrapperElem = findDOMNode(this.refs.placeholder);
 
+    const nodes = this.filterOutNodes();
+    const totalHeight = nodes.length * nodeHeight + (nodes.length - 1) * nodeMargin;
+    this.paper = new joint.dia.Paper({
+      el: this.wrapperElem,
+      width: this.wrapperElem.offsetWidth,
+      height: totalHeight,
+      model: this.graph,
+      interactive: false
+    });
+
     // TODO: setTimeout - Any better solution?
     setTimeout(() => {
-      const nodes = this.filterOutNodes();
-      const totalHeight = nodes.length * nodeHeight + (nodes.length - 1) * nodeMargin;
-      this.paper = new joint.dia.Paper({
-        el: this.wrapperElem,
-        width: this.wrapperElem.offsetWidth,
-        height: totalHeight,
-        model: this.graph,
-        interactive: false
-      });
+      this.paper.setDimensions(this.wrapperElem.offsetWidth, totalHeight);
 
       // Drag&drop of nodes with hack for props to propagate and create dragged div
       this.paper.on('cell:pointerdown', function(cellView, e, x, y) {
@@ -115,11 +118,15 @@ export default class NodesGroup extends Component {
   }
 
   componentDidUpdate(){
-    this.graph.clear();
-    const nodes = this.filterOutNodes();
-    const totalHeight = nodes.length * nodeHeight + (nodes.length - 1) * nodeMargin;
-    this.paper.setDimensions(this.wrapperElem.offsetWidth, totalHeight);
-    this.renderNodes(nodes);
+    // Rerender nodes only when there is searching ongoing
+    if(this.lastSearch != this.props.searchedText){
+      this.graph.clear();
+      const nodes = this.filterOutNodes();
+      const totalHeight = nodes.length * nodeHeight + (nodes.length - 1) * nodeMargin;
+      this.paper.setDimensions(this.wrapperElem.offsetWidth, totalHeight);
+      this.renderNodes(nodes);
+      this.lastSearch = this.props.searchedText;
+    }
   }
 
 

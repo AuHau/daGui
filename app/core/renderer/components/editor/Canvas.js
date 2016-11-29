@@ -6,6 +6,8 @@ import { connect } from 'react-redux'
 import joint from 'jointjs';
 import styles from "./Canvas.scss";
 
+import {canvasResize} from '../../../shared/actions/ui';
+
 class Canvas extends Component {
   constructor(props) {
     super(props);
@@ -15,6 +17,7 @@ class Canvas extends Component {
   onResize(){
     const wrapperElem = findDOMNode(this.refs.placeholder);
     this.paper.setDimensions(wrapperElem.offsetWidth, wrapperElem.offsetHeight);
+    this.props.onCanvasResize(wrapperElem.getBoundingClientRect());
   }
 
   componentDidMount() {
@@ -47,4 +50,12 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(Canvas);
+const mapDispatchToProps = (dispatch) => {
+    return {
+      onCanvasResize: (dimensions) => {
+        dispatch(canvasResize(dimensions));
+      }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Canvas);

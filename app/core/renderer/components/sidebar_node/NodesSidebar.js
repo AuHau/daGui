@@ -8,7 +8,7 @@ import NodesGroup from './NodesGroup';
 class NodesSidebar extends Component {
   render() {
     const groups = this.props.adapter.getGroupedNodeTemplates();
-    const renderedGroups = groups.map((group, index) => <NodesGroup key={index} name={group.name} nodes={group.nodes} />);
+    const renderedGroups = groups.map((group, index) => <NodesGroup key={index} name={group.name} nodes={group.nodes} canvasContainerSpec={this.props.canvasContainerSpec} />);
 
     return (
       <div className={styles.container}>
@@ -20,7 +20,8 @@ class NodesSidebar extends Component {
 
 const mapStateToProps = (state) => {
       return {
-        adapter: state.files.opened[state.files.active].adapter
+        adapter: state.files.opened[state.files.active].adapter,
+        canvasContainerSpec: state.ui.canvasContainerSpec
       };
 };
 
