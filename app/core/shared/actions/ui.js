@@ -1,6 +1,6 @@
 
 const UI = {
-  CANVAS_RESIZE: 'CANVAS_RESIZE'
+  CANVAS_RESIZE: 'UI_CANVAS_RESIZE'
 };
 export default UI;
 

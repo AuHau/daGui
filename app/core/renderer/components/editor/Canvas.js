@@ -46,7 +46,7 @@ class Canvas extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    graphJson: state.graphs[state.files.active]
+    graphJson: state.getIn(['graphs', state.getIn(['files', 'active'])]).toJS()
   };
 };
 

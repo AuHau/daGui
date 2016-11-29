@@ -4,8 +4,7 @@ export default (state, action) => {
 
   switch (action.type){
     case UI.CANVAS_RESIZE:
-      return Object.assign({}, state, {ui: {canvasContainerSpec: action.dimensions}});
-      break;
+      return state.setIn(['ui', 'canvasContainerSpec'], action.dimensions);
     default:
       return state;
   }
