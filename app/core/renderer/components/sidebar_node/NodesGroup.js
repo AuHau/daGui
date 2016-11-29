@@ -1,15 +1,18 @@
 import { findDOMNode } from 'react-dom';
 import React, { Component } from 'react';
 import joint from 'jointjs';
+import { connect } from 'react-redux'
 
 import cssVariables from '!!sass-variable-loader!../../variables.scss';
 import styles from './NodesGroup.scss';
+
+import {addNode} from '../../../shared/actions/graph';
 
 const nodeWidth = parseInt(cssVariables.nodesSidebarNodeWidth);
 const nodeHeight = parseInt(cssVariables.nodesSidebarNodeHeight);
 const nodeMargin = parseInt(cssVariables.nodesSidebarMargin);
 
-export default class NodesGroup extends Component {
+class NodesGroup extends Component {
   constructor(props) {
     super(props);
     this.graph = new joint.dia.Graph();
@@ -45,17 +48,16 @@ export default class NodesGroup extends Component {
 
     // Dropping element
     const dropHandler = (e) => {
-      var x = e.clientX,
+      const x = e.clientX,
         y = e.clientY,
         canvas = this.props.canvasContainerSpec;
 
       // Dropped over paper ?
       if (x > canvas.left && x < canvas.left + canvas.width && y > canvas.top && y < canvas.top + canvas.height) {
-        var s = flyShape.clone();
+        const s = flyShape.clone();
         s.position(x - canvas.left - offset.x, y - canvas.top - offset.y);
 
-        // TODO: Redux send action
-        console.log(s.toJSON());
+        this.props.addNode(s.toJSON());
       }
 
       // Cleap up
@@ -144,6 +146,22 @@ export default class NodesGroup extends Component {
 NodesGroup.propTypes = {
   name: React.PropTypes.string.isRequired,
   nodes: React.PropTypes.array.isRequired,
-  canvasContainerSpec: React.PropTypes.object.isRequired,
   searchedText: React.PropTypes.string
 };
+
+const mapStateToProps = (state) => {
+  return {
+    canvasContainerSpec: state.getIn(['ui', 'canvasContainerSpec'])
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addNode: (node) => {
+      dispatch(addNode(node));
+    }
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NodesGroup);
+

@@ -20,8 +20,7 @@ class NodesSidebar extends Component {
 
 const mapStateToProps = (state) => {
       return {
-        adapter: state.getIn(['files', 'opened', state.getIn(['files', 'active']), 'adapter']),
-        canvasContainerSpec: state.getIn(['ui', 'canvasContainerSpec'])
+        adapter: state.getIn(['files', 'opened', state.getIn(['files', 'active']), 'adapter'])
       };
 };
 
