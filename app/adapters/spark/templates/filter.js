@@ -1,24 +1,52 @@
-import NodeTemplate from '../../../core/graph/NodeTemplate';
 import joint from 'jointjs';
+import _ from 'lodash';
 
-const MODEL = joint.shapes.basic.Circle.extend({
-  defaults: Object.assign({
-    type: 'spark.filter',
+import portDefinition from '../../../core/graph/portDefinition';
+import NodeTemplate from '../../../core/graph/NodeTemplate';
+
+const NAME = 'Filter';
+const NODE_TYPE = 'spark.filter';
+const MODEL = joint.shapes.basic.Rect.extend({
+  portMarkup: '<circle class="port-body"/>',
+  defaults: _.defaultsDeep({
+    type: NODE_TYPE,
+    size: {
+      width: 80,
+      height: 80
+    },
     attrs: {
-      circle: { 'stroke-width': 3 },
-      text: { 'font-weight': '800' }
+      '.': {
+        magnet: false
+      },
+      text : { text: NAME }
+    },
+    ports: {
+      items: [
+        {
+          id: 'in',
+          group: 'in'
+        },
+        {
+          id: 'out',
+          group: 'out'
+        }
+      ],
+      groups: portDefinition
     }
-  }, joint.shapes.basic.Circle.prototype.defaults)
+  }, joint.shapes.basic.Rect.prototype.defaults)
 });
+
+if(!joint.shapes['spark']) joint.shapes['spark'] = {};
+joint.shapes['spark']['filter'] = MODEL;
 
 export default class Filter extends NodeTemplate{
 
   static getNodeType(){
-    return 'spark.filter';
+    return NODE_TYPE;
   }
 
   static getName(){
-    return 'Filter';
+    return NAME;
   }
 
   static getModel(){

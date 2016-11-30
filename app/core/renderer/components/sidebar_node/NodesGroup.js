@@ -27,7 +27,7 @@ class NodesGroup extends Component {
     new joint.dia.Paper({
       el: dragElem,
       model: flyGraph,
-      interactive: false
+      // interactive: false
     });
     const flyShape = cellView.model.clone();
     const offset = {
@@ -85,8 +85,7 @@ class NodesGroup extends Component {
       const margin = (index == 0? 0: nodeMargin);
       return new model({
         position: { x: centeredPositionX, y: nodeHeight*index + margin },
-        size: { width: nodeWidth, height: nodeHeight },
-        attrs: { text : { text: nodeTemplate.getName() }}
+        size: { width: nodeWidth, height: nodeHeight } // TODO: Let Adaptor's authors decide the size ==> Figure out centering & scaling to fit
       })
     });
 

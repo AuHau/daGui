@@ -29,7 +29,18 @@ class Canvas extends Component {
       width: wrapperElem.offsetWidth,
       height: 1000,
       model: this.graph,
-      gridSize: 1
+      gridSize: 1,
+
+      markAvailable: true,
+      snapLinks: { radius: 40 },
+      defaultLink: new joint.dia.Link({
+        attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
+      }),
+      validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+        if (magnetS && magnetS.getAttribute('port-group') === 'in') return false;
+        if (cellViewS === cellViewT) return false;
+        return magnetT && magnetT.getAttribute('port-group') === 'in';
+      }
     });
     setTimeout(this.onResize.bind(this), 10);
 
