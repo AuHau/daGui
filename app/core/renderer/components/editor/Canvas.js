@@ -7,7 +7,7 @@ import joint from 'jointjs';
 import styles from "./Canvas.scss";
 
 import {canvasResize} from '../../../shared/actions/ui';
-import {moveNode} from '../../../shared/actions/graph';
+import * as graphActions from '../../../shared/actions/graph';
 
 class Canvas extends Component {
   constructor(props) {
@@ -19,6 +19,23 @@ class Canvas extends Component {
     const wrapperElem = findDOMNode(this.refs.placeholder);
     this.paper.setDimensions(wrapperElem.offsetWidth, wrapperElem.offsetHeight);
     this.props.onCanvasResize(wrapperElem.getBoundingClientRect());
+  }
+
+  onNodeMove(cellView, e, x, y){
+    this.props.onNodeMove(cellView.model.id, x, y, this.props.activeFile);
+  }
+
+  onLinkUpdate(cellView, e, magnet, arrowhead){
+    const link = cellView.model;
+
+    // Don't allow link which are not connecting nodes
+    if(!link.getTargetElement() || !link.getSourceElement()){
+      this.props.onLinkDelete(link.id, this.props.activeFile);
+      link.remove();
+      return;
+    }
+
+    this.props.onLinkUpdate(link.toJSON(), this.props.activeFile);
   }
 
   componentDidMount() {
@@ -45,7 +62,8 @@ class Canvas extends Component {
     setTimeout(this.onResize.bind(this), 10);
 
     this.graph.fromJSON(this.props.graphJson.toJS());
-    this.paper.on('cell:pointerup', (cellView, e, x, y) => this.props.onNodeMove(cellView.model.id, x, y, this.props.activeFile));
+    this.paper.on('cell:pointerup', this.onNodeMove.bind(this));
+    this.paper.on('link:connect link:disconnect', this.onLinkUpdate.bind(this));
   }
 
   componentDidUpdate(){
@@ -72,7 +90,13 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(canvasResize(dimensions));
       },
       onNodeMove: (nid, x, y, activeFile) => {
-        dispatch(moveNode(nid, x, y, activeFile));
+        dispatch(graphActions.moveNode(nid, x, y, activeFile));
+      },
+      onLinkUpdate: (linkObject, activeFile) => {
+        dispatch(graphActions.updateLink(linkObject, activeFile));
+      },
+      onLinkDelete: (lid, activeFile) => {
+        dispatch(graphActions.deleteLink(lid, activeFile));
       }
     }
 };
