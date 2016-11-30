@@ -7,6 +7,7 @@ import joint from 'jointjs';
 import styles from "./Canvas.scss";
 
 import {canvasResize} from '../../../shared/actions/ui';
+import {moveNode} from '../../../shared/actions/graph';
 
 class Canvas extends Component {
   constructor(props) {
@@ -33,9 +34,11 @@ class Canvas extends Component {
     setTimeout(this.onResize.bind(this), 10);
 
     this.graph.fromJSON(this.props.graphJson.toJS());
+    this.paper.on('cell:pointerup', (cellView, e, x, y) => this.props.onNodeMove(cellView.model.id, x, y, this.props.activeFile));
   }
 
   componentDidUpdate(){
+    // TODO: Optimalization - don't update when the action was created by graph's event
     this.graph.fromJSON(this.props.graphJson.toJS());
   }
 
@@ -45,8 +48,10 @@ class Canvas extends Component {
 }
 
 const mapStateToProps = (state) => {
+  const activeFile = state.getIn(['files', 'active']);
   return {
-    graphJson: state.getIn(['graphs', state.getIn(['files', 'active'])])
+    graphJson: state.getIn(['graphs', activeFile]),
+    activeFile
   };
 };
 
@@ -54,6 +59,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
       onCanvasResize: (dimensions) => {
         dispatch(canvasResize(dimensions));
+      },
+      onNodeMove: (nid, x, y, activeFile) => {
+        dispatch(moveNode(nid, x, y, activeFile));
       }
     }
 };
