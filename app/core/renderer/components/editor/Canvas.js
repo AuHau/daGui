@@ -32,11 +32,11 @@ class Canvas extends Component {
     });
     setTimeout(this.onResize.bind(this), 10);
 
-    this.graph.fromJSON(this.props.graphJson);
+    this.graph.fromJSON(this.props.graphJson.toJS());
   }
 
   componentDidUpdate(){
-    this.graph.fromJSON(this.props.graphJson);
+    this.graph.fromJSON(this.props.graphJson.toJS());
   }
 
   render() {
@@ -46,7 +46,7 @@ class Canvas extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    graphJson: state.getIn(['graphs', state.getIn(['files', 'active'])]).toJS()
+    graphJson: state.getIn(['graphs', state.getIn(['files', 'active'])])
   };
 };
 

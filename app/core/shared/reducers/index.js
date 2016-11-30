@@ -1,15 +1,15 @@
 // @flow
-import reduceReducers from 'reduce-reducers';
+import {combineReducers} from 'redux-immutable';
 
 // Custom reducers
-import file from './file';
-import graph from './graph';
+import files from './file';
+import graphs from './graph';
 import ui from './ui';
 
-const rootReducer = reduceReducers(
-  file,
-  graph,
+const rootReducer = combineReducers({
+  files,
+  graphs,
   ui
-);
+});
 
 export default rootReducer;

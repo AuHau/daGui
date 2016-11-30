@@ -1,10 +1,18 @@
+import Immutable from 'immutable';
+
 import UI from '../actions/ui';
 
 export default (state, action) => {
 
   switch (action.type){
     case UI.CANVAS_RESIZE:
-      return state.setIn(['ui', 'canvasContainerSpec'], action.dimensions);
+      const rect = action.payload;
+      return state.set('canvasContainerSpec', Immutable.Map({
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height
+      }));
     default:
       return state;
   }

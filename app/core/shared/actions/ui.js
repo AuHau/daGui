@@ -7,6 +7,6 @@ export default UI;
 export const canvasResize = (dimensions) => {
   return {
     type: UI.CANVAS_RESIZE,
-    dimensions
+    payload: dimensions
   }
 };

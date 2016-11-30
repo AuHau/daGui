@@ -4,9 +4,10 @@ const GRAPH = {
 };
 export default GRAPH;
 
-export const addNode = (nodeObject) => {
+export const addNode = (nodeObject, activeFile) => {
   return {
     type: GRAPH.ADD_NODE,
-    nodeObject
+    payload: nodeObject,
+    activeFile
   }
 };

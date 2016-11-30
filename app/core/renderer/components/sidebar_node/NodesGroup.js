@@ -53,11 +53,12 @@ class NodesGroup extends Component {
         canvas = this.props.canvasContainerSpec;
 
       // Dropped over paper ?
-      if (x > canvas.left && x < canvas.left + canvas.width && y > canvas.top && y < canvas.top + canvas.height) {
+      if (x > canvas.get('left') && x < canvas.get('left') + canvas.get('width') && y > canvas.get('top') && y < canvas.get('top') + canvas.get('height')) {
         const s = flyShape.clone();
-        s.position(x - canvas.left - offset.x, y - canvas.top - offset.y);
+        s.position(x - canvas.get('left') - offset.x, y - canvas.get('top') - offset.y);
 
-        this.props.addNode(s.toJSON());
+        // Redux action
+        this.props.addNode(s.toJSON(), this.props.activeFile);
       }
 
       // Cleap up
@@ -151,14 +152,15 @@ NodesGroup.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    canvasContainerSpec: state.getIn(['ui', 'canvasContainerSpec'])
+    canvasContainerSpec: state.getIn(['ui', 'canvasContainerSpec']),
+    activeFile: state.getIn(['files', 'active'])
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addNode: (node) => {
-      dispatch(addNode(node));
+    addNode: (node, activeFile) => {
+      dispatch(addNode(node, activeFile));
     }
   }
 };
