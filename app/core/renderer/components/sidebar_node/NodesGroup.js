@@ -75,16 +75,15 @@ class NodesGroup extends Component {
   filterOutNodes(){
     if(!this.props.searchedText || this.props.searchedText == '') return this.props.nodes;
 
-    return this.props.nodes.filter(node => node.getName().includes(this.props.searchedText));
+    return this.props.nodes.filter(node => node.getName().match(new RegExp(this.props.searchedText, 'i')));
   }
 
   renderNodes(nodes){
     const centeredPositionX = (this.wrapperElem.offsetWidth - nodeWidth)/2;
     const nodeTemplates = nodes.map((nodeTemplate, index) => {
       const model = nodeTemplate.getModel();
-      const margin = (index == 0? 0: nodeMargin);
       return new model({
-        position: { x: centeredPositionX, y: nodeHeight*index + margin },
+        position: { x: centeredPositionX, y: (nodeHeight+nodeMargin)*index },
         size: { width: nodeWidth, height: nodeHeight } // TODO: Let Adaptor's authors decide the size ==> Figure out centering & scaling to fit
       })
     });
@@ -119,15 +118,20 @@ class NodesGroup extends Component {
     }, 0);
   }
 
-  componentDidUpdate(){
+  componentDidUpdate() {
     // Rerender nodes only when there is searching ongoing
-    if(this.lastSearch != this.props.searchedText){
-      this.graph.clear();
-      const nodes = this.filterOutNodes();
-      const totalHeight = nodes.length * nodeHeight + (nodes.length - 1) * nodeMargin;
-      this.paper.setDimensions(this.wrapperElem.offsetWidth, totalHeight);
-      this.renderNodes(nodes);
+    if(this.lastSearch != this.props.searchedText) {
       this.lastSearch = this.props.searchedText;
+      const nodes = this.filterOutNodes();
+      if(nodes.length == 0){
+        this.paper.el.style.display = 'none';
+      }else{
+        this.paper.el.style.display = 'block';
+        this.graph.clear();
+        const totalHeight = nodes.length * nodeHeight + (nodes.length - 1) * nodeMargin;
+        this.paper.setDimensions(this.wrapperElem.offsetWidth, totalHeight);
+        this.renderNodes(nodes);
+      }
     }
   }
 

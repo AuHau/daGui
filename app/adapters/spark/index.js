@@ -5,6 +5,8 @@ import Scala from '../../core/languages/Scala';
 
 // NodeTemplates
 import Filter from './templates/filter';
+import Count from './templates/count';
+import Map from './templates/map';
 
 export default class SparkAdapter extends BaseAdapter{
 
@@ -27,10 +29,16 @@ export default class SparkAdapter extends BaseAdapter{
   static getGroupedNodeTemplates(){
     return [
       {
-        name: 'Actions',
+        name: 'Transformations',
         nodes: [
           Filter,
-          Filter
+          Map
+        ]
+      },
+      {
+        name: 'Actions',
+        nodes: [
+          Count
         ]
       }
     ]
