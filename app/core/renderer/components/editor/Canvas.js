@@ -23,7 +23,8 @@ class Canvas extends Component {
 
   onNodeMove(cellView, e, x, y){
     if(cellView.model.attributes.type != 'link'){
-      this.props.onNodeMove(cellView.model.id, x, y, this.props.activeFile);
+      const newPosition = cellView.model.attributes.position;
+      this.props.onNodeMove(cellView.model.id, newPosition.x, newPosition.y, this.props.activeFile);
     }
   }
 
