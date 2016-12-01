@@ -7,4 +7,12 @@
 	margin-bottom: 4px;
 	border-bottom: 1px solid black;
   }
+
+  [magnet=true]{
+	cursor: move;
+
+	&:hover{
+	  opacity: 1;
+	}
+  }
 }

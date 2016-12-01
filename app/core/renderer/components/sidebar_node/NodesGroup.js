@@ -27,7 +27,7 @@ class NodesGroup extends Component {
     new joint.dia.Paper({
       el: dragElem,
       model: flyGraph,
-      // interactive: false
+      interactive: false
     });
     const flyShape = cellView.model.clone();
     const offset = {

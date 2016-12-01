@@ -5,7 +5,12 @@
   font-size: 20px;
 }
 
-/* port styling */
+//////////////////////////////////////////////
+// Graph styling
+
+@import "~jointjs/css/layout.css";
+
+// Ports
 .available-magnet {
   fill: yellow;
 }

@@ -22,20 +22,13 @@ class Canvas extends Component {
   }
 
   onNodeMove(cellView, e, x, y){
-    this.props.onNodeMove(cellView.model.id, x, y, this.props.activeFile);
+    if(cellView.model.attributes.type != 'link'){
+      this.props.onNodeMove(cellView.model.id, x, y, this.props.activeFile);
+    }
   }
 
   onLinkUpdate(cellView, e, magnet, arrowhead){
-    const link = cellView.model;
-
-    // Don't allow link which are not connecting nodes
-    if(!link.getTargetElement() || !link.getSourceElement()){
-      this.props.onLinkDelete(link.id, this.props.activeFile);
-      link.remove();
-      return;
-    }
-
-    this.props.onLinkUpdate(link.toJSON(), this.props.activeFile);
+    this.props.onLinkUpdate(cellView.model.toJSON(), this.props.activeFile);
   }
 
   componentDidMount() {
@@ -47,7 +40,7 @@ class Canvas extends Component {
       height: 1000,
       model: this.graph,
       gridSize: 1,
-
+      linkPinning: false,
       markAvailable: true,
       snapLinks: { radius: 40 },
       defaultLink: new joint.dia.Link({
