@@ -13,6 +13,9 @@ export default (state, action) => {
         width: rect.width,
         height: rect.height
       }));
+
+    case UI.CHANGE_NODE_DETAIL:
+      return state.set('detailNodeId', action.nid);
     default:
       return state;
   }

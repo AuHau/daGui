@@ -4,7 +4,7 @@
   position: absolute;
   top: $menu-height;
   left: 0;
-  width: $sidebar-width;
+  width: $nodes-sidebar-width;
   height: calc(100% - #{$menu-height});
 
   background-color: #c09875;

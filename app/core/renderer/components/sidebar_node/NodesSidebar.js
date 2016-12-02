@@ -1,12 +1,11 @@
 // @flow
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { connect } from 'react-redux'
 import styles from './NodesSidebar.scss';
 
 import NodesGroup from './NodesGroup';
 
-class NodesSidebar extends Component {
+export default class NodesSidebar extends Component {
 
   constructor(props){
     super(props);
@@ -40,10 +39,6 @@ class NodesSidebar extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-      return {
-        adapter: state.getIn(['files', 'opened', state.getIn(['files', 'active']), 'adapter'])
-      };
+NodesSidebar.propTypes = {
+  adapter: React.PropTypes.func.isRequired
 };
-
-export default connect(mapStateToProps)(NodesSidebar);

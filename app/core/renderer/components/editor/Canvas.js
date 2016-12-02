@@ -6,13 +6,18 @@ import { connect } from 'react-redux'
 import joint from 'jointjs';
 import styles from "./Canvas.scss";
 
-import {canvasResize} from '../../../shared/actions/ui';
+import {changeNodeDetail, canvasResize} from '../../../shared/actions/ui';
 import * as graphActions from '../../../shared/actions/graph';
 
+const CLICK_TRESHOLD = 10;
+
 class Canvas extends Component {
+
   constructor(props) {
     super(props);
     this.graph = new joint.dia.Graph();
+    this.currentDetailCell = null;
+    this.startingPointerPosition = null;
   }
 
   onResize(){
@@ -21,16 +26,41 @@ class Canvas extends Component {
     this.props.onCanvasResize(wrapperElem.getBoundingClientRect());
   }
 
-  onNodeMove(cellView, e, x, y){
+  // TODO/BUG: On node movement, highlight of current node is lost
+  onNodeMove(cellView){
     if(cellView.model.attributes.type != 'link'){
       const newPosition = cellView.model.attributes.position;
       this.props.onNodeMove(cellView.model.id, newPosition.x, newPosition.y, this.props.activeFile);
     }
   }
 
-  onLinkUpdate(cellView, e, magnet, arrowhead){
+  // TODO: Deleting of link is not figured out
+  onLinkUpdate(cellView){
     this.props.onLinkUpdate(cellView.model.toJSON(), this.props.activeFile);
   }
+
+  onNodeDetail(cellView){
+    // blank:pointerclick event
+    if(cellView.originalEvent){
+      if(this.currentDetailCell){
+        this.currentDetailCell.unhighlight();
+        this.props.onNodeDetail(null);
+        this.currentDetailCell = null;
+      }
+      return;
+    }
+
+    if(cellView === this.currentDetailCell){
+      return;
+    }
+
+    cellView.highlight();
+    if(this.currentDetailCell) this.currentDetailCell.unhighlight();
+    this.currentDetailCell = cellView;
+
+    this.props.onNodeDetail(cellView.model.id);
+  }
+
 
   componentDidMount() {
     const wrapperElem = findDOMNode(this.refs.placeholder);
@@ -41,6 +71,8 @@ class Canvas extends Component {
       height: 1000,
       model: this.graph,
       gridSize: 1,
+
+      clickThreshold: 1,
       linkPinning: false,
       markAvailable: true,
       snapLinks: { radius: 40 },
@@ -56,7 +88,9 @@ class Canvas extends Component {
     setTimeout(this.onResize.bind(this), 10);
 
     this.graph.fromJSON(this.props.graphJson.toJS());
-    this.paper.on('cell:pointerup', this.onNodeMove.bind(this));
+    this.paper.on('cell:pointerdown', this.onPointerDown.bind(this));
+    this.paper.on('cell:pointerup', this.onPointerUp.bind(this));
+    this.paper.on('blank:pointerclick', this.onNodeDetail.bind(this));
     this.paper.on('link:connect link:disconnect', this.onLinkUpdate.bind(this));
   }
 
@@ -67,6 +101,23 @@ class Canvas extends Component {
 
   render() {
     return <div ref="placeholder" className={styles.container}></div>;
+  }
+
+  onPointerDown(cellView, e, x, y){
+    this.startingPointerPosition = {x, y};
+  }
+
+  onPointerUp(cellView, e, x, y){
+    if(Math.abs(this.startingPointerPosition.x - x) < CLICK_TRESHOLD
+        && Math.abs(this.startingPointerPosition.y - y) < CLICK_TRESHOLD) {
+      // Click
+      this.onNodeDetail(cellView);
+    }else{
+      // Drag
+      this.onNodeMove(cellView);
+    }
+
+    this.startingPointerPosition = null;
   }
 }
 
@@ -91,6 +142,9 @@ const mapDispatchToProps = (dispatch) => {
       },
       onLinkDelete: (lid, activeFile) => {
         dispatch(graphActions.deleteLink(lid, activeFile));
+      },
+      onNodeDetail: (nid) => {
+        dispatch(changeNodeDetail(nid));
       }
     }
 };
