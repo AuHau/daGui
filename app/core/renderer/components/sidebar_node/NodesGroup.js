@@ -58,7 +58,7 @@ class NodesGroup extends Component {
         s.position(x - canvas.get('left') - offset.x, y - canvas.get('top') - offset.y);
 
         // Redux action
-        this.props.addNode(s.toJSON(), this.props.activeFile);
+        this.props.addNode(s.toJSON());
       }
 
       // Cleap up
@@ -155,15 +155,14 @@ NodesGroup.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    canvasContainerSpec: state.getIn(['ui', 'canvasContainerSpec']),
-    activeFile: state.getIn(['files', 'active'])
+    canvasContainerSpec: state.getIn(['ui', 'canvasContainerSpec'])
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addNode: (node, activeFile) => {
-      dispatch(addNode(node, activeFile));
+    addNode: (node) => {
+      dispatch(addNode(node));
     }
   }
 };

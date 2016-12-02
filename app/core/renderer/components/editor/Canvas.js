@@ -30,13 +30,13 @@ class Canvas extends Component {
   onNodeMove(cellView){
     if(cellView.model.attributes.type != 'link'){
       const newPosition = cellView.model.attributes.position;
-      this.props.onNodeMove(cellView.model.id, newPosition.x, newPosition.y, this.props.activeFile);
+      this.props.onNodeMove(cellView.model.id, newPosition.x, newPosition.y);
     }
   }
 
   // TODO: Deleting of link is not figured out
   onLinkUpdate(cellView){
-    this.props.onLinkUpdate(cellView.model.toJSON(), this.props.activeFile);
+    this.props.onLinkUpdate(cellView.model.toJSON());
   }
 
   onNodeDetail(cellView){
@@ -124,8 +124,7 @@ class Canvas extends Component {
 const mapStateToProps = (state) => {
   const activeFile = state.getIn(['files', 'active']);
   return {
-    graphJson: state.getIn(['graphs', activeFile]),
-    activeFile
+    graphJson: state.getIn(['files', 'opened', activeFile, 'graph'])
   };
 };
 
@@ -134,14 +133,14 @@ const mapDispatchToProps = (dispatch) => {
       onCanvasResize: (dimensions) => {
         dispatch(canvasResize(dimensions));
       },
-      onNodeMove: (nid, x, y, activeFile) => {
-        dispatch(graphActions.moveNode(nid, x, y, activeFile));
+      onNodeMove: (nid, x, y) => {
+        dispatch(graphActions.moveNode(nid, x, y));
       },
-      onLinkUpdate: (linkObject, activeFile) => {
-        dispatch(graphActions.updateLink(linkObject, activeFile));
+      onLinkUpdate: (linkObject) => {
+        dispatch(graphActions.updateLink(linkObject));
       },
-      onLinkDelete: (lid, activeFile) => {
-        dispatch(graphActions.deleteLink(lid, activeFile));
+      onLinkDelete: (lid) => {
+        dispatch(graphActions.deleteLink(lid));
       },
       onNodeDetail: (nid) => {
         dispatch(changeNodeDetail(nid));

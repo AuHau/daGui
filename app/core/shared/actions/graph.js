@@ -7,48 +7,42 @@ const GRAPH = {
 };
 export default GRAPH;
 
-export const addNode = (nodeObject, activeFile) => {
+export const addNode = (nodeObject) => {
   return {
     type: GRAPH.ADD_NODE,
-    payload: nodeObject,
-    activeFile
+    payload: nodeObject
   }
 };
 
-export const moveNode = (nid, x, y, activeFile) => {
+export const moveNode = (nid, x, y) => {
   return {
     type: GRAPH.MOVE_NODE,
     nid,
     x,
-    y,
-    activeFile
+    y
   }
 };
 
 /**
  * Update link and if it is not exisiting it creates a new one
  * @param linkObject
- * @param activeFile
- * @returns {{type: string, payload: *, activeFile: *}}
+ * @returns {{type: string, payload: *: *}}
  */
-export const updateLink = (linkObject, activeFile) => {
+export const updateLink = (linkObject) => {
   return {
     type: GRAPH.UPDATE_LINK,
-    payload: linkObject,
-    activeFile
+    payload: linkObject
   }
 };
 
 /**
  * Remove link from graph
  * @param lid
- * @param activeFile int
- * @returns {{type: string, payload: *, activeFile: *}}
+ * @returns {{type: string, payload: *: *}}
  */
-export const deleteLink = (lid, activeFile) => {
+export const deleteLink = (lid) => {
   return {
     type: GRAPH.DELETE_LINK,
-    payload: lid,
-    activeFile
+    payload: lid
   }
 };

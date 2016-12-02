@@ -25,7 +25,7 @@ const mapStateToProps = (state) => {
 
   return {
     adapter: state.getIn(['files', 'opened', state.getIn(['files', 'active']), 'adapter']),
-    nodeDetail: (nodeId ? state.getIn(['graphs', activeFile, 'cells']).find(node => node.get('id') == nodeId) : null),
+    nodeDetail: (nodeId ? state.getIn(['files', 'opened', activeFile, 'graph', 'cells']).find(node => node.get('id') == nodeId) : null),
   };
 };
 

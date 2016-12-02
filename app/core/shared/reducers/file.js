@@ -1,3 +1,9 @@
+import graphReducer from './graph';
+
 export default (state, action) => {
-  return state;
+  if(action.type.startsWith('GRAPH_')){
+    return graphReducer(state, action);
+  }else{
+    return state;
+  }
 };
