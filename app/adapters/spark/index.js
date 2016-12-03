@@ -21,9 +21,13 @@ export default class SparkAdapter extends BaseAdapter{
   }
 
   static getNodeTemplates(){
-    return [
-      Filter
-    ]
+    const nodeMap = {};
+
+    nodeMap[Filter.getNodeType()] = Filter;
+    nodeMap[Map.getNodeType()] = Map;
+    nodeMap[Count.getNodeType()] = Count;
+
+    return nodeMap
   }
 
   static getGroupedNodeTemplates(){

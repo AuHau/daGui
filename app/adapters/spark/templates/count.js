@@ -20,6 +20,9 @@ const MODEL = joint.shapes.basic.Rect.extend({
       },
       text : { text: NAME }
     },
+    dfGui: {
+      title: NAME
+    },
     ports: {
       items: [
         {
@@ -47,5 +50,11 @@ export default class Filter extends NodeTemplate{
 
   static getModel(){
     return MODEL.bind(joint);
+  }
+
+  static changeTitle(nodeObject, newTitle){
+    nodeObject.attrs = nodeObject.attrs || {};
+    nodeObject.attrs.text = nodeObject.attrs.text || {};
+    return nodeObject.attrs.text.text = newTitle;
   }
 }

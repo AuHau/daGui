@@ -50,7 +50,8 @@ class Canvas extends Component {
       return;
     }
 
-    if(cellView === this.currentDetailCell){
+    if(cellView === this.currentDetailCell
+        || cellView.model.attributes.type == 'link'){
       return;
     }
 

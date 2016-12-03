@@ -2,6 +2,7 @@
 const GRAPH = {
   ADD_NODE: 'GRAPH_ADD_NODE',
   MOVE_NODE: 'GRAPH_MOVE_NODE',
+  UPDATE_NODE: 'GRAPH_UPDATE_NODE',
   UPDATE_LINK: 'GRAPH_UPDATE_LINK',
   DELETE_LINK: 'GRAPH_DELETE_LINK'
 };
@@ -11,6 +12,14 @@ export const addNode = (nodeObject) => {
   return {
     type: GRAPH.ADD_NODE,
     payload: nodeObject
+  }
+};
+
+export const updateNode = (nid, nodeObject) => {
+  return {
+    type: GRAPH.UPDATE_NODE,
+    payload: nodeObject,
+    nid
   }
 };
 
