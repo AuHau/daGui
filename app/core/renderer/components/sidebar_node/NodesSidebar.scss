@@ -7,9 +7,8 @@
   width: $nodes-sidebar-width;
   height: calc(100% - #{$menu-height});
 
-  background-color: #c09875;
-
-  border-right: 1px solid black;
+  background-color: $nodes-sidebar-bg-color;
+  border-right: 1px solid $nodes-sidebar-border-color;
 }
 
 .search{

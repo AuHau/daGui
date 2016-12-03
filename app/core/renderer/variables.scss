@@ -1,12 +1,21 @@
+// Colors
+$light-grey: #eaeaea;
+$dark-grey: #6e6e6e;
 
-// Layout dimensions
-$nodes-sidebar-width: 240px;
-$detail-sidebar-width: 240px;
+// Menu
 $menu-height: 40px;
+$menu-sidebar-bg-color: $light-grey;
+$menu-sidebar-border-color: $dark-grey;
 
+// Detail Sidebar
+$detail-sidebar-width: 240px;
+$detail-sidebar-bg-color: $light-grey;
+$detail-sidebar-border-color: $dark-grey;
 
 // Nodes Sidebar
+$nodes-sidebar-width: 240px;
 $nodes-sidebar-node-height: 30px;
 $nodes-sidebar-node-width: 60px;
 $nodes-sidebar-margin: 8px;
-
+$nodes-sidebar-bg-color: $light-grey;
+$nodes-sidebar-border-color: $dark-grey;

@@ -6,10 +6,10 @@
   top: 0;
   width: 100%;
   height: $menu-height;
+  line-height: $menu-height;
 
-  background-color: #eaeaea;
-
-  border-bottom: 1px solid black;
+  background-color: $menu-sidebar-bg-color;
+  border-bottom: 2px solid $menu-sidebar-border-color;
 }
 
 .container ul{
