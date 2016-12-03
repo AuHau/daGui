@@ -1,11 +1,20 @@
 // Colors
 $light-grey: #eaeaea;
 $dark-grey: #6e6e6e;
+$red: #b3300a;
+
+// Context colors
+$warning: $red;
 
 // Menu
 $menu-height: 40px;
 $menu-sidebar-bg-color: $light-grey;
 $menu-sidebar-border-color: $dark-grey;
+
+// Footer
+$footer-height: 25px;
+$footer-bg-color: $light-grey;
+$footer-border-color: $dark-grey;
 
 // Detail Sidebar
 $detail-sidebar-width: 240px;

@@ -1,0 +1,28 @@
+@import "../../variables";
+
+.container{
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: calc(100% - #{$nodes-sidebar-width});;
+  height: $footer-height;
+  line-height: $footer-height;
+  overflow: hidden;
+  padding: 0 10px;
+
+  background-color: $footer-bg-color;
+  border-top: 1px solid $footer-border-color;
+}
+
+.left{
+  float: left;
+  color: $warning;
+}
+
+.right{
+  float: right;
+
+  span{
+	margin-left: 10px;
+  }
+}
