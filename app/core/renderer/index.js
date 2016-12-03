@@ -47,7 +47,8 @@ const initState = Immutable.fromJS({
     ]
   },
   ui: {
-    canvasContainerSpec: {}
+    canvasContainerSpec: {},
+    detailNodeId: null
   }
 });
 

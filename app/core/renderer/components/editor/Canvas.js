@@ -98,6 +98,11 @@ class Canvas extends Component {
   componentDidUpdate(){
     // TODO: Optimalization - don't update when the action was created by graph's event
     this.graph.fromJSON(this.props.graphJson.toJS());
+
+    if(this.props.detailNodeId){
+      const detailNode = this.graph.getCell(this.props.detailNodeId);
+      this.paper.findViewByModel(detailNode).highlight();
+    }
   }
 
   render() {
@@ -125,7 +130,8 @@ class Canvas extends Component {
 const mapStateToProps = (state) => {
   const activeFile = state.getIn(['files', 'active']);
   return {
-    graphJson: state.getIn(['files', 'opened', activeFile, 'graph'])
+    graphJson: state.getIn(['files', 'opened', activeFile, 'graph']),
+    detailNodeId: state.getIn('ui.detailNodeId'.split('.'))
   };
 };
 

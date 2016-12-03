@@ -27,8 +27,23 @@ export default class DetailSidebar extends Component {
 
   componentDidMount(){
     const nameInput = ReactDOM.findDOMNode(this.refs.nameInput);
-
     nameInput.addEventListener('change', this.onNameChange.bind(this));
+    nameInput.addEventListener('blur', (e) => {e.stopPropagation()});
+  }
+
+  componentWillReceiveProps(newProps){
+    // Before updating the input, I have to check if the Node's title was changed
+    const nameInput = ReactDOM.findDOMNode(this.refs.nameInput);
+    if(this.props.node.dfGui.title != nameInput.value){
+      nameInput.blur(); // Blur will fire the change event
+    }
+
+    this.nodeTemplate = newProps.adapter.getNodeTemplates()[newProps.node.type];
+  }
+
+  componentDidUpdate(){
+    const nameInput = ReactDOM.findDOMNode(this.refs.nameInput);
+    nameInput.value = this.props.node.dfGui.title;
   }
 
   render(){
