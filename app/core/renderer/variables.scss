@@ -1,13 +1,14 @@
 // Colors
-$light-grey: #eaeaea;
-$dark-grey: #6e6e6e;
+$very-light-grey: #fcfcfc;
+$light-grey: #f4f4f4;
+$dark-grey: #848484;
 $red: #b3300a;
 
 // Context colors
 $warning: $red;
 
 // Menu
-$menu-height: 40px;
+$menu-height: 30px;
 $menu-sidebar-bg-color: $light-grey;
 $menu-sidebar-border-color: $dark-grey;
 
@@ -28,3 +29,8 @@ $nodes-sidebar-node-width: 60px;
 $nodes-sidebar-margin: 8px;
 $nodes-sidebar-bg-color: $light-grey;
 $nodes-sidebar-border-color: $dark-grey;
+
+// Code View
+$code-view-height: 400px;
+$code-view-bg-color: $very-light-grey;
+$code-view-border-color: $dark-grey;

@@ -47,4 +47,12 @@ export default class SparkAdapter extends BaseAdapter{
       }
     ]
   }
+
+  static validateGraph(graph){
+    return null;
+  }
+
+  static generateCode(graph){
+    return {'asd' : 'asd'};
+  }
 }

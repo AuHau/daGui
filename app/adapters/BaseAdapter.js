@@ -15,4 +15,12 @@ export default class BaseAdapter {
   static getGroupedNodeTemplates(){
     throw new TypeError("Method 'getGroupedNodeTemplates' has to be implemented!");
   }
+
+  static validateGraph(graph){
+    throw new TypeError("Method 'validateGraph' has to be implemented!");
+  }
+
+  static generateCode(graph){
+    throw new TypeError("Method 'generateCode' has to be implemented!");
+  }
 }

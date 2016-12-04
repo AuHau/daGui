@@ -155,4 +155,9 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
+Canvas.propTypes = {
+  highlight: React.PropTypes.string,
+  onHighlight: React.PropTypes.func.isRequired
+};
+
 export default connect(mapStateToProps, mapDispatchToProps)(Canvas);

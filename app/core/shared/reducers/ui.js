@@ -16,6 +16,13 @@ export default (state, action) => {
 
     case UI.CHANGE_NODE_DETAIL:
       return state.set('detailNodeId', action.nid);
+
+    case UI.SHOW_SETTINGS:
+      return state.set('showSettingsWindow', true);
+
+    case UI.TOGGLE_CODE_VIEW:
+      return state.update('showCodeView', (value) => !value);
+
     default:
       return state;
   }
