@@ -61,7 +61,7 @@ export default class DetailSidebar extends Component {
         <div>
           <strong>Code definition:</strong>
         </div>
-        <CodeInput node={this.props.node} nodeTemplate={this.nodeTemplate} onNodeChange={this.props.onNodeChange}/>
+        <CodeInput node={this.props.node} language={this.props.language} nodeTemplate={this.nodeTemplate} onNodeChange={this.props.onNodeChange}/>
       </div>
     );
   }
@@ -70,5 +70,6 @@ export default class DetailSidebar extends Component {
 DetailSidebar.propTypes = {
   node: React.PropTypes.object.isRequired,
   adapter: React.PropTypes.func.isRequired,
+  language: React.PropTypes.func.isRequired,
   onNodeChange: React.PropTypes.func.isRequired
 };

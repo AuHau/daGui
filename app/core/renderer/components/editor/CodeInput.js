@@ -19,5 +19,6 @@ export default class CodeInput extends Component {
 CodeInput.propTypes = {
   node: React.PropTypes.object.isRequired,
   nodeTemplate: React.PropTypes.func.isRequired,
+  language: React.PropTypes.func.isRequired,
   onNodeChange: React.PropTypes.func.isRequired
 };

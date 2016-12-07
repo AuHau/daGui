@@ -40,12 +40,14 @@ class App extends Component {
 
   render() {
     const adapter = this.props.file.get('adapter');
+    const language = this.props.file.get('language');
+
     return (
       <div>
         <Menu />
         <NodesSidebar adapter={adapter} />
         <Canvas onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>
-        {this.props.nodeDetail && <DetailSidebar node={this.props.nodeDetail.toJS()} adapter={adapter} onNodeChange={this.props.onNodeChange}/>}
+        {this.props.nodeDetail && <DetailSidebar node={this.props.nodeDetail.toJS()} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/>}
         {this.props.showCodeView && <CodeView code={this.generatedCode} onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>}
         <Footer framework={adapter.getName()} language={this.props.file.get('language').getName()}/>
       </div>

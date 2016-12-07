@@ -12,7 +12,7 @@ import Startup from './containers/Startup';
 
 // TODO: Not hardcoded
 import SparkAdapter from '../../adapters/spark';
-import Scala from '../languages/Scala';
+import Python from '../languages/Python';
 
 const initState = Immutable.fromJS({
   files: {
@@ -21,7 +21,7 @@ const initState = Immutable.fromJS({
       {
         name: 'Test.scala',
         adapter: SparkAdapter,
-        language: Scala,
+        language: Python,
         graph: {
           cells: [// Array of cells (ie. links and elements).
             {

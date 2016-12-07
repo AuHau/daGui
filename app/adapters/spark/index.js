@@ -1,7 +1,7 @@
 import BaseAdapter from '../BaseAdapter';
 
 // Languages
-import Scala from '../../core/languages/Scala';
+import Python from '../../core/languages/Python';
 
 // NodeTemplates
 import Filter from './templates/filter';
@@ -16,7 +16,7 @@ export default class SparkAdapter extends BaseAdapter{
 
   static getSupportedLanguages(){
     return [
-        Scala
+        Python
     ];
   }
 
