@@ -29,7 +29,7 @@ export default (state, action) => {
       }
       return state.setIn(['opened', getActive(state), 'graph', 'cells', index], Immutable.fromJS(action.payload));
 
-    case GRAPH.DELETE_LINK:
+    case GRAPH.DELETE_ELEMENT:
       index = state.getIn(['opened', getActive(state), 'graph', 'cells']).findIndex(node => node.get('id') == action.payload);
       return index == -1 ? state : state.deleteIn(['opened', getActive(state), 'graph', 'cells', index]);
 

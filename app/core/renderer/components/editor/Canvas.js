@@ -33,9 +33,12 @@ class Canvas extends Component {
     }
   }
 
-  // TODO: Deleting of link is not figured out
   onLinkUpdate(cellView){
     this.props.onLinkUpdate(cellView.model.toJSON());
+  }
+
+  onDelete(element){
+    this.props.onElementDelete(element.id);
   }
 
   onNodeDetail(cellView){
@@ -91,7 +94,8 @@ class Canvas extends Component {
     this.paper.on('cell:pointerdown', this.onPointerDown.bind(this));
     this.paper.on('cell:pointerup', this.onPointerUp.bind(this));
     this.paper.on('blank:pointerclick', this.onNodeDetail.bind(this));
-    this.paper.on('link:connect link:disconnect', this.onLinkUpdate.bind(this));
+    this.paper.on('link:connect', this.onLinkUpdate.bind(this));
+    this.graph.on('remove', this.onDelete.bind(this));
   }
 
   componentDidUpdate(){
@@ -145,8 +149,8 @@ const mapDispatchToProps = (dispatch) => {
       onLinkUpdate: (linkObject) => {
         dispatch(graphActions.updateLink(linkObject));
       },
-      onLinkDelete: (lid) => {
-        dispatch(graphActions.deleteLink(lid));
+      onElementDelete: (lid) => {
+        dispatch(graphActions.deleteElement(lid));
       },
       onNodeDetail: (nid) => {
         dispatch(changeNodeDetail(nid));
