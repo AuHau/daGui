@@ -1,0 +1,36 @@
+@import "../../variables";
+
+.container{
+  padding: 5px;
+  margin-top: 5px;
+  border: $code-input-border;
+}
+
+.nodesCode{
+  font-weight: bold;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+.parameter{
+  display: block;
+  padding: 0 2px;
+  margin-left: 10px;
+  margin-bottom: 2px;
+  margin-right: 3px;
+  border: $parameter-border;
+
+  &:focus{
+	border-color: $parameter-focused;
+  }
+}
+
+.required{
+  composes: parameter;
+  border-color: $parameter-required;
+}
+
+.optional{
+  composes: parameter;
+  border-color: $parameter-optional;
+}

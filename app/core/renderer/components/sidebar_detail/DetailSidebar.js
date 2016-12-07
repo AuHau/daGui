@@ -46,7 +46,19 @@ export default class DetailSidebar extends Component {
     nameInput.value = this.props.node.dfGui.title;
   }
 
-  render(){
+  render() {
+    let codeInput;
+    if (this.nodeTemplate.hasCodeToFill()) {
+      codeInput = (
+        <div>
+          <div>
+            <strong>Code definition:</strong>
+          </div>
+          <CodeInput node={this.props.node} language={this.props.language} nodeTemplate={this.nodeTemplate}
+                     onNodeChange={this.props.onNodeChange}/>
+        </div>
+      );
+    }
 
     return (
       <div className={styles.container}>
@@ -58,10 +70,7 @@ export default class DetailSidebar extends Component {
           <strong>Node title: </strong>
           <input type="text" defaultValue={this.props.node.dfGui.title} ref="nameInput"/>
         </div>
-        <div>
-          <strong>Code definition:</strong>
-        </div>
-        <CodeInput node={this.props.node} language={this.props.language} nodeTemplate={this.nodeTemplate} onNodeChange={this.props.onNodeChange}/>
+        {codeInput}
       </div>
     );
   }

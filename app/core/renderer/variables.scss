@@ -3,6 +3,9 @@ $very-light-grey: #fcfcfc;
 $light-grey: #f4f4f4;
 $dark-grey: #848484;
 $red: #b3300a;
+$dark-red: #850001;
+$blue: #344bb3;
+$yellow: #decf22;
 
 // Context colors
 $warning: $red;
@@ -34,3 +37,10 @@ $nodes-sidebar-border-color: $dark-grey;
 $code-view-height: 400px;
 $code-view-bg-color: $very-light-grey;
 $code-view-border-color: $dark-grey;
+
+// Code Input
+$code-input-border: 1px solid $dark-grey;
+$parameter-border: 1px solid;
+$parameter-required: $dark-red;
+$parameter-optional: $blue;
+$parameter-focused: $yellow;

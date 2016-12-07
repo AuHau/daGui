@@ -80,12 +80,16 @@ export default class Filter extends NodeTemplate{
       {
         description: 'Function which accepts one parameter (element) and return modified element',
         required: true,
-        template: 'lambda x: '
+        template: 'lambda x: ',
+        selectionStart: 'all',
+        selectionEnd: 'all'
       },
       {
         description: 'If set True, map elements per partition',
         required: false,
-        template: 'preservesPartitioning=False'
+        template: 'preservesPartitioning=False',
+        selectionStart: 22,
+        selectionEnd: 'all'
       }
     ];
   }
