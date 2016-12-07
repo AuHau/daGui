@@ -61,4 +61,32 @@ export default class Filter extends NodeTemplate{
     nodeObject.attrs.text = nodeObject.attrs.text || {};
     return nodeObject.attrs.text.text = newTitle;
   }
+
+
+  static hasCodeToFill(lang){
+    return true;
+  }
+
+  static getCodePrefix(lang){
+    return "map(";
+  }
+
+  static getCodeSuffix(lang){
+    return ")";
+  }
+
+  static getCodeParameters(lang){
+    return [
+      {
+        description: 'Function which accepts one parameter (element) and return modified element',
+        required: true,
+        template: 'lambda x: '
+      },
+      {
+        description: 'If set True, map elements per partition',
+        required: false,
+        template: 'preservesPartitioning=False'
+      }
+    ];
+  }
 }

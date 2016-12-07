@@ -57,4 +57,21 @@ export default class Filter extends NodeTemplate{
     nodeObject.attrs.text = nodeObject.attrs.text || {};
     return nodeObject.attrs.text.text = newTitle;
   }
+
+  static hasCodeToFill(lang){
+    return false;
+  }
+
+  static getCodePrefix(lang){
+    return "count(";
+  }
+
+  static getCodeSuffix(lang){
+    return ")";
+  }
+
+  static getCodeParameters(lang){
+    return null;
+  }
+
 }

@@ -61,4 +61,26 @@ export default class Filter extends NodeTemplate{
     nodeObject.attrs.text = nodeObject.attrs.text || {};
     return nodeObject.attrs.text.text = newTitle;
   }
+
+  static hasCodeToFill(lang){
+    return true;
+  }
+
+  static getCodePrefix(lang){
+    return "filter(";
+  }
+
+  static getCodeSuffix(lang){
+    return ")";
+  }
+
+  static getCodeParameters(lang){
+    return [
+      {
+        description: 'Function which accepts one parameter (element) and return true if if the value should be present in the outcome RDD or false if not',
+        required: true,
+        template: 'lambda x: '
+      }
+    ];
+  }
 }

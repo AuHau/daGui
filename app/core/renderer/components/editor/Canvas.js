@@ -26,7 +26,6 @@ class Canvas extends Component {
     this.props.onCanvasResize(wrapperElem.getBoundingClientRect());
   }
 
-  // TODO/BUG: On node movement, highlight of current node is lost
   onNodeMove(cellView){
     if(cellView.model.attributes.type != 'link'){
       const newPosition = cellView.model.attributes.position;
