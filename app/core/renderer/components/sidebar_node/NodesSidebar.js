@@ -10,11 +10,18 @@ export default class NodesSidebar extends Component {
   constructor(props){
     super(props);
 
-    this.state = {searchedText: ''};
+    this.state = {
+      searchedText: '',
+      showHiddenNodes: false
+    };
   }
 
   onSearch(e){
     this.setState({searchedText: e.target.value});
+  }
+
+  onHiddenNodesToggle(e){
+    this.setState({showHiddenNodes: !this.state.showHiddenNodes});
   }
 
   componentDidMount(){
@@ -24,13 +31,21 @@ export default class NodesSidebar extends Component {
 
   render() {
     const groups = this.props.adapter.getGroupedNodeTemplates();
-    const renderedGroups = groups.map((group, index) => <NodesGroup key={index} name={group.name} nodes={group.nodes} searchedText={this.state.searchedText} />);
+    const renderedGroups = groups.map((group, index) => <NodesGroup key={index} displayHiddenNodes={this.state.showHiddenNodes} name={group.name} nodeTemplates={group.templates} searchedText={this.state.searchedText} />);
 
     // TODO: Collapse groups
     return (
       <div className={styles.container}>
         <div className={styles.search}>
-          <input type="search" placeholder="Search node" ref="searchInput"/>
+          <div>
+            <input type="search" placeholder="Search node" ref="searchInput"/>
+          </div>
+          <div>
+            <label>
+              <input type="checkbox" checked={this.state.showHiddenNodes} onChange={this.onHiddenNodesToggle.bind(this)}/>
+              Display hidden nodes
+            </label>
+          </div>
         </div>
         <div className={styles.nodeList}>
           {renderedGroups}

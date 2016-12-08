@@ -45,7 +45,7 @@ joint.shapes['spark']['filter'] = MODEL;
 
 export default class Filter extends NodeTemplate{
 
-  static getNodeType(){
+  static getType(){
     return NODE_TYPE;
   }
 
@@ -61,6 +61,10 @@ export default class Filter extends NodeTemplate{
     nodeObject.attrs = nodeObject.attrs || {};
     nodeObject.attrs.text = nodeObject.attrs.text || {};
     return nodeObject.attrs.text.text = newTitle;
+  }
+
+  static isNodeHidden(){
+    return false;
   }
 
   static hasCodeToFill(lang){

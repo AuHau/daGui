@@ -1,7 +1,7 @@
 
 export default class NodeTemplate {
-  static getNodeType() {
-    throw new TypeError("Method 'getNodeType' has to be implemented!");
+  static getType() {
+    throw new TypeError("Method 'getType' has to be implemented!");
   }
 
   static getName() {
@@ -14,6 +14,10 @@ export default class NodeTemplate {
 
   static changeTitle() {
     throw new TypeError("Method 'changeTitle' has to be implemented!");
+  }
+
+  static isNodeHidden(){
+    throw new TypeError("Method 'isNodeHidden' has to be implemented!");
   }
 
   // Code generation

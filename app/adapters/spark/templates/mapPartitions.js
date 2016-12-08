@@ -4,8 +4,8 @@ import _ from 'lodash';
 import portDefinition from '../../../core/graph/portDefinition';
 import NodeTemplate from '../../../core/graph/NodeTemplate';
 
-const NAME = 'Count';
-const NODE_TYPE = 'spark.count';
+const NAME = 'Map Partitions';
+const NODE_TYPE = 'spark.mapPartitions';
 const MODEL = joint.shapes.basic.Rect.extend({
   portMarkup: '<circle class="port-body"/>',
   defaults: _.defaultsDeep({
@@ -29,6 +29,10 @@ const MODEL = joint.shapes.basic.Rect.extend({
         {
           id: 'in',
           group: 'in'
+        },
+        {
+          id: 'out',
+          group: 'out'
         }
       ],
       groups: portDefinition
@@ -37,7 +41,7 @@ const MODEL = joint.shapes.basic.Rect.extend({
 });
 
 if(!joint.shapes['spark']) joint.shapes['spark'] = {};
-joint.shapes['spark']['count'] = MODEL;
+joint.shapes['spark']['mapPartitions'] = MODEL;
 
 export default class Filter extends NodeTemplate{
 
@@ -53,22 +57,22 @@ export default class Filter extends NodeTemplate{
     return MODEL.bind(joint);
   }
 
-  static isNodeHidden(){
-    return false;
-  }
-
   static changeTitle(nodeObject, newTitle){
     nodeObject.attrs = nodeObject.attrs || {};
     nodeObject.attrs.text = nodeObject.attrs.text || {};
     return nodeObject.attrs.text.text = newTitle;
   }
 
+  static isNodeHidden(){
+    return true;
+  }
+
   static hasCodeToFill(lang){
-    return false;
+    return true;
   }
 
   static getCodePrefix(lang){
-    return "count(";
+    return "mapPartitions(";
   }
 
   static getCodeSuffix(lang){
@@ -76,7 +80,21 @@ export default class Filter extends NodeTemplate{
   }
 
   static getCodeParameters(lang){
-    return null;
+    return [
+      {
+        description: 'Function which accepts one parameter (element) and return modified element',
+        required: true,
+        template: 'lambda x: ',
+        selectionStart: 'all',
+        selectionEnd: 'all'
+      },
+      {
+        description: 'If set True, map elements per partition',
+        required: false,
+        template: 'preservesPartitioning=False',
+        selectionStart: 22,
+        selectionEnd: 'all'
+      }
+    ];
   }
-
 }

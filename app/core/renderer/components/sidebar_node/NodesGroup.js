@@ -2,6 +2,7 @@ import { findDOMNode } from 'react-dom';
 import React, { Component } from 'react';
 import joint from 'jointjs';
 import { connect } from 'react-redux'
+import Config from '../../../../config/index.js';
 
 import cssVariables from '!!sass-variable-loader!../../variables.scss';
 import styles from './NodesGroup.scss';
@@ -18,6 +19,7 @@ class NodesGroup extends Component {
     this.graph = new joint.dia.Graph();
     this.state = {isDragging: false};
     this.lastSearch = '';
+    this.lastDisplayHiddenNodes = props.displayHiddenNodes;
   }
 
   onDrag(cellView, e, x, y) {
@@ -73,9 +75,10 @@ class NodesGroup extends Component {
   }
 
   filterOutNodes(){
-    if(!this.props.searchedText || this.props.searchedText == '') return this.props.nodes;
+    if(!this.props.searchedText || this.props.searchedText == '')
+      return this.props.nodeTemplates.filter(node => this.props.displayHiddenNodes || !Config.isNodeHidden(node.getType()));
 
-    return this.props.nodes.filter(node => node.getName().match(new RegExp(this.props.searchedText, 'i')));
+    return this.props.nodeTemplates.filter(node => node.getName().match(new RegExp(this.props.searchedText, 'i')));
   }
 
   renderNodes(nodes){
@@ -120,8 +123,11 @@ class NodesGroup extends Component {
 
   componentDidUpdate() {
     // Rerender nodes only when there is searching ongoing
-    if(this.lastSearch != this.props.searchedText) {
+    if(this.lastSearch != this.props.searchedText
+        || this.lastDisplayHiddenNodes != this.props.displayHiddenNodes) {
       this.lastSearch = this.props.searchedText;
+      this.lastDisplayHiddenNodes = this.props.displayHiddenNodes;
+
       const nodes = this.filterOutNodes();
       if(nodes.length == 0){
         this.paper.el.style.display = 'none';
@@ -149,8 +155,9 @@ class NodesGroup extends Component {
 
 NodesGroup.propTypes = {
   name: React.PropTypes.string.isRequired,
-  nodes: React.PropTypes.array.isRequired,
-  searchedText: React.PropTypes.string
+  nodeTemplates: React.PropTypes.array.isRequired,
+  searchedText: React.PropTypes.string,
+  displayHiddenNodes: React.PropTypes.bool
 };
 
 const mapStateToProps = (state) => {

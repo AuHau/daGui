@@ -5,7 +5,7 @@ export default class Scala extends BaseLanguage {
     return 'Scala';
   }
 
-  static getLID() {
-    return 1;
+  static getID() {
+    return 'scala';
   }
 }
