@@ -79,7 +79,8 @@ class Canvas extends Component {
       markAvailable: true,
       snapLinks: { radius: 40 },
       defaultLink: new joint.dia.Link({
-        attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } }
+        attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } },
+        smooth: true
       }),
       validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
         if (magnetS && magnetS.getAttribute('port-group') === 'in') return false;
