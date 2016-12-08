@@ -21,7 +21,8 @@ const MODEL = joint.shapes.basic.Rect.extend({
       text : { text: NAME }
     },
     dfGui: {
-      title: NAME
+      title: NAME,
+      parameters: [],
     },
     ports: {
       items: [

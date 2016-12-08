@@ -8,10 +8,25 @@ import styles from './CodeInput.scss';
 
 export default class CodeInput extends Component {
 
-  static mapParameter(parameter, index){
+  mapParameter(parameter, index){
     const parameterClass = (parameter.required ? styles.required : styles.optional);
+    const parameterValue = this.props.node.dfGui.parameters && this.props.node.dfGui.parameters[index] ? this.props.node.dfGui.parameters[index] : parameter.template
 
-    return (<div data-parameter={index} key={index} className={parameterClass} suppressContentEditableWarning={true} contentEditable="true">{parameter.template}</div>);
+    return (<div data-parameter={index} key={this.props.node.id + '_' + index} className={parameterClass} suppressContentEditableWarning={true} contentEditable="true">{parameterValue}</div>);
+  }
+
+  onBlur(e){
+    const parameters = this.props.node.dfGui.parameters;
+    const index = e.target.dataset.parameter;
+    const parameterValue = e.target.textContent;
+
+    if(!parameters || !parameters[index] || parameters[index] != parameterValue){
+      const newNode = this.props.node; // TODO: Not deep clonning - problem?
+
+      if(!parameters) newNode.dfGui.parameters = [];
+      newNode.dfGui.parameters[index] = parameterValue;
+      this.props.onNodeChange(newNode);
+    }
   }
 
   onMouseUp(e){
@@ -40,15 +55,35 @@ export default class CodeInput extends Component {
     }
   }
 
+  componentWillUpdate(nextProps){
+    if(this.props.node.id != nextProps.node.id){
+      this.rebindInputs = true;
+      const container = ReactDOM.findDOMNode(this.refs.container);
+      container.querySelectorAll('.' + styles.parameter).forEach((parameterNode) => parameterNode.blur());
+    }
+  }
+
+  componentDidUpdate(){
+    if(this.rebindInputs){
+      this.bindEventsToInput();
+      this.rebindInputs = false;
+    }
+  }
+
+  bindEventsToInput(){
+    const container = ReactDOM.findDOMNode(this.refs.container);
+    container.querySelectorAll('.' + styles.parameter).forEach((parameterNode) => parameterNode.addEventListener('blur', this.onBlur.bind(this)));
+  }
+
   componentDidMount(){
     const container = ReactDOM.findDOMNode(this.refs.container);
-
     container.addEventListener('mouseup', this.onMouseUp.bind(this));
     container.addEventListener('keydown', this.onKeyDown.bind(this));
+    this.bindEventsToInput();
   }
 
   render(){
-    const parameters = this.props.nodeTemplate.getCodeParameters().map(CodeInput.mapParameter);
+    const parameters = this.props.nodeTemplate.getCodeParameters().map(this.mapParameter.bind(this));
 
     return (
       <div ref="container" className={styles.container}>
