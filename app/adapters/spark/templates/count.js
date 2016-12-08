@@ -21,7 +21,7 @@ const MODEL = joint.shapes.basic.Rect.extend({
       text : { text: NAME }
     },
     dfGui: {
-      title: NAME,
+      description: NAME,
       parameters: [],
     },
     ports: {
@@ -55,12 +55,6 @@ export default class Filter extends NodeTemplate{
 
   static isNodeHidden(){
     return false;
-  }
-
-  static changeTitle(nodeObject, newTitle){
-    nodeObject.attrs = nodeObject.attrs || {};
-    nodeObject.attrs.text = nodeObject.attrs.text || {};
-    return nodeObject.attrs.text.text = newTitle;
   }
 
   static hasCodeToFill(lang){

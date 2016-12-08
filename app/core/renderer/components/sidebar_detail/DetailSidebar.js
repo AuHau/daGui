@@ -14,36 +14,33 @@ export default class DetailSidebar extends Component {
     this.nodeTemplate = this.props.adapter.getNodeTemplates()[this.props.node.type];
   }
 
-  // TODO: With Node's title change, the text might not fit the node ==> node resize?
   onNameChange(e){
     const node = this.props.node;
-    const newTitle = e.target.value;
 
-    node.dfGui.title = newTitle;
-    this.nodeTemplate.changeTitle(node, newTitle);
+    node.dfGui.description = e.target.value;
 
     this.props.onNodeChange(node);
   }
 
   componentDidMount(){
-    const nameInput = ReactDOM.findDOMNode(this.refs.nameInput);
-    nameInput.addEventListener('change', this.onNameChange.bind(this));
-    nameInput.addEventListener('blur', (e) => {e.stopPropagation()});
+    const descriptionInput = ReactDOM.findDOMNode(this.refs.descriptionInput);
+    descriptionInput.addEventListener('change', this.onNameChange.bind(this));
+    descriptionInput.addEventListener('blur', (e) => {e.stopPropagation()});
   }
 
   componentWillReceiveProps(newProps){
-    // Before updating the input, I have to check if the Node's title was changed
-    const nameInput = ReactDOM.findDOMNode(this.refs.nameInput);
-    if(this.props.node.dfGui.title != nameInput.value){
-      nameInput.blur(); // Blur will fire the change event
+    // Before updating the input, I have to check if the Node's description was changed
+    const descriptionInput = ReactDOM.findDOMNode(this.refs.descriptionInput);
+    if(this.props.node.dfGui.description != descriptionInput.value){
+      descriptionInput.blur(); // Blur will fire the change event
     }
 
     this.nodeTemplate = newProps.adapter.getNodeTemplates()[newProps.node.type];
   }
 
   componentDidUpdate(){
-    const nameInput = ReactDOM.findDOMNode(this.refs.nameInput);
-    nameInput.value = this.props.node.dfGui.title;
+    const descriptionInput = ReactDOM.findDOMNode(this.refs.descriptionInput);
+    descriptionInput.value = this.props.node.dfGui.description;
   }
 
   render() {
@@ -67,8 +64,8 @@ export default class DetailSidebar extends Component {
           {this.nodeTemplate.getName()}
         </div>
         <div>
-          <strong>Node title: </strong>
-          <input type="text" defaultValue={this.props.node.dfGui.title} ref="nameInput"/>
+          <strong>Node's description: </strong>
+          <input type="text" defaultValue={this.props.node.dfGui.description} ref="descriptionInput"/>
         </div>
         {codeInput}
       </div>

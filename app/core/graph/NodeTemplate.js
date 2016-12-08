@@ -12,10 +12,6 @@ export default class NodeTemplate {
     throw new TypeError("Method 'getModel' has to be implemented!");
   }
 
-  static changeTitle() {
-    throw new TypeError("Method 'changeTitle' has to be implemented!");
-  }
-
   static isNodeHidden(){
     throw new TypeError("Method 'isNodeHidden' has to be implemented!");
   }
