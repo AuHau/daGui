@@ -18,6 +18,9 @@ class Canvas extends Component {
     this.graph = new joint.dia.Graph();
     this.currentDetailCell = null;
     this.startingPointerPosition = null;
+
+    // TODO: Find better place to place this
+    joint.setTheme('modern');
   }
 
   onResize(){
@@ -33,11 +36,7 @@ class Canvas extends Component {
     }
   }
 
-  onLinkUpdate(cellView){
-    this.props.onLinkUpdate(cellView.model.toJSON());
-  }
-
-  onDelete(element){
+  onElementDelete(element){
     this.props.onElementDelete(element.id);
   }
 
@@ -94,8 +93,7 @@ class Canvas extends Component {
     this.paper.on('cell:pointerdown', this.onPointerDown.bind(this));
     this.paper.on('cell:pointerup', this.onPointerUp.bind(this));
     this.paper.on('blank:pointerclick', this.onNodeDetail.bind(this));
-    this.paper.on('link:connect', this.onLinkUpdate.bind(this));
-    this.graph.on('remove', this.onDelete.bind(this));
+    this.graph.on('remove', this.onElementDelete.bind(this));
   }
 
   componentDidUpdate(){
@@ -120,10 +118,24 @@ class Canvas extends Component {
     if(Math.abs(this.startingPointerPosition.x - x) < CLICK_TRESHOLD
         && Math.abs(this.startingPointerPosition.y - y) < CLICK_TRESHOLD) {
       // Click
-      this.onNodeDetail(cellView);
+      if(cellView.model.isElement()){
+        this.onNodeDetail(cellView);
+      }else if(
+        cellView.model.isLink()
+        && cellView.model.graph  // Needs to verify, that the click was not on remove button
+      ){
+        this.props.onElementUpdate(cellView.model.toJSON());
+      }
     }else{
-      // Drag
-      this.onNodeMove(cellView);
+      // Drag node
+      if(cellView.model.isElement()){
+        this.onNodeMove(cellView);
+      }else if(
+        cellView.model.isLink()
+        && cellView.model.attributes.target.id // Needs to verify, that the link is left hanging in middle of nowhere
+      ){
+        this.props.onElementUpdate(cellView.model.toJSON());
+      }
     }
 
     this.startingPointerPosition = null;
@@ -146,11 +158,11 @@ const mapDispatchToProps = (dispatch) => {
       onNodeMove: (nid, x, y) => {
         dispatch(graphActions.moveNode(nid, x, y));
       },
-      onLinkUpdate: (linkObject) => {
-        dispatch(graphActions.updateLink(linkObject));
+      onElementUpdate: (elementObject) => {
+        dispatch(graphActions.updateLink(elementObject));
       },
-      onElementDelete: (lid) => {
-        dispatch(graphActions.deleteElement(lid));
+      onElementDelete: (id) => {
+        dispatch(graphActions.deleteElement(id));
       },
       onNodeDetail: (nid) => {
         dispatch(changeNodeDetail(nid));
