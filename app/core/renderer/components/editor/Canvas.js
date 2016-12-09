@@ -85,10 +85,10 @@ class Canvas extends Component {
       validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
         if (magnetS && magnetS.getAttribute('port-group') === 'in') return false;
         if (cellViewS === cellViewT) return false;
+        if (!magnetT || magnetT.getAttribute('port-group') !== 'in') return false;
 
-
-        return magnetT && magnetT.getAttribute('port-group') === 'in'
-                && cellViewT.model.graph.getConnectedLinks(cellViewT.model, {inbound: true}).length == 0;
+        const incomingLinks = cellViewT.model.graph.getConnectedLinks(cellViewT.model, {inbound: true});
+        return incomingLinks.find(link => link.attributes.target.port == magnetT.getAttribute('port')) == null;
       }
     });
     setTimeout(this.onResize.bind(this), 10);
