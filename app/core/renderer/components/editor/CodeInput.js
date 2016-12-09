@@ -10,9 +10,12 @@ export default class CodeInput extends Component {
 
   mapParameter(parameter, index){
     const parameterClass = (parameter.required ? styles.required : styles.optional);
-    const parameterValue = this.props.node.dfGui.parameters && this.props.node.dfGui.parameters[index] ? this.props.node.dfGui.parameters[index] : parameter.template
+    const isParameterValueTemplate = this.props.node.dfGui.parameters
+                                      && (this.props.node.dfGui.parameters[index] == undefined || this.props.node.dfGui.parameters[index] == parameter.template);
+    const templateClass =  isParameterValueTemplate ? ' ' + styles.template : '';
+    const parameterValue = isParameterValueTemplate ? parameter.template : this.props.node.dfGui.parameters[index];
 
-    return (<div data-parameter={index} key={this.props.node.id + '_' + index} className={parameterClass} suppressContentEditableWarning={true} contentEditable="true">{parameterValue}</div>);
+    return (<div data-parameter={index} key={this.props.node.id + '_' + index} className={parameterClass + templateClass} suppressContentEditableWarning={true} contentEditable="true">{parameterValue}</div>);
   }
 
   onBlur(e){

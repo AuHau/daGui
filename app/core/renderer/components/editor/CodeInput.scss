@@ -25,6 +25,10 @@
   }
 }
 
+.template{
+  color: $dark-grey;
+}
+
 .required{
   composes: parameter;
   border-color: $parameter-required;
