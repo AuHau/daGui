@@ -4,8 +4,8 @@ import _ from 'lodash';
 import portDefinition from '../../../core/graph/portDefinition';
 import NodeTemplate from '../../../core/graph/NodeTemplate';
 
-const NAME = 'Map';
-const NODE_TYPE = 'spark.map';
+const NAME = 'Union';
+const NODE_TYPE = 'spark.union';
 const MODEL = joint.shapes.basic.Rect.extend({
   portMarkup: '<circle class="port-body"/>',
   defaults: _.defaultsDeep({
@@ -27,7 +27,11 @@ const MODEL = joint.shapes.basic.Rect.extend({
     ports: {
       items: [
         {
-          id: 'in',
+          id: 'in1',
+          group: 'in'
+        },
+        {
+          id: 'in2',
           group: 'in'
         },
         {
@@ -41,7 +45,7 @@ const MODEL = joint.shapes.basic.Rect.extend({
 });
 
 if(!joint.shapes['spark']) joint.shapes['spark'] = {};
-joint.shapes['spark']['map'] = MODEL;
+joint.shapes['spark']['union'] = MODEL;
 
 export default class Filter extends NodeTemplate{
 
@@ -62,11 +66,11 @@ export default class Filter extends NodeTemplate{
   }
 
   static hasCodeToFill(lang){
-    return true;
+    return this.getCodeParameters(lang).length;
   }
 
   static getCodePrefix(lang){
-    return "map(";
+    return "union(";
   }
 
   static getCodeSuffix(lang){
@@ -74,23 +78,6 @@ export default class Filter extends NodeTemplate{
   }
 
   static getCodeParameters(lang){
-    return [
-      {
-        name: 'f',
-        description: 'Function which accepts one parameter (element) and return modified element',
-        required: true,
-        template: 'lambda x: ',
-        selectionStart: 'all',
-        selectionEnd: 'all'
-      },
-      {
-        name: 'preservesPartitioning',
-        description: 'If set True, map elements per partition',
-        required: false,
-        template: 'preservesPartitioning=False',
-        selectionStart: 22,
-        selectionEnd: 'all'
-      }
-    ];
+    return [];
   }
 }

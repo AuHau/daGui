@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import joint from 'jointjs';
-import hashGraph from 'graph/hashGraph.js';
+import {hashGraph, normalizeGraph} from 'graph/graphToolkit.js';
 
 import {updateNode} from '../../shared/actions/graph';
 
@@ -36,7 +36,8 @@ class App extends Component {
     const lang = nextProps.file.get('lang');
     const graph = nextProps.file.get('graph').toJS();
 
-    const newHash = hashGraph(graph);
+    const normalizedGraph = normalizeGraph(graph);
+    const newHash = hashGraph(normalizedGraph);
     if(this.graphHash == newHash){
       return; // No graph's changes which are connected with code ===> don't re-generate the code
     }
@@ -44,11 +45,13 @@ class App extends Component {
     if(nextProps.showCodeView){
       const jointGraph = new joint.dia.Graph();
       jointGraph.fromJSON(graph);
-      this.graphErrors = adapter.validateGraph(jointGraph, lang);
+      this.graphErrors = adapter.validateGraph(jointGraph, normalizedGraph, lang);
 
       if(!this.graphErrors){
         this.generatedCode = adapter.generateCode(jointGraph, lang);
       }
+
+      console.log(this.graphErrors);
 
       this.graphHash = newHash;
     }

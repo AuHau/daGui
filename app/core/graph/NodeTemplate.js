@@ -32,4 +32,12 @@ export default class NodeTemplate {
   static getCodeParameters(){
     throw new TypeError("Method 'getCodeTemplate' has to be implemented!");
   }
+
+  static hasMandatoryParameters(){
+    for(let param of this.getCodeParameters()){
+      if(param.required) return true;
+    }
+
+    return false;
+  }
 }

@@ -4,8 +4,8 @@ import _ from 'lodash';
 import portDefinition from '../../../core/graph/portDefinition';
 import NodeTemplate from '../../../core/graph/NodeTemplate';
 
-const NAME = 'Map';
-const NODE_TYPE = 'spark.map';
+const NAME = 'Parallelize';
+const NODE_TYPE = 'spark.parallelize';
 const MODEL = joint.shapes.basic.Rect.extend({
   portMarkup: '<circle class="port-body"/>',
   defaults: _.defaultsDeep({
@@ -27,10 +27,6 @@ const MODEL = joint.shapes.basic.Rect.extend({
     ports: {
       items: [
         {
-          id: 'in',
-          group: 'in'
-        },
-        {
           id: 'out',
           group: 'out'
         }
@@ -41,7 +37,7 @@ const MODEL = joint.shapes.basic.Rect.extend({
 });
 
 if(!joint.shapes['spark']) joint.shapes['spark'] = {};
-joint.shapes['spark']['map'] = MODEL;
+joint.shapes['spark']['parallelize'] = MODEL;
 
 export default class Filter extends NodeTemplate{
 
@@ -66,7 +62,7 @@ export default class Filter extends NodeTemplate{
   }
 
   static getCodePrefix(lang){
-    return "map(";
+    return "parallelize(";
   }
 
   static getCodeSuffix(lang){
@@ -76,19 +72,19 @@ export default class Filter extends NodeTemplate{
   static getCodeParameters(lang){
     return [
       {
-        name: 'f',
-        description: 'Function which accepts one parameter (element) and return modified element',
+        name: 'c',
+        description: 'Collection which will be converted to RDD.',
         required: true,
-        template: 'lambda x: ',
-        selectionStart: 'all',
-        selectionEnd: 'all'
+        template: '[]',
+        selectionStart: '1',
+        selectionEnd: '1'
       },
       {
-        name: 'preservesPartitioning',
-        description: 'If set True, map elements per partition',
+        name: 'numSlices',
+        description: 'Determine number of partitions the RDD will be split into.',
         required: false,
-        template: 'preservesPartitioning=False',
-        selectionStart: 22,
+        template: 'numSlices=None',
+        selectionStart: 10,
         selectionEnd: 'all'
       }
     ];

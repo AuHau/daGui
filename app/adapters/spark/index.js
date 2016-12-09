@@ -1,4 +1,5 @@
 import BaseAdapter from '../BaseAdapter';
+import validateGraph from './validateGraph';
 
 // Languages
 import Python from '../../core/languages/Python';
@@ -8,6 +9,8 @@ import Filter from './templates/filter';
 import Count from './templates/count';
 import Map from './templates/map';
 import MapPartitions from './templates/mapPartitions';
+import Parallelize from './templates/parallelize';
+import Union from './templates/union';
 
 export default class SparkAdapter extends BaseAdapter{
 
@@ -32,6 +35,8 @@ export default class SparkAdapter extends BaseAdapter{
     nodeMap[Map.getType()] = Map;
     nodeMap[Count.getType()] = Count;
     nodeMap[MapPartitions.getType()] = MapPartitions;
+    nodeMap[Parallelize.getType()] = Parallelize;
+    nodeMap[Union.getType()] = Union;
 
     return nodeMap
   }
@@ -43,7 +48,8 @@ export default class SparkAdapter extends BaseAdapter{
         templates: [
           Filter,
           Map,
-          MapPartitions
+          MapPartitions,
+          Union
         ]
       },
       {
@@ -51,15 +57,21 @@ export default class SparkAdapter extends BaseAdapter{
         templates: [
           Count
         ]
+      },
+      {
+        name: 'Input',
+        templates: [
+          Parallelize
+        ]
       }
     ]
   }
 
-  static validateGraph(graph){
-    return null;
+  static validateGraph(graph, normalizedGraph, lang){
+    return validateGraph(graph, normalizedGraph, lang, SparkAdapter);
   }
 
-  static generateCode(graph){
+  static generateCode(graph, lang){
     return {'asd' : 'asd'};
   }
 }
