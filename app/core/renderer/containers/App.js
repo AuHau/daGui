@@ -1,6 +1,8 @@
 // @flow
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import joint from 'jointjs';
+import hashGraph from 'graph/hashGraph.js';
 
 import {updateNode} from '../../shared/actions/graph';
 
@@ -21,6 +23,7 @@ class App extends Component {
 
     this.generatedCode = null;
     this.graphErrors = null;
+    this.graphHash = null;
     this.onHighlight = this.onHighlight.bind(this);
   }
 
@@ -30,11 +33,24 @@ class App extends Component {
 
   componentWillUpdate(nextProps){
     const adapter = nextProps.file.get('adapter');
+    const lang = nextProps.file.get('lang');
     const graph = nextProps.file.get('graph').toJS();
-    this.graphErrors = adapter.validateGraph(graph);
 
-    if(nextProps.showCodeView && !this.graphErrors){
-      this.generatedCode = adapter.generateCode(graph);
+    const newHash = hashGraph(graph);
+    if(this.graphHash == newHash){
+      return; // No graph's changes which are connected with code ===> don't re-generate the code
+    }
+
+    if(nextProps.showCodeView){
+      const jointGraph = new joint.dia.Graph();
+      jointGraph.fromJSON(graph);
+      this.graphErrors = adapter.validateGraph(jointGraph, lang);
+
+      if(!this.graphErrors){
+        this.generatedCode = adapter.generateCode(jointGraph, lang);
+      }
+
+      this.graphHash = newHash;
     }
   }
 
