@@ -2,12 +2,12 @@
 
 .container{
   position: absolute;
-  bottom: 0;
+  bottom: 1px;
   right: 0;
+  z-index: 20;
   width: calc(100% - #{$nodes-sidebar-width});;
   height: $footer-height;
   line-height: $footer-height;
-  overflow: hidden;
   padding: 0 10px;
 
   background-color: $footer-bg-color;
@@ -16,11 +16,13 @@
 
 .left{
   float: left;
-  color: $warning;
+  width: calc(100% - 270px);
 }
 
 .right{
+  width: 270px;
   float: right;
+  text-align: right;
 
   span{
 	margin-left: 10px;

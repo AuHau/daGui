@@ -1,7 +1,7 @@
 import ErrorLevel from 'graph/ErrorLevel';
 import ErrorType from 'graph/ErrorType';
 
-const createError = (id, type, description, level = ErrorLevel.ERROR, importance = 10) => {
+const createError = (id, type, description, importance = 10, level = ErrorLevel.ERROR) => {
   return {
     id,
     type,
@@ -45,7 +45,7 @@ const checkCycles = (normalizedGraph, adapter) => {
   const nodes = Object.values(normalizedGraph).filter(node => isNodeTypeInGroup(adapter, node.type, 'Input'));
 
   if (!nodes.length)
-    return createError(null, ErrorType.NO_INPUTS, 'There are no inputs nodes in the graph!');
+    return createError(null, ErrorType.NO_INPUTS, 'There are no inputs nodes in the graph!', 15);
 
   const hasIncomingEdge = (node) => {
     for (let nodeId in normalizedGraph) {
@@ -80,7 +80,7 @@ const checkCycles = (normalizedGraph, adapter) => {
 
   for (let nodeId of visitedNodes) {
     if (normalizedGraph[nodeId].nextNodes.length)
-      return createError(null, ErrorType.HAS_CYCLE, 'Graph is not valid! It contains a cycle!');
+      return createError(null, ErrorType.HAS_CYCLE, 'Graph is not valid! It contains a cycle!', 20);
   }
 
   return;

@@ -6,10 +6,18 @@ $very-dark-grey: #5c5c5c;
 $red: #b3300a;
 $dark-red: #850001;
 $blue: #344bb3;
+$light-blue: #4e83c9;
 $yellow: #decf22;
+$green: #54a321;
 
 // Context colors
-$warning: $red;
+$error: $red;
+$warning: $yellow;
+$info: $light-blue;
+$ok: $green;
+
+// Fonts
+$font-size-small: 11px;
 
 // Menu
 $menu-height: 30px;

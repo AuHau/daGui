@@ -1,0 +1,91 @@
+@import "../../variables";
+
+.container{
+  width: 100%;
+}
+
+.count{
+  width: 20px;
+  height: 20px;
+  float: left;
+  font-weight: bold;
+  text-align: center;
+  margin-right: 5px;
+  border: 2px solid;
+  border-radius: 20px;
+  line-height: 17px;
+  position: relative;
+  top: 2px;
+  cursor: pointer;
+  font-size: $font-size-small;
+}
+
+.errorCount{
+  composes: count;
+  color: $error;
+}
+
+.warningCount{
+  composes: count;
+  color: $warning;
+}
+
+.infoCount{
+  composes: count;
+  color: $info;
+}
+
+.okCount{
+  composes: count;
+  color: $ok;
+}
+
+.messages{
+  width: calc(100% - 30px);
+  height: $footer-height;
+  overflow: hidden;
+  position: relative;
+  float: left;
+}
+
+.message{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: -100%;
+  z-index: 1;
+  transition: top ease 300ms;
+  background-color: $footer-bg-color;
+}
+
+.out{
+  top: 100%;
+  z-index: 4;
+}
+
+.in{
+  top: 0;
+  z-index: 5;
+}
+
+.error{
+  color: $error;
+}
+
+.detailWindow{
+  display: none;
+  position: absolute;
+  left: 4px;
+  bottom: 30px;
+  width: 500px;
+  height: 200px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid $dark-grey;
+
+  padding: 10px;
+}
+
+.count:not(.okCount):hover ~ .detailWindow{
+  display: block;
+}

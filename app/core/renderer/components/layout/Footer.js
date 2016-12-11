@@ -1,5 +1,8 @@
 // @flow
 import React, {Component} from 'react';
+
+import ErrorsView from './ErrorsView';
+
 import styles from './Footer.scss';
 
 export default class Footer extends Component {
@@ -17,7 +20,7 @@ export default class Footer extends Component {
           </span>
         </div>
         <div className={styles.left}>
-          Warning!
+          {this.props.messages && <ErrorsView messages={this.props.messages}/>}
         </div>
       </div>
     );
@@ -26,5 +29,6 @@ export default class Footer extends Component {
 
 Footer.propTypes = {
   framework: React.PropTypes.string.isRequired,
-  language: React.PropTypes.string.isRequired
+  language: React.PropTypes.string.isRequired,
+  messages: React.PropTypes.array
 };
