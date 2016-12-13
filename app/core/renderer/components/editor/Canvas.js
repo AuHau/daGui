@@ -18,6 +18,7 @@ class Canvas extends Component {
     this.graph = new joint.dia.Graph();
     this.currentDetailCell = null;
     this.startingPointerPosition = null;
+    this.occupiedPorts = {};
 
     // TODO: Find better place to place this
     joint.setTheme('modern');
@@ -37,7 +38,10 @@ class Canvas extends Component {
   }
 
   onLinkDelete(link){
-    this.props.onLinkDelete(link.id);
+    if(link.attributes.target.id){
+      this.occupiedPorts[link.attributes.target.id].delete(link.attributes.target.port);
+      this.props.onLinkDelete(link.id);
+    }
   }
 
   onNodeDetail(cellView){
@@ -87,9 +91,9 @@ class Canvas extends Component {
         if (cellViewS === cellViewT) return false;
         if (!magnetT || magnetT.getAttribute('port-group') !== 'in') return false;
 
-        const incomingLinks = cellViewT.model.graph.getConnectedLinks(cellViewT.model, {inbound: true});
-        return incomingLinks.find(link => link.attributes.target.port == magnetT.getAttribute('port')) == null;
-      }
+        const ports = this.occupiedPorts[cellViewT.model.id];
+        return !ports || !ports.has(magnetT.getAttribute('port'));
+      }.bind(this)
     });
     setTimeout(this.onResize.bind(this), 10);
 
@@ -130,6 +134,7 @@ class Canvas extends Component {
         && cellView.model.graph  // Needs to verify, that the click was not on remove button
       ){
         this.props.onElementUpdate(cellView.model.toJSON());
+        this.occupiedPorts[cellView.model.attributes.target.id] = (this.occupiedPorts[cellView.model.attributes.target.id] || new Set()).add(cellView.model.attributes.target.port);
       }
     }else{
       // Drag node
@@ -140,6 +145,7 @@ class Canvas extends Component {
         && cellView.model.attributes.target.id // Needs to verify, that the link is left hanging in middle of nowhere
       ){
         this.props.onElementUpdate(cellView.model.toJSON());
+        this.occupiedPorts[cellView.model.attributes.target.id] = (this.occupiedPorts[cellView.model.attributes.target.id] || new Set()).add(cellView.model.attributes.target.port);
       }
     }
 
@@ -149,6 +155,9 @@ class Canvas extends Component {
   onKeyUp(e){
     if(e.keyCode == 46 && this.props.detailNodeId &&
       !(e.target.matches('input') || e.target.matches('[contenteditable]') || e.target.matches('textarea'))){
+      const model = this.graph.getCell(this.props.detailNodeId);
+      this.graph.getConnectedLinks(model, {outbound: true}).forEach(link => this.occupiedPorts[link.attributes.target.id].delete(link.attributes.target.port));
+
       this.props.onNodeDelete(this.props.detailNodeId);
     }
   }
