@@ -17,6 +17,19 @@ export default class NodeTemplate {
   }
 
   // Code generation
+  static generateCode(parameters, lang){
+    const templateParams = this.getCodeParameters(lang);
+    let output = this.getCodePrefix(lang);
+
+    for(let [index, parameter] of parameters.entries()){
+      if(parameter.trim() != templateParams[index].template.trim() || templateParams[index].required){
+        output += parameter + (index < parameters.length - 1 ? ', ' : '');
+      }
+    }
+
+    return output + this.getCodeSuffix(lang);
+  }
+
   static hasCodeToFill(){
     throw new TypeError("Method 'hasCodeToFill' has to be implemented!");
   }

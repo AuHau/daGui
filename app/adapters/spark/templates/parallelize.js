@@ -39,7 +39,7 @@ const MODEL = joint.shapes.basic.Rect.extend({
 if(!joint.shapes['spark']) joint.shapes['spark'] = {};
 joint.shapes['spark']['parallelize'] = MODEL;
 
-export default class Filter extends NodeTemplate{
+export default class Parallelize extends NodeTemplate{
 
   static getType(){
     return NODE_TYPE;

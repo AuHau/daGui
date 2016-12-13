@@ -7,14 +7,14 @@ export default class CodeView extends Component {
   render() {
     return (
       <div className={styles.container}>
-        Here gonna be super cool code!
+        {this.props.code}
       </div>
     );
   }
 }
 
 CodeView.propTypes = {
-  code: React.PropTypes.object.isRequired,
+  code: React.PropTypes.string,
   onHighlight: React.PropTypes.func.isRequired,
   highlight: React.PropTypes.string
 };
