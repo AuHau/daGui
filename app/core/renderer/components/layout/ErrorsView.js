@@ -18,12 +18,23 @@ export default class ErrorsView extends Component {
     this.interval = null;
   }
 
+  initInterval(){
+    if(this.props.messages.length > 1){
+      this.interval = setInterval(() => {
+        this.setState({
+          activeMessage: (this.state.activeMessage + 1 >= this.props.messages.length ? 0 : this.state.activeMessage + 1)
+        })
+      }, MESSAGES_CYCLE);
+    }
+  }
+
   componentDidMount(){
-    this.interval = setInterval(() => {
-      this.setState({
-        activeMessage: (this.state.activeMessage + 1 >= this.props.messages.length ? 0 : this.state.activeMessage + 1)
-      })
-    }, MESSAGES_CYCLE);
+    this.initInterval();
+  }
+
+  componentDidUpdate(){
+    clearInterval(this.interval);
+    this.initInterval();
   }
 
   componentWillUnmount(){
@@ -44,21 +55,28 @@ export default class ErrorsView extends Component {
   }
 
   render() {
-    const orderedErrors = this.props.messages.sort((a, b) => b.importance - a.importance);
-    const renderedErrors = orderedErrors
-      .map((err, index) => {
-        const msgClass = styles.message + ' ' + styles[classTranslation[err.level]] + ' '
-                          + (this.state.activeMessage == index ? styles.in : '')
-                          + (this.state.activeMessage + 1 == index
-                              || (this.state.activeMessage + 1 >= this.props.messages.length && index == 0)? styles.out : '');
-        return (
-          <div key={index} className={msgClass}>{err.description}</div>
-        )
-      });
+    let renderedErrors, detailedErrors;
+    if(this.props.messages.length == 1){
+      const err = this.props.messages[0];
+      renderedErrors = (<div className={styles.message + ' ' + styles[classTranslation[err.level]] + ' ' + styles.in}>{err.description}</div>);
+      detailedErrors = (<div className={styles[classTranslation[err.level]]}><strong>{textTranslation[err.level]}:</strong> {err.description}</div>);
+    }else{
+      const orderedErrors = this.props.messages.sort((a, b) => b.importance - a.importance);
+      renderedErrors = orderedErrors
+        .map((err, index) => {
+          const msgClass = styles.message + ' ' + styles[classTranslation[err.level]] + ' '
+            + (this.state.activeMessage == index ? styles.in : '')
+            + (this.state.activeMessage + 1 == index
+            || (this.state.activeMessage + 1 >= this.props.messages.length && index == 0)? styles.out : '');
+          return (
+            <div key={index} className={msgClass}>{err.description}</div>
+          )
+        });
 
-    const detailedErrors = orderedErrors.map((err, index) =>  (
+      detailedErrors = orderedErrors.map((err, index) =>  (
         <div key={index} className={styles[classTranslation[err.level]]}><strong>{textTranslation[err.level]}:</strong> {err.description}</div>
       ));
+    }
 
     return (
       <div className={styles.container}>
