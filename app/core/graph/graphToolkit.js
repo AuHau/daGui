@@ -1,22 +1,32 @@
 import md5 from 'js-md5';
 
-export const normalizeGraph = (graphObject) => {
-  const newGraphObject = {};
+export const normalizeGraph = (graphObject, isInputFnc) => {
+  const normalizedGraph = {};
+  const inputs = [];
 
-  graphObject['cells'].forEach((element) => {
+  for(let element of graphObject['cells']) {
     if (element.type == 'link') {
-      newGraphObject[element.source.id].nextNodes.push(element.target.id);
-    }else{
-      newGraphObject[element.id] = {
+      normalizedGraph[element.source.id].nextNodes.push(element.target.id);
+      normalizedGraph[element.target.id].prevNodes.push(element.source.id);
+    } else {
+      normalizedGraph[element.id] = {
         id: element.id,
         type: element.type,
         parameters: element.dfGui.parameters,
-        nextNodes: []
+        nextNodes: [],
+        prevNodes: []
       };
-    }
-  });
 
-  return newGraphObject;
+      if (isInputFnc(element.type)) {
+        inputs.push(normalizedGraph[element.id]);
+      }
+    }
+  }
+
+  return {
+    normalizedGraph,
+    inputs
+  };
 };
 
 export function hashGraph(normalizedGraph) {

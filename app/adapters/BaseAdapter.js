@@ -12,6 +12,10 @@ export default class BaseAdapter {
     throw new TypeError("Method 'getNodeTemplates' has to be implemented!");
   }
 
+  static isTypeInput(){
+    throw new TypeError("Method 'isTypeInput' has to be implemented!");
+  }
+
   static getGroupedNodeTemplates(){
     throw new TypeError("Method 'getGroupedNodeTemplates' has to be implemented!");
   }

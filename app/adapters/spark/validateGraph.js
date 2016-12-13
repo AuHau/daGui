@@ -35,17 +35,15 @@ const isNodeTypeInGroup = (adapter, nodeType, groupName) => {
 /**
  * Implements topological ordering to check if graph contains cycles ==> O(|E|+|V|)
  * Inspiried from: https://simplapi.wordpress.com/2015/08/19/detect-graph-cycle-in-javascript/
+ * TODO: Implement algorithm for searching Strongly connected component to identify cycles (not just its presents)
  *
  * @param normalizedGraph
- * @param adapter
+ * @param inputs
  * @returns {{id, type, description, level, importance}}
  */
-const checkCycles = (normalizedGraph, adapter) => {
+const checkCycles = (normalizedGraph, inputs) => {
   normalizedGraph = JSON.parse(JSON.stringify(normalizedGraph)); // Deep copy
-  const nodes = Object.values(normalizedGraph).filter(node => isNodeTypeInGroup(adapter, node.type, 'Input'));
-
-  if (!nodes.length)
-    return createError(null, ErrorType.NO_INPUTS, 'There are no inputs nodes in the graph!', 15);
+  const nodes = JSON.parse(JSON.stringify(inputs));
 
   const hasIncomingEdge = (node) => {
     for (let nodeId in normalizedGraph) {
@@ -82,8 +80,6 @@ const checkCycles = (normalizedGraph, adapter) => {
     if (normalizedGraph[nodeId].nextNodes.length)
       return createError(null, ErrorType.HAS_CYCLE, 'Graph is not valid! It contains a cycle!', 20);
   }
-
-  return;
 };
 
 const checkLinks = (graph, node, nodeTemplate) => {
@@ -108,20 +104,27 @@ const checkLinks = (graph, node, nodeTemplate) => {
   return [];
 };
 
-export default function validateGraph(graph, normalizedGraph, lang, adapter) {
+// TODO: Check if all branches ends with action
+// TODO: Get rid of jointjs graph dependency and use only normalizedGraph
+export default function validateGraph(graph, normalizedGraph, lang, inputs, adapter) {
   const nodes = graph.getElements();
 
   let errors = [];
+  const templates = adapter.getNodeTemplates();
   let parametersErrors, linksErrors, nodeTemplate;
   for (let node of nodes) {
-    nodeTemplate = adapter.getNodeTemplates()[node.get('type')];
+    nodeTemplate = templates[node.get('type')];
     parametersErrors = checkParameters(node, lang, adapter, nodeTemplate);
     linksErrors = checkLinks(graph, node, nodeTemplate);
 
     errors = [...errors, ...parametersErrors, ...linksErrors];
   }
 
-  const cycles = checkCycles(normalizedGraph, adapter);
+  if(!inputs.length){
+    return [createError(null, ErrorType.NO_INPUTS, 'There are no inputs nodes in the graph!', 15), ...errors];
+  }
+
+  const cycles = checkCycles(normalizedGraph, inputs);
   if(cycles) return [cycles, ...errors];
 
   return errors;

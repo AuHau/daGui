@@ -22,7 +22,7 @@ class App extends Component {
     };
 
     this.generatedCode = null;
-    this.graphErrors = null;
+    this.graphErrors = [];
     this.graphHash = null;
     this.onHighlight = this.onHighlight.bind(this);
   }
@@ -32,29 +32,27 @@ class App extends Component {
   }
 
   componentWillUpdate(nextProps){
+    if(!nextProps.showCodeView)
+      return; // Validation and generation will only happen when has to (eq. when CodeView is active)
+
     const adapter = nextProps.file.get('adapter');
-    const lang = nextProps.file.get('lang');
+    const language = nextProps.file.get('language');
     const graph = nextProps.file.get('graph').toJS();
 
-    const normalizedGraph = normalizeGraph(graph);
+    const {normalizedGraph, inputs}= normalizeGraph(graph, adapter.isTypeInput);
     const newHash = hashGraph(normalizedGraph);
-    if(this.graphHash == newHash){
+    if(this.graphHash == newHash)
       return; // No graph's changes which are connected with code ===> don't re-generate the code
+
+    const jointGraph = new joint.dia.Graph();
+    jointGraph.fromJSON(graph);
+    this.graphErrors = adapter.validateGraph(jointGraph, normalizedGraph, inputs, language);
+
+    if (!this.graphErrors.length) {
+      this.generatedCode = adapter.generateCode(jointGraph, normalizedGraph, inputs, language);
     }
 
-    if(nextProps.showCodeView){
-      const jointGraph = new joint.dia.Graph();
-      jointGraph.fromJSON(graph);
-      this.graphErrors = adapter.validateGraph(jointGraph, normalizedGraph, lang);
-
-      if(!this.graphErrors){
-        this.generatedCode = adapter.generateCode(jointGraph, lang);
-      }
-
-      console.log(this.graphErrors);
-
-      this.graphHash = newHash;
-    }
+    this.graphHash = newHash;
   }
 
   render() {
