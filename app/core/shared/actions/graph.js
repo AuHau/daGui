@@ -4,7 +4,8 @@ const GRAPH = {
   MOVE_NODE: 'GRAPH_MOVE_NODE',
   UPDATE_NODE: 'GRAPH_UPDATE_NODE',
   UPDATE_LINK: 'GRAPH_UPDATE_LINK',
-  DELETE_ELEMENT: 'GRAPH_DELETE_ELEMENT'
+  DELETE_NODE: 'GRAPH_DELETE_NODE',
+  DELETE_LINK: 'GRAPH_DELETE_LINK'
 };
 export default GRAPH;
 
@@ -45,13 +46,25 @@ export const updateLink = (linkObject) => {
 };
 
 /**
- * Remove element from graph
+ * Remove node from graph
  * @param id
  * @returns {{type: string, payload: *: *}}
  */
-export const deleteElement = (id) => {
+export const deleteNode = (id) => {
   return {
-    type: GRAPH.DELETE_ELEMENT,
+    type: GRAPH.DELETE_NODE,
+    payload: id
+  }
+};
+
+/**
+ * Remove link from graph
+ * @param id
+ * @returns {{type: string, payload: *: *}}
+ */
+export const deleteLink = (id) => {
+  return {
+    type: GRAPH.DELETE_LINK,
     payload: id
   }
 };

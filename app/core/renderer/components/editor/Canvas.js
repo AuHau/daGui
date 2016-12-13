@@ -36,8 +36,8 @@ class Canvas extends Component {
     }
   }
 
-  onElementDelete(element){
-    this.props.onElementDelete(element.id);
+  onLinkDelete(link){
+    this.props.onLinkDelete(link.id);
   }
 
   onNodeDetail(cellView){
@@ -97,7 +97,8 @@ class Canvas extends Component {
     this.paper.on('cell:pointerdown', this.onPointerDown.bind(this));
     this.paper.on('cell:pointerup', this.onPointerUp.bind(this));
     this.paper.on('blank:pointerclick', this.onNodeDetail.bind(this));
-    this.graph.on('remove', this.onElementDelete.bind(this));
+    this.graph.on('remove', this.onLinkDelete.bind(this));
+    document.addEventListener('keyup', this.onKeyUp.bind(this));
   }
 
   componentDidUpdate(){
@@ -144,6 +145,13 @@ class Canvas extends Component {
 
     this.startingPointerPosition = null;
   }
+
+  onKeyUp(e){
+    if(e.keyCode == 46 && this.props.detailNodeId &&
+      !(e.target.matches('input') || e.target.matches('[contenteditable]') || e.target.matches('textarea'))){
+      this.props.onNodeDelete(this.props.detailNodeId);
+    }
+  }
 }
 
 const mapStateToProps = (state) => {
@@ -165,8 +173,12 @@ const mapDispatchToProps = (dispatch) => {
       onElementUpdate: (elementObject) => {
         dispatch(graphActions.updateLink(elementObject));
       },
-      onElementDelete: (id) => {
-        dispatch(graphActions.deleteElement(id));
+      onNodeDelete: (id) => {
+        dispatch(changeNodeDetail(null));
+        dispatch(graphActions.deleteNode(id));
+      },
+      onLinkDelete: (id) => {
+        dispatch(graphActions.deleteLink(id));
       },
       onNodeDetail: (nid) => {
         dispatch(changeNodeDetail(nid));

@@ -6,7 +6,7 @@ const getActive = (state) => {
 };
 
 export default (state, action) => {
-  let index;
+  let index, cells;
 
   switch (action.type) {
     case GRAPH.UPDATE_NODE:
@@ -29,7 +29,12 @@ export default (state, action) => {
       }
       return state.setIn(['opened', getActive(state), 'graph', 'cells', index], Immutable.fromJS(action.payload));
 
-    case GRAPH.DELETE_ELEMENT:
+    case GRAPH.DELETE_NODE:
+      cells = state.getIn(['opened', getActive(state), 'graph', 'cells']);
+      let filtered = cells.filter(node => node.get('id') != action.payload && node.getIn(['source', 'id']) != action.payload && node.getIn(['target', 'id']) != action.payload );
+      return state.setIn(['opened', getActive(state), 'graph', 'cells'], filtered);
+
+    case GRAPH.DELETE_LINK:
       index = state.getIn(['opened', getActive(state), 'graph', 'cells']).findIndex(node => node.get('id') == action.payload);
       return index == -1 ? state : state.deleteIn(['opened', getActive(state), 'graph', 'cells', index]);
 
