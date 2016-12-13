@@ -65,16 +65,26 @@ export default class Filter extends NodeTemplate{
     return false;
   }
 
+  static generateCode(parameters, lang, prevNodes){
+    let output = this.getCodePrefix(lang);
+
+    for(let [index, node] of prevNodes.entries()){
+      output += node.variable + (index < prevNodes.length - 1 ? ', ' : '');
+    }
+
+    return 'sc.' + output + this.getCodeSuffix(lang);
+  }
+
   static hasCodeToFill(lang){
     return this.getCodeParameters(lang).length;
   }
 
   static getCodePrefix(lang){
-    return "union(";
+    return "union([";
   }
 
   static getCodeSuffix(lang){
-    return ")";
+    return "])";
   }
 
   static getCodeParameters(lang){

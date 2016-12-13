@@ -1,9 +1,8 @@
 import _ from 'lodash';
+import Python from 'languages/Python';
 
 const IMPORT = 'from pyspark import SparkConf, SparkContext';
-
 const INIT = 'conf = SparkConf() \nsc = SparkContext(\'local\', \'test\', conf=conf)'; // TODO: SparkContext and SparkConf based on Running configuration
-
 
 export function nameNode(node, templates, usedVariables){
   const baseName = _.snakeCase(templates[node.type].getName());
@@ -13,12 +12,45 @@ export function nameNode(node, templates, usedVariables){
   return baseName + num;
 }
 
-export function processNode(node, templates, graph, variableStack, usedVariables, afterBreak = false) {
-  if(!node.nextNodes.length) return '.' + templates[node.type].generateCode(node.parameters) + '\n\n';
+export function processNode(node, prevNode, templates, graph, variableStack, usedVariables, afterOutBreak = false) {
+  let newNodeName, generatedCode, output = '';
 
-  const code = templates[node.type].generateCode(node.parameters) + '\n';
+  if(node.prevNodes.length > 1){
+    node.prevNodes.find(node => node.id == prevNode.id)['variable'] = variableStack.pop();
 
-  return '.' + code + processNode(graph[node.nextNodes[0]], templates, graph, variableStack, usedVariables);
+    if(node.prevNodes.find(node => !node.variable)){
+      return ''; // Not all in-break dependencies are satisfied => backtrack
+    }
+
+    newNodeName = nameNode(node, templates, usedVariables);
+    generatedCode = templates[node.type].generateCode(node.parameters, Python, node.prevNodes);
+    output = '\n' + newNodeName + ' = ' + generatedCode + '\n';
+    variableStack.push(newNodeName);
+
+  }else{
+    generatedCode = templates[node.type].generateCode(node.parameters, Python);
+
+    if(afterOutBreak){
+      newNodeName = nameNode(node, templates, usedVariables);
+      output = '\n' + newNodeName + ' = ' + variableStack.pop() + '.' + generatedCode + '\n';
+      variableStack.push(newNodeName);
+    }else{
+      output = (prevNode ? '\t.' : '.') + generatedCode + '\n';
+    }
+  }
+
+  // In case of out-break multiply the top var on variableStack
+  if(node.nextNodes.length > 1){
+    const multipliedVar = variableStack.pop();
+    for(let i = 0; i < node.nextNodes.length; i++) variableStack.push(multipliedVar);
+    output += '\t.cache()\n';
+  }
+
+  for(let nextNode of node.nextNodes){
+    output += processNode(graph[nextNode], node, templates, graph, variableStack, usedVariables, node.nextNodes.length > 1);
+  }
+
+  return output;
 }
 
 export default function generatePython(adapter, normalizedGraph, inputs) {
@@ -34,7 +66,7 @@ export default function generatePython(adapter, normalizedGraph, inputs) {
     const inputName = nameNode(input, templates, usedVariables);
     variableStack.push(inputName);
 
-    output += inputName + ' = sc' + processNode(input, templates, normalizedGraph, variableStack, usedVariables) + '\n\n';
+    output += inputName + ' = sc' + processNode(input, null, templates, normalizedGraph, variableStack, usedVariables) + '\n';
   }
 
   return output;

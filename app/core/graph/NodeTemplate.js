@@ -23,8 +23,12 @@ export default class NodeTemplate {
 
     for(let [index, parameter] of parameters.entries()){
       if(parameter.trim() != templateParams[index].template.trim() || templateParams[index].required){
-        output += parameter + (index < parameters.length - 1 ? ', ' : '');
+        output += parameter + ', ';
       }
+    }
+
+    if(parameters.length >= 1){
+      output = output.substring(0, output.length - 2);
     }
 
     return output + this.getCodeSuffix(lang);

@@ -7,7 +7,11 @@ export const normalizeGraph = (graphObject, isInputFnc) => {
   for(let element of graphObject['cells']) {
     if (element.type == 'link') {
       normalizedGraph[element.source.id].nextNodes.push(element.target.id);
-      normalizedGraph[element.target.id].prevNodes.push(element.source.id);
+      normalizedGraph[element.target.id].prevNodes.push({
+        id: element.source.id,
+        port: element.target.port,
+        variable: null
+      });
     } else {
       normalizedGraph[element.id] = {
         id: element.id,
