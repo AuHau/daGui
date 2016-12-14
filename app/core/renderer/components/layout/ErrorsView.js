@@ -44,6 +44,8 @@ export default class ErrorsView extends Component {
   }
 
   onClick(){
+    if(this.getClass() == styles.ok) return;
+
     this.setState({showDetailWindow: !this.state.showDetailWindow});
   }
 
