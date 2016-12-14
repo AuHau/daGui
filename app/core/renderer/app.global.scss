@@ -1,11 +1,21 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "~font-awesome/css/font-awesome.css";
 
-//*:not(input):not(textarea):not([contenteditable='true']){
-//  cursor: default;
-//  -webkit-user-select: none;
-//  user-select: none;
-//}
+div, span{
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+div[contenteditable]{
+  cursor: text;
+}
+
+[data-selectable]{
+  cursor: auto;
+  -webkit-user-select: auto;
+  user-select: auto;
+}
 
 .fa{
   font-size: 18px;

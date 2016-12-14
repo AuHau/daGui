@@ -24,7 +24,7 @@ export default class CodeView extends Component {
     return (
       <div className={styles.container}>
         {this.renderErrors()}
-        <div className={styles.code}>
+        <div className={styles.code} data-selectable>
           {this.props.code}
         </div>
       </div>

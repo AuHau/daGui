@@ -11,7 +11,6 @@
   float: left;
   font-weight: bold;
   text-align: center;
-  margin-right: 5px;
   border: 2px solid;
   border-radius: 20px;
   line-height: 17px;
@@ -67,11 +66,12 @@
 }
 
 .messages {
-  width: calc(100% - 30px);
+  width: calc(100% - 25px);
   height: $footer-height;
   overflow: hidden;
   position: relative;
   float: left;
+  padding-left: 5px;
 }
 
 .message {
@@ -84,8 +84,10 @@
   background-color: $footer-bg-color;
 }
 
-.container:not(.ok) .count, .container:not(.ok) .messages{
-  cursor: pointer;
+.container:not(.ok) .count,
+.container:not(.ok) .message,
+.container:not(.ok) .messages{
+  cursor: pointer !important;
 }
 
 .out {
