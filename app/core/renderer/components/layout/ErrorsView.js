@@ -12,10 +12,12 @@ export default class ErrorsView extends Component {
     super(props);
 
     this.state = {
-      activeMessage: 0
+      activeMessage: 0,
+      showDetailWindow: false,
     };
 
     this.interval = null;
+    this.onClick = this.onClick.bind(this);
   }
 
   initInterval(){
@@ -41,17 +43,21 @@ export default class ErrorsView extends Component {
     clearInterval(this.interval);
   }
 
-  getCountClass() {
+  onClick(){
+    this.setState({showDetailWindow: !this.state.showDetailWindow});
+  }
+
+  getClass() {
     if (this.props.messages.find(msg => msg.level == levels.ERROR) != null)
-      return styles.errorCount;
+      return styles.error;
 
     if (this.props.messages.find(msg => msg.level == levels.WARNING) != null)
-      return styles.warningCount;
+      return styles.warning;
 
     if (this.props.messages.find(msg => msg.level == levels.INFO) != null)
-      return styles.infoCount;
+      return styles.info;
 
-    return styles.okCount;
+    return styles.ok;
   }
 
   render() {
@@ -79,12 +85,12 @@ export default class ErrorsView extends Component {
     }
 
     return (
-      <div className={styles.container}>
-        <div className={this.getCountClass()}>{this.props.messages.length}</div>
-        <div className={styles.messages}>
+      <div className={styles.container + ' ' + this.getClass()}>
+        <div className={styles.count + ' ' + (this.state.showDetailWindow? styles.active : '')} onClick={this.onClick}>{this.props.messages.length}</div>
+        <div className={styles.messages} onClick={this.onClick}>
           {renderedErrors}
         </div>
-        <div className={styles.detailWindow}>
+        <div className={styles.detailWindow} style={(this.state.showDetailWindow ? {display: 'block'} : {})}>
           {detailedErrors}
         </div>
       </div>

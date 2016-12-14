@@ -6,9 +6,9 @@ const definition = {
 export default definition;
 
 const classTranslation = {};
-classTranslation[definition.ERROR] = 'error';
-classTranslation[definition.WARNING] = 'warning';
-classTranslation[definition.INFO] = 'info';
+classTranslation[definition.ERROR] = 'errorMessage';
+classTranslation[definition.WARNING] = 'warningMessage';
+classTranslation[definition.INFO] = 'infoMessage';
 
 export {classTranslation};
 

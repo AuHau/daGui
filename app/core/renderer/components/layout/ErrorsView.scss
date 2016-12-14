@@ -1,10 +1,10 @@
 @import "../../variables";
 
-.container{
+.container {
   width: 100%;
 }
 
-.count{
+.count {
   width: 20px;
   height: 20px;
   float: left;
@@ -16,31 +16,56 @@
   line-height: 17px;
   position: relative;
   top: 2px;
-  cursor: pointer;
   font-size: $font-size-small;
 }
 
-.errorCount{
-  composes: count;
-  color: $error;
+.active{}
+
+.error {
+  .count {
+	color: $error;
+  }
+
+  .count.active{
+	background-color: $error;
+	border-color: $error;
+	color: #fff;
+  }
 }
 
-.warningCount{
-  composes: count;
-  color: $warning;
+.warning {
+  .count {
+	color: $warning;
+  }
+
+  .count.active{
+	background-color: $warning;
+	border-color: $warning;
+	color: #fff;
+  }
 }
 
-.infoCount{
-  composes: count;
-  color: $info;
+.info {
+  .count {
+	color: $info;
+  }
+
+  .count.active{
+	background-color: $info;
+	border-color: $info;
+	color: #fff;
+  }
 }
 
-.okCount{
-  composes: count;
-  color: $ok;
+.ok{
+  cursor: default;
+
+  .count {
+	color: $ok;
+  }
 }
 
-.messages{
+.messages {
   width: calc(100% - 30px);
   height: $footer-height;
   overflow: hidden;
@@ -48,7 +73,7 @@
   float: left;
 }
 
-.message{
+.message {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -58,21 +83,34 @@
   background-color: $footer-bg-color;
 }
 
-.out{
+.container:not(.ok) .count, .container:not(.ok) .messages{
+  cursor: pointer;
+}
+
+.out {
   top: 100%;
   z-index: 4;
 }
 
-.in{
+.in {
   top: 0;
   z-index: 5;
 }
 
-.error{
+.errorMessage {
   color: $error;
 }
 
-.detailWindow{
+.warningMessage {
+  color: $warning;
+}
+
+.infoMessage {
+  color: $info;
+}
+
+
+.detailWindow {
   display: none;
   position: absolute;
   left: 4px;
@@ -86,6 +124,6 @@
   padding: 10px;
 }
 
-.count:not(.okCount):hover ~ .detailWindow{
+.container:not(.ok):hover .detailWindow{
   display: block;
 }
