@@ -1,0 +1,13 @@
+@import "../renderer/variables";
+
+.errorMessage {
+  color: $error;
+}
+
+.warningMessage {
+  color: $warning;
+}
+
+.infoMessage {
+  color: $info;
+}

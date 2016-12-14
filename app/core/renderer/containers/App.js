@@ -32,9 +32,6 @@ class App extends Component {
   }
 
   componentWillUpdate(nextProps){
-    if(!nextProps.showCodeView)
-      return; // Validation and generation will only happen when has to (eq. when CodeView is active)
-
     const adapter = nextProps.file.get('adapter');
     const language = nextProps.file.get('language');
     const graph = nextProps.file.get('graph').toJS();
@@ -47,6 +44,9 @@ class App extends Component {
     const jointGraph = new joint.dia.Graph();
     jointGraph.fromJSON(graph);
     this.graphErrors = adapter.validateGraph(jointGraph, normalizedGraph, inputs, language);
+
+    if(!nextProps.showCodeView)
+      return; // Generation will only happen when has to (eq. when CodeView is active)
 
     if (!this.graphErrors.length) {
       this.generatedCode = adapter.generateCode(jointGraph, normalizedGraph, inputs, language);
@@ -65,7 +65,7 @@ class App extends Component {
         <NodesSidebar adapter={adapter} />
         <Canvas onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>
         {this.props.nodeDetail && <DetailSidebar node={this.props.nodeDetail.toJS()} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/>}
-        {this.props.showCodeView && <CodeView code={this.generatedCode} onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>}
+        {this.props.showCodeView && <CodeView code={this.generatedCode} errors={this.graphErrors} onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>}
         <Footer messages={this.graphErrors} framework={adapter.getName()} language={this.props.file.get('language').getName()}/>
       </div>
     );

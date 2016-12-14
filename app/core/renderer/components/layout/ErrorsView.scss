@@ -1,4 +1,5 @@
 @import "../../variables";
+@import "../../../graph/ErrorType";
 
 .container {
   width: 100%;
@@ -97,17 +98,6 @@
   z-index: 5;
 }
 
-.errorMessage {
-  color: $error;
-}
-
-.warningMessage {
-  color: $warning;
-}
-
-.infoMessage {
-  color: $info;
-}
 
 
 .detailWindow {
