@@ -5,6 +5,7 @@ const IMPORT = 'from pyspark import SparkConf, SparkContext';
 const INIT = 'conf = SparkConf() \nsc = SparkContext(\'local\', \'test\', conf=conf)'; // TODO: SparkContext and SparkConf based on Running configuration
 
 export function nameNode(node, templates, usedVariables){
+  // TODO: Implement SnakeCase generator to drop lodash depdendency
   const baseName = _.snakeCase(templates[node.type].getName());
   const num = (usedVariables[baseName] || 0) + 1;
   usedVariables[baseName] = num;

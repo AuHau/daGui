@@ -1,28 +1,18 @@
 import joint from 'jointjs';
-import _ from 'lodash';
 
-import portDefinition from '../../../core/graph/portDefinition';
+import DefaultShape from '../../../core/graph/DefaultShape';
 import NodeTemplate from '../../../core/graph/NodeTemplate';
 
 const NAME = 'Map Partitions';
 const NODE_TYPE = 'spark.mapPartitions';
-const MODEL = joint.shapes.basic.Rect.extend({
-  portMarkup: '<circle class="port-body"/>',
-  defaults: _.defaultsDeep({
+const MODEL = DefaultShape.extend({
+  defaults: joint.util.deepSupplement({
     type: NODE_TYPE,
-    size: {
-      width: 80,
-      height: 80
-    },
     attrs: {
-      '.': {
-        magnet: false
-      },
       text : { text: NAME }
     },
     dfGui: {
       title: NAME,
-      parameters: [],
     },
     ports: {
       items: [
@@ -34,10 +24,9 @@ const MODEL = joint.shapes.basic.Rect.extend({
           id: 'out',
           group: 'out'
         }
-      ],
-      groups: portDefinition
+      ]
     }
-  }, joint.shapes.basic.Rect.prototype.defaults)
+  }, DefaultShape.defaults)
 });
 
 if(!joint.shapes['spark']) joint.shapes['spark'] = {};
