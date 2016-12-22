@@ -47,7 +47,7 @@ const MODEL = joint.shapes.basic.Rect.extend({
 if(!joint.shapes['spark']) joint.shapes['spark'] = {};
 joint.shapes['spark']['union'] = MODEL;
 
-export default class Filter extends NodeTemplate{
+export default class Union extends NodeTemplate{
 
   static getType(){
     return NODE_TYPE;
