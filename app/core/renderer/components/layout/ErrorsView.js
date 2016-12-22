@@ -39,6 +39,12 @@ export default class ErrorsView extends Component {
     this.initInterval();
   }
 
+  componentWillReceiveProps(nextProps){
+    if(!nextProps.messages.length){
+      this.setState({showDetailWindow: false});
+    }
+  }
+
   componentWillUnmount(){
     clearInterval(this.interval);
   }
