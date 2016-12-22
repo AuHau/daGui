@@ -41,6 +41,7 @@ class App extends Component {
     if(this.graphHash == newHash)
       return; // No graph's changes which are connected with code ===> don't re-generate the code
 
+    // TODO: Optimalization - drop JointJS graph dependency (use only normalized graph)
     const jointGraph = new joint.dia.Graph();
     jointGraph.fromJSON(graph);
     this.graphErrors = adapter.validateGraph(jointGraph, normalizedGraph, inputs, language);

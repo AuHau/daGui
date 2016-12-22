@@ -46,6 +46,11 @@ export function processNode(node, prevNode, templates, graph, variableStack, use
     output += '\t.cache()\n';
   }
 
+  if(!node.nextNodes.length){
+    variableStack.pop();
+    return output;
+  }
+
   for(let nextNode of node.nextNodes){
     output += processNode(graph[nextNode], node, templates, graph, variableStack, usedVariables, node.nextNodes.length > 1);
   }
