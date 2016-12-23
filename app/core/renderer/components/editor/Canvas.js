@@ -52,6 +52,8 @@ class Canvas extends Component {
         this.props.onNodeDetail(null);
         this.currentDetailCell = null;
       }
+
+      document.querySelectorAll('input').forEach(input => input.blur());
       return;
     }
 
@@ -60,7 +62,7 @@ class Canvas extends Component {
       return;
     }
 
-    cellView.highlight();
+    cellView.highlight(cellView.el.querySelectorAll('rect'));
     if(this.currentDetailCell) this.currentDetailCell.unhighlight();
     this.currentDetailCell = cellView;
 
@@ -109,9 +111,10 @@ class Canvas extends Component {
     // TODO: Optimalization - don't update when the action was created by graph's event
     this.graph.fromJSON(this.props.graphJson.toJS());
 
-    if(this.props.detailNodeId){
+    if(this.props.detailNodeId){ // TODO: Fix - on DetailNode change double highlighting
       const detailNode = this.graph.getCell(this.props.detailNodeId);
-      this.paper.findViewByModel(detailNode).highlight();
+      const view = this.paper.findViewByModel(detailNode);
+      view.highlight(view.el.querySelectorAll('rect')); // TODO: Delegate returning element for highlightint to Node Template
     }
   }
 
@@ -127,7 +130,9 @@ class Canvas extends Component {
     if(Math.abs(this.startingPointerPosition.x - x) < CLICK_TRESHOLD
         && Math.abs(this.startingPointerPosition.y - y) < CLICK_TRESHOLD) {
       // Click
-      if(cellView.model.isElement()){
+      if(e.target && e.target.type == 'text'){
+        e.target.focus();
+      }else if(cellView.model.isElement()){
         this.onNodeDetail(cellView);
       }else if(
         cellView.model.isLink()

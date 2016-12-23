@@ -1,0 +1,13 @@
+@import "../renderer/variables";
+
+.variableNameWrapper{
+
+  input{
+	width: 100%;
+	border: none;
+  }
+
+  &:hover input{
+	border: 1px solid $dark-grey;
+  }
+}
