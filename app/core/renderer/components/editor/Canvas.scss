@@ -8,3 +8,7 @@
   width: calc(100% - #{$nodes-sidebar-width});
   height: calc(100% - #{$menu-height} - #{$footer-height});
 }
+
+.active{
+  composes: active from '../../../graph/DefaultShape.scss'
+}

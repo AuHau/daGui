@@ -69,6 +69,8 @@ class Canvas extends Component {
     this.paper.on('cell:pointerup', this.onPointerUp.bind(this));
     this.paper.on('blank:pointerclick', this.onNodeDetail.bind(this));
     this.paper.el.addEventListener('input', this.onInput.bind(this));
+    this.paper.el.addEventListener('focus', this.onFocus.bind(this));
+    this.paper.el.addEventListener('blur', this.onBlur.bind(this));
     this.graph.on('remove', this.onLinkDelete.bind(this));
     document.addEventListener('keyup', this.onKeyUp.bind(this));
   }
@@ -76,6 +78,10 @@ class Canvas extends Component {
   componentDidUpdate(){
     // TODO: Optimalization - don't update when the action was created by graph's event
     this.graph.fromJSON(this.props.graphJson.toJS());
+    this.paper.el.querySelectorAll('input').forEach(input => {
+      input.addEventListener('focus', this.onFocus.bind(this));
+      input.addEventListener('blur', this.onBlur.bind(this));
+    });
 
     if(this.props.detailNodeId){ // TODO: Fix - on DetailNode change double highlighting
       const detailNode = this.graph.getCell(this.props.detailNodeId);
@@ -135,7 +141,7 @@ class Canvas extends Component {
 
   onInput(e){
     const input = e.target;
-    const width = getTextWidth(input.value) + 10;
+    const width = getTextWidth(input.value) + 13;
 
     if(width < VARIABLE_NAME_MIN_WIDTH){
       input.parentNode.parentNode.setAttribute('width', VARIABLE_NAME_MIN_WIDTH);
@@ -144,6 +150,16 @@ class Canvas extends Component {
     }else{
       input.parentNode.parentNode.setAttribute('width', width);
     }
+  }
+
+  onFocus(e){
+    const node = e.target.parentNode.parentNode.parentNode;
+    node.classList.add.apply(node.classList, styles.active.split(' '));
+  }
+
+  onBlur(e){
+    const node = e.target.parentNode.parentNode.parentNode;
+    node.classList.remove.apply(node.classList, styles.active.split(' '));
   }
 
   onPointerDown(cellView, e, x, y){
