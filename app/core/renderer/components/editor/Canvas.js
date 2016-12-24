@@ -10,6 +10,17 @@ import {changeNodeDetail, canvasResize} from '../../../shared/actions/ui';
 import * as graphActions from '../../../shared/actions/graph';
 
 const CLICK_TRESHOLD = 10;
+const VARIABLE_NAME_MAX_WIDTH = 150;
+const VARIABLE_NAME_MIN_WIDTH = 30;
+
+function getTextWidth(text, font = '14px helvetica') {
+  // re-use canvas object for better performance
+  var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+  var context = canvas.getContext("2d");
+  context.font = font;
+  var metrics = context.measureText(text);
+  return metrics.width;
+}
 
 class Canvas extends Component {
 
@@ -22,6 +33,59 @@ class Canvas extends Component {
 
     // TODO: Find better place to place this
     joint.setTheme('modern');
+  }
+
+  componentDidMount() {
+    const wrapperElem = findDOMNode(this.refs.placeholder);
+
+    this.paper = new joint.dia.Paper({
+      el: wrapperElem,
+      width: wrapperElem.offsetWidth,
+      height: 1000,
+      model: this.graph,
+      gridSize: 1,
+
+      clickThreshold: 1,
+      linkPinning: false,
+      markAvailable: true,
+      snapLinks: { radius: 40 },
+      defaultLink: new joint.dia.Link({
+        attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } },
+        smooth: true
+      }),
+      validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+        if (magnetS && magnetS.getAttribute('port-group') === 'in') return false;
+        if (cellViewS === cellViewT) return false;
+        if (!magnetT || magnetT.getAttribute('port-group') !== 'in') return false;
+
+        const ports = this.occupiedPorts[cellViewT.model.id];
+        return !ports || !ports.has(magnetT.getAttribute('port'));
+      }.bind(this)
+    });
+    setTimeout(this.onResize.bind(this), 10);
+
+    this.graph.fromJSON(this.props.graphJson.toJS());
+    this.paper.on('cell:pointerdown', this.onPointerDown.bind(this));
+    this.paper.on('cell:pointerup', this.onPointerUp.bind(this));
+    this.paper.on('blank:pointerclick', this.onNodeDetail.bind(this));
+    this.paper.el.addEventListener('input', this.onInput.bind(this));
+    this.graph.on('remove', this.onLinkDelete.bind(this));
+    document.addEventListener('keyup', this.onKeyUp.bind(this));
+  }
+
+  componentDidUpdate(){
+    // TODO: Optimalization - don't update when the action was created by graph's event
+    this.graph.fromJSON(this.props.graphJson.toJS());
+
+    if(this.props.detailNodeId){ // TODO: Fix - on DetailNode change double highlighting
+      const detailNode = this.graph.getCell(this.props.detailNodeId);
+      const view = this.paper.findViewByModel(detailNode);
+      view.highlight(view.el.querySelectorAll('rect')); // TODO: Delegate returning element for highlightint to Node Template
+    }
+  }
+
+  render() {
+    return <div ref="placeholder" className={styles.container}></div>;
   }
 
   onResize(){
@@ -58,7 +122,7 @@ class Canvas extends Component {
     }
 
     if(cellView === this.currentDetailCell
-        || cellView.model.attributes.type == 'link'){
+      || cellView.model.attributes.type == 'link'){
       return;
     }
 
@@ -69,57 +133,17 @@ class Canvas extends Component {
     this.props.onNodeDetail(cellView.model.id);
   }
 
+  onInput(e){
+    const input = e.target;
+    const width = getTextWidth(input.value) + 10;
 
-  componentDidMount() {
-    const wrapperElem = findDOMNode(this.refs.placeholder);
-
-    this.paper = new joint.dia.Paper({
-      el: wrapperElem,
-      width: wrapperElem.offsetWidth,
-      height: 1000,
-      model: this.graph,
-      gridSize: 1,
-
-      clickThreshold: 1,
-      linkPinning: false,
-      markAvailable: true,
-      snapLinks: { radius: 40 },
-      defaultLink: new joint.dia.Link({
-        attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } },
-        smooth: true
-      }),
-      validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
-        if (magnetS && magnetS.getAttribute('port-group') === 'in') return false;
-        if (cellViewS === cellViewT) return false;
-        if (!magnetT || magnetT.getAttribute('port-group') !== 'in') return false;
-
-        const ports = this.occupiedPorts[cellViewT.model.id];
-        return !ports || !ports.has(magnetT.getAttribute('port'));
-      }.bind(this)
-    });
-    setTimeout(this.onResize.bind(this), 10);
-
-    this.graph.fromJSON(this.props.graphJson.toJS());
-    this.paper.on('cell:pointerdown', this.onPointerDown.bind(this));
-    this.paper.on('cell:pointerup', this.onPointerUp.bind(this));
-    this.paper.on('blank:pointerclick', this.onNodeDetail.bind(this));
-    this.graph.on('remove', this.onLinkDelete.bind(this));
-    document.addEventListener('keyup', this.onKeyUp.bind(this));
-  }
-
-  componentDidUpdate(){
-    // TODO: Optimalization - don't update when the action was created by graph's event
-    this.graph.fromJSON(this.props.graphJson.toJS());
-
-    if(this.props.detailNodeId){ // TODO: Fix - on DetailNode change double highlighting
-      const detailNode = this.graph.getCell(this.props.detailNodeId);
-      const view = this.paper.findViewByModel(detailNode);
-      view.highlight(view.el.querySelectorAll('rect')); // TODO: Delegate returning element for highlightint to Node Template
+    if(width < VARIABLE_NAME_MIN_WIDTH){
+      input.parentNode.parentNode.setAttribute('width', VARIABLE_NAME_MIN_WIDTH);
+    }else if(width > VARIABLE_NAME_MAX_WIDTH){
+      input.parentNode.parentNode.setAttribute('width', VARIABLE_NAME_MAX_WIDTH);
+    }else{
+      input.parentNode.parentNode.setAttribute('width', width);
     }
-  }
-
-  render() {
-    return <div ref="placeholder" className={styles.container}></div>;
   }
 
   onPointerDown(cellView, e, x, y){
