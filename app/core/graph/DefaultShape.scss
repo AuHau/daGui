@@ -1,6 +1,7 @@
 @import "../renderer/variables";
 
 .variableNameWrapper{
+  visibility: hidden;
   opacity: 0.4;
 
   input{
@@ -17,5 +18,9 @@
 }
 
 .active{
+  visibility: visible;
+}
+
+.focused{
   opacity: 1;
 }

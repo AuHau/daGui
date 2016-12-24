@@ -12,4 +12,8 @@ export default class BaseLanguage {
     throw new TypeError("Method 'getLID' has to be implemented!");
   }
 
+  static nameNode(){
+    throw new TypeError("Method 'nameNode' has to be implemented!");
+  }
+
 };

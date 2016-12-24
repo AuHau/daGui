@@ -6,7 +6,7 @@ import styles from './DefaultShape.scss';
 const NAME = 'DefaultShape';
 const NODE_TYPE = 'dfGui.defaultShape';
 const MODEL = joint.shapes.basic.Generic.extend({
-  markup: '<g class="rotatable"><g class="scalable"><rect/></g><text/><g class="' + styles.variableNameWrapper + '"><foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><input type="text"/></div></foreignObject></g></g>',
+  markup: '<g class="rotatable"><g class="scalable"><rect/></g><text/><g class="variableName ' + styles.variableNameWrapper + '"><foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><input type="text"/></div></foreignObject></g></g>',
   portMarkup: '<circle class="port-body"/>',
 
   defaults: joint.util.deepSupplement({
@@ -44,6 +44,7 @@ const MODEL = joint.shapes.basic.Generic.extend({
     },
     dfGui: {
       description: NAME,
+      variableName: null,
       parameters: [],
     },
     ports: {

@@ -13,14 +13,15 @@ const CLICK_TRESHOLD = 10;
 const VARIABLE_NAME_MAX_WIDTH = 150;
 const VARIABLE_NAME_MIN_WIDTH = 30;
 
-function getTextWidth(text, font = '14px helvetica') {
+const getTextWidth = (text, font = '14px helvetica') => {
   // re-use canvas object for better performance
-  var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-  var context = canvas.getContext("2d");
+  const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+  const context = canvas.getContext("2d");
   context.font = font;
-  var metrics = context.measureText(text);
+  const metrics = context.measureText(text);
   return metrics.width;
-}
+};
+
 
 class Canvas extends Component {
 
@@ -65,6 +66,8 @@ class Canvas extends Component {
     setTimeout(this.onResize.bind(this), 10);
 
     this.graph.fromJSON(this.props.graphJson.toJS());
+
+    // Event listeners
     this.paper.on('cell:pointerdown', this.onPointerDown.bind(this));
     this.paper.on('cell:pointerup', this.onPointerUp.bind(this));
     this.paper.on('blank:pointerclick', this.onNodeDetail.bind(this));
@@ -78,6 +81,9 @@ class Canvas extends Component {
   componentDidUpdate(){
     // TODO: Optimalization - don't update when the action was created by graph's event
     this.graph.fromJSON(this.props.graphJson.toJS());
+    this.variableNameIterator(this.graph.getElements());
+
+    // On Blur/Focus of variable name input
     this.paper.el.querySelectorAll('input').forEach(input => {
       input.addEventListener('focus', this.onFocus.bind(this));
       input.addEventListener('blur', this.onBlur.bind(this));
@@ -92,6 +98,42 @@ class Canvas extends Component {
 
   render() {
     return <div ref="placeholder" className={styles.container}></div>;
+  }
+
+  setVariableName(element, name){
+    const parentNode = element.findView(this.paper).el;
+    const input = parentNode.querySelectorAll('input')[0];
+    input.value = name;
+
+    const classList = parentNode.querySelectorAll('.variableName')[0].classList;
+    classList.add.apply(classList, styles.active.split(' '));
+
+    this.recalculateWidthOfVariableName(input);
+  }
+
+  variableNameIterator(elements){
+    for(let elem of elements) {
+      if(
+        elem.attributes.dfGui.variableName
+        || this.graph.getConnectedLinks(elem, {outbound: true}).length > 1
+        || this.graph.getConnectedLinks(elem, {inbound: true}).length > 1
+      ){
+        const name = elem.attributes.dfGui.variableName || this.props.language.nameNode(this.props.adapter.getNodeTemplates()[elem.attributes.type], this.props.usedVariables);
+        this.setVariableName(elem, name);
+      }
+    }
+  }
+
+  recalculateWidthOfVariableName(input){
+    const width = getTextWidth(input.value) + 13;
+
+    if(width < VARIABLE_NAME_MIN_WIDTH){
+      input.parentNode.parentNode.setAttribute('width', VARIABLE_NAME_MIN_WIDTH);
+    }else if(width > VARIABLE_NAME_MAX_WIDTH){
+      input.parentNode.parentNode.setAttribute('width', VARIABLE_NAME_MAX_WIDTH);
+    }else{
+      input.parentNode.parentNode.setAttribute('width', width);
+    }
   }
 
   onResize(){
@@ -140,26 +182,17 @@ class Canvas extends Component {
   }
 
   onInput(e){
-    const input = e.target;
-    const width = getTextWidth(input.value) + 13;
-
-    if(width < VARIABLE_NAME_MIN_WIDTH){
-      input.parentNode.parentNode.setAttribute('width', VARIABLE_NAME_MIN_WIDTH);
-    }else if(width > VARIABLE_NAME_MAX_WIDTH){
-      input.parentNode.parentNode.setAttribute('width', VARIABLE_NAME_MAX_WIDTH);
-    }else{
-      input.parentNode.parentNode.setAttribute('width', width);
-    }
+    this.recalculateWidthOfVariableName(e.target);
   }
 
   onFocus(e){
     const node = e.target.parentNode.parentNode.parentNode;
-    node.classList.add.apply(node.classList, styles.active.split(' '));
+    node.classList.add.apply(node.classList, styles.focused.split(' '));
   }
 
   onBlur(e){
     const node = e.target.parentNode.parentNode.parentNode;
-    node.classList.remove.apply(node.classList, styles.active.split(' '));
+    node.classList.remove.apply(node.classList, styles.focused.split(' '));
   }
 
   onPointerDown(cellView, e, x, y){
@@ -211,6 +244,9 @@ class Canvas extends Component {
 const mapStateToProps = (state) => {
   const activeFile = state.getIn(['files', 'active']);
   return {
+    language: state.getIn(['files', 'opened', activeFile, 'language']),
+    usedVariables: state.getIn(['files', 'opened', activeFile, 'usedVariables']).toJS(),
+    adapter: state.getIn(['files', 'opened', activeFile, 'adapter']),
     graphJson: state.getIn(['files', 'opened', activeFile, 'graph']),
     detailNodeId: state.getIn('ui.detailNodeId'.split('.'))
   };

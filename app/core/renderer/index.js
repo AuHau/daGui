@@ -22,6 +22,7 @@ const initState = Immutable.fromJS({
         name: 'Test.scala',
         adapter: SparkAdapter,
         language: Python,
+        usedVariables: {},
         graph: {
           cells: [// Array of cells (ie. links and elements).
           ]
