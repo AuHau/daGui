@@ -74,7 +74,7 @@ class Canvas extends Component {
     this.paper.el.addEventListener('input', this.onInput.bind(this));
     this.paper.el.addEventListener('focus', this.onFocus.bind(this));
     this.paper.el.addEventListener('blur', this.onBlur.bind(this));
-    this.graph.on('remove', this.onLinkDelete.bind(this));
+    this.graph.on('remove', this.removeLink.bind(this));
     document.addEventListener('keyup', this.onKeyUp.bind(this));
   }
 
@@ -113,13 +113,8 @@ class Canvas extends Component {
 
   variableNameIterator(elements){
     for(let elem of elements) {
-      if(
-        elem.attributes.dfGui.variableName
-        || this.graph.getConnectedLinks(elem, {outbound: true}).length > 1
-        || this.graph.getConnectedLinks(elem, {inbound: true}).length > 1
-      ){
-        const name = elem.attributes.dfGui.variableName || this.props.language.nameNode(this.props.adapter.getNodeTemplates()[elem.attributes.type], this.props.usedVariables);
-        this.setVariableName(elem, name);
+      if(elem.attributes.dfGui.variableName){
+        this.setVariableName(elem, elem.attributes.dfGui.variableName);
       }
     }
   }
@@ -137,9 +132,26 @@ class Canvas extends Component {
   }
 
   addLink(cellView){
-    this.props.onNodeUpdate(cellView.model.toJSON());
+    const sourceElement = this.graph.getCell(cellView.model.attributes.source.id);
+    if(this.graph.getConnectedLinks(sourceElement, {outbound: true}).length > 1 && !sourceElement.attributes.dfGui.variableName){
+      const variableName = this.props.language.nameNode(this.props.adapter.getNodeTemplates()[sourceElement.attributes.type], this.props.usedVariables);
+      this.props.addLinkAndVariable(cellView.model.toJSON(), sourceElement.id, variableName);
+    }else{
+      this.props.onNodeUpdate(cellView.model.toJSON());
+    }
     this.occupiedPorts[cellView.model.attributes.target.id] = (this.occupiedPorts[cellView.model.attributes.target.id] || new Set()).add(cellView.model.attributes.target.port);
+  }
 
+  removeLink(link){
+    if(link.attributes.target.id){
+      const sourceElement = this.graph.getCell(link.attributes.source.id);
+      if(this.graph.getConnectedLinks(sourceElement, {outbound: true}).length <= 1){
+        this.props.onLinkDeleteAndVariable(link.id, sourceElement.id);
+      }else{
+        this.props.onLinkDelete(link.id);
+      }
+      this.occupiedPorts[link.attributes.target.id].delete(link.attributes.target.port);
+    }
   }
 
   onResize(){
@@ -152,13 +164,6 @@ class Canvas extends Component {
     if(cellView.model.attributes.type != 'link'){
       const newPosition = cellView.model.attributes.position;
       this.props.onNodeMove(cellView.model.id, newPosition.x, newPosition.y);
-    }
-  }
-
-  onLinkDelete(link){
-    if(link.attributes.target.id){
-      this.occupiedPorts[link.attributes.target.id].delete(link.attributes.target.port);
-      this.props.onLinkDelete(link.id);
     }
   }
 
@@ -254,6 +259,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+      addLinkAndVariable: (linkObject, nid, variableName) => {
+        dispatch([
+          graphActions.updateVariable(nid, variableName),
+          graphActions.updateNode(linkObject)
+        ]);
+      },
       onCanvasResize: (dimensions) => dispatch(canvasResize(dimensions)),
       onNodeMove: (nid, x, y) => dispatch(graphActions.moveNode(nid, x, y)),
       onNodeUpdate: (elementObject) => dispatch(graphActions.updateNode(elementObject)),
@@ -264,6 +275,10 @@ const mapDispatchToProps = (dispatch) => {
         ]);
       },
       onLinkDelete: (id) => dispatch(graphActions.deleteNode(id)),
+      onLinkDeleteAndVariable: (lid, nid) => dispatch([
+        graphActions.removeVariable(nid),
+        graphActions.deleteNode(lid)
+      ]),
       onNodeDetail: (nid) => dispatch(changeNodeDetail(nid))
     }
 };
