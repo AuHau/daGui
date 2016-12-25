@@ -1,5 +1,8 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import createLogger from 'redux-logger';
+import { batchedSubscribe } from 'redux-batched-subscribe';
+import reduxMulti from 'redux-multi'
+
 import rootReducer from '../reducers';
 import {
   forwardToRenderer,
@@ -17,15 +20,17 @@ const logger = createLogger({
 
 // If Redux DevTools Extension is installed use it, otherwise use Redux compose
 /* eslint-disable no-underscore-dangle */
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
-  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-    // Options: http://zalmoxisus.github.io/redux-devtools-extension/API/Arguments.html
-    actionCreators,
-  }) :
-  compose;
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
+//   window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+//     // Options: http://zalmoxisus.github.io/redux-devtools-extension/API/Arguments.html
+//     actionCreators,
+//   }) :
+//   compose;
 /* eslint-enable no-underscore-dangle */
-const enhancer = composeEnhancers(
-  applyMiddleware(logger)
+const enhancer = compose(
+  applyMiddleware(logger, reduxMulti),
+  window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : noop => noop,
+  batchedSubscribe(notify => notify())
 );
 
 export default function configureStore(initialState: Object) {

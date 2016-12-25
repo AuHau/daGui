@@ -154,7 +154,9 @@
     "react-redux": "^4.4.5",
     "reduce-reducers": "^0.1.2",
     "redux": "^3.6.0",
+    "redux-batched-subscribe": "^0.1.6",
     "redux-immutable": "^3.0.8",
+    "redux-multi": "^0.1.12",
     "redux-thunk": "^2.1.0",
     "source-map-support": "^0.4.6"
   },

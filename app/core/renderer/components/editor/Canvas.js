@@ -136,6 +136,12 @@ class Canvas extends Component {
     }
   }
 
+  addLink(cellView){
+    this.props.onNodeUpdate(cellView.model.toJSON());
+    this.occupiedPorts[cellView.model.attributes.target.id] = (this.occupiedPorts[cellView.model.attributes.target.id] || new Set()).add(cellView.model.attributes.target.port);
+
+  }
+
   onResize(){
     const wrapperElem = findDOMNode(this.refs.placeholder);
     this.paper.setDimensions(wrapperElem.offsetWidth, wrapperElem.offsetHeight);
@@ -210,21 +216,15 @@ class Canvas extends Component {
       }else if(
         cellView.model.isLink()
         && cellView.model.graph  // Needs to verify, that the click was not on remove button
-      ){
-        this.props.onElementUpdate(cellView.model.toJSON());
-        this.occupiedPorts[cellView.model.attributes.target.id] = (this.occupiedPorts[cellView.model.attributes.target.id] || new Set()).add(cellView.model.attributes.target.port);
-      }
+      ) this.addLink(cellView)
     }else{
       // Drag node
       if(cellView.model.isElement()){
         this.onNodeMove(cellView);
       }else if(
         cellView.model.isLink()
-        && cellView.model.attributes.target.id // Needs to verify, that the link is left hanging in middle of nowhere
-      ){
-        this.props.onElementUpdate(cellView.model.toJSON());
-        this.occupiedPorts[cellView.model.attributes.target.id] = (this.occupiedPorts[cellView.model.attributes.target.id] || new Set()).add(cellView.model.attributes.target.port);
-      }
+        && cellView.model.attributes.target.id // Needs to verify, that the link is not left hanging in middle of nowhere
+      ) this.addLink(cellView);
     }
 
     this.startingPointerPosition = null;
@@ -254,25 +254,17 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-      onCanvasResize: (dimensions) => {
-        dispatch(canvasResize(dimensions));
-      },
-      onNodeMove: (nid, x, y) => {
-        dispatch(graphActions.moveNode(nid, x, y));
-      },
-      onElementUpdate: (elementObject) => {
-        dispatch(graphActions.updateLink(elementObject));
-      },
+      onCanvasResize: (dimensions) => dispatch(canvasResize(dimensions)),
+      onNodeMove: (nid, x, y) => dispatch(graphActions.moveNode(nid, x, y)),
+      onNodeUpdate: (elementObject) => dispatch(graphActions.updateNode(elementObject)),
       onNodeDelete: (id) => {
-        dispatch(changeNodeDetail(null));
-        dispatch(graphActions.deleteNode(id));
+        dispatch([
+          changeNodeDetail(null),
+          graphActions.deleteNode(id)
+        ]);
       },
-      onLinkDelete: (id) => {
-        dispatch(graphActions.deleteLink(id));
-      },
-      onNodeDetail: (nid) => {
-        dispatch(changeNodeDetail(nid));
-      }
+      onLinkDelete: (id) => dispatch(graphActions.deleteNode(id)),
+      onNodeDetail: (nid) => dispatch(changeNodeDetail(nid))
     }
 };
 
