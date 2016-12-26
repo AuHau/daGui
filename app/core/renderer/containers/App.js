@@ -86,7 +86,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onNodeChange: (node) => {
-        dispatch(updateNode(node.id, node));
+        dispatch(updateNode(node));
     }
   };
 };

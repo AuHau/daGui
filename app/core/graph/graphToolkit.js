@@ -17,6 +17,7 @@ export const normalizeGraph = (graphObject, isInputFnc) => {
         id: element.id,
         type: element.type,
         parameters: element.dfGui.parameters,
+        variableName: element.dfGui.variableName,
         nextNodes: [],
         prevNodes: []
       };
@@ -43,4 +44,13 @@ export function hashGraph(normalizedGraph) {
   // change the hash
   filteredGraph.sort((a, b) => a.id.localeCompare(b.id));
   return md5(JSON.stringify(filteredGraph));
+}
+
+export function countInPorts(element){
+  let count = 0;
+  for(let port of element.portData.ports){
+    if(port.group == 'in') count++;
+  }
+
+  return count;
 }

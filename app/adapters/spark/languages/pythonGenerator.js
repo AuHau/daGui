@@ -4,15 +4,6 @@ import Python from 'languages/Python';
 const IMPORT = 'from pyspark import SparkConf, SparkContext';
 const INIT = 'conf = SparkConf() \nsc = SparkContext(\'local\', \'test\', conf=conf)'; // TODO: SparkContext and SparkConf based on Running configuration
 
-export function nameNode(node, templates, usedVariables){
-  // TODO: Implement SnakeCase generator to drop lodash depdendency
-  const baseName = _.snakeCase(templates[node.type].getName());
-  const num = (usedVariables[baseName] || 0) + 1;
-  usedVariables[baseName] = num;
-
-  return baseName + num;
-}
-
 export function processNode(node, prevNode, templates, graph, variableStack, usedVariables, afterOutBreak = false) {
   let newNodeName, generatedCode, output = '';
 
@@ -23,18 +14,16 @@ export function processNode(node, prevNode, templates, graph, variableStack, use
       return ''; // Not all in-break dependencies are satisfied => backtrack
     }
 
-    newNodeName = nameNode(node, templates, usedVariables);
     generatedCode = templates[node.type].generateCode(node.parameters, Python, node.prevNodes);
-    output = '\n' + newNodeName + ' = ' + generatedCode + '\n';
-    variableStack.push(newNodeName);
+    output = '\n' + node.variableName + ' = ' + generatedCode + '\n';
+    variableStack.push(node.variableName);
 
   }else{
     generatedCode = templates[node.type].generateCode(node.parameters, Python);
 
     if(afterOutBreak){
-      newNodeName = nameNode(node, templates, usedVariables);
-      output = '\n' + newNodeName + ' = ' + variableStack.pop() + '.' + generatedCode + '\n';
-      variableStack.push(newNodeName);
+      output = '\n' + node.variableName + ' = ' + variableStack.pop() + '.' + generatedCode + '\n';
+      variableStack.push(node.variableName);
     }else{
       output = (prevNode ? '\t.' : '.') + generatedCode + '\n';
     }
@@ -69,10 +58,9 @@ export default function generatePython(adapter, normalizedGraph, inputs) {
   output += INIT + '\n\n';
 
   for(let input of inputs) {
-    const inputName = nameNode(input, templates, usedVariables);
-    variableStack.push(inputName);
+    variableStack.push(input.variableName);
 
-    output += inputName + ' = sc' + processNode(input, null, templates, normalizedGraph, variableStack, usedVariables) + '\n';
+    output += input.variableName + ' = sc' + processNode(input, null, templates, normalizedGraph, variableStack, usedVariables) + '\n';
   }
 
   return output;

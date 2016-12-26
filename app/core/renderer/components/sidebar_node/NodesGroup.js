@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import joint from 'jointjs';
 import { connect } from 'react-redux'
 import Config from '../../../../config/index.js';
+import {countInPorts} from '../../../graph/graphToolkit';
 
 import cssVariables from '!!sass-variable-loader!../../variables.scss';
 import styles from './NodesGroup.scss';
@@ -60,7 +61,7 @@ class NodesGroup extends Component {
         s.position(x - canvas.get('left') - offset.x, y - canvas.get('top') - offset.y);
 
         // Redux action
-        if(this.countInPorts(s) > 1){
+        if(countInPorts(s) > 1 || this.props.adapter.isTypeInput(s.attributes.type)){
           const sJson = s.toJSON();
           const variableName = this.props.language.nameNode(this.props.adapter.getNodeTemplates()[s.attributes.type], this.props.usedVariables);
           sJson.dfGui.variableName = variableName;
@@ -79,15 +80,6 @@ class NodesGroup extends Component {
 
     document.body.addEventListener('mousemove', moveHandler);
     document.body.addEventListener('mouseup', dropHandler);
-  }
-
-  countInPorts(element){
-    let count = 0;
-    for(let port of element.portData.ports){
-      if(port.group == 'in') count++;
-    }
-
-    return count;
   }
 
   filterOutNodes(){

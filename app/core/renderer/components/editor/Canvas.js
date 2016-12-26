@@ -4,12 +4,13 @@ import { findDOMNode } from 'react-dom';
 import { connect } from 'react-redux'
 
 import joint from 'jointjs';
+import {countInPorts} from '../../../graph/graphToolkit';
 import styles from "./Canvas.scss";
 
 import {changeNodeDetail, canvasResize} from '../../../shared/actions/ui';
 import * as graphActions from '../../../shared/actions/graph';
 
-const CLICK_TRESHOLD = 10;
+const CLICK_TRESHOLD = 5;
 const VARIABLE_NAME_MAX_WIDTH = 150;
 const VARIABLE_NAME_MIN_WIDTH = 30;
 
@@ -133,9 +134,17 @@ class Canvas extends Component {
 
   addLink(cellView){
     const sourceElement = this.graph.getCell(cellView.model.attributes.source.id);
-    if(this.graph.getConnectedLinks(sourceElement, {outbound: true}).length > 1 && !sourceElement.attributes.dfGui.variableName){
-      const variableName = this.props.language.nameNode(this.props.adapter.getNodeTemplates()[sourceElement.attributes.type], this.props.usedVariables);
-      this.props.addLinkAndVariable(cellView.model.toJSON(), sourceElement.id, variableName);
+    const sourcesChildren = this.graph.getConnectedLinks(sourceElement, {outbound: true});
+    if(sourcesChildren.length > 1){
+      let childrenElement;
+      for(let children of sourcesChildren) {
+        childrenElement = this.graph.getCell(children.attributes.target.id);
+        if(!childrenElement.attributes.dfGui.variableName){
+          const variableName = this.props.language.nameNode(this.props.adapter.getNodeTemplates()[childrenElement.attributes.type], this.props.usedVariables);
+          this.props.onUpdateVariable(childrenElement.id, variableName); // TODO: Batch adding the variable and adding link
+        }
+      }
+      this.props.onNodeUpdate(cellView.model.toJSON());
     }else{
       this.props.onNodeUpdate(cellView.model.toJSON());
     }
@@ -145,11 +154,18 @@ class Canvas extends Component {
   removeLink(link){
     if(link.attributes.target.id){
       const sourceElement = this.graph.getCell(link.attributes.source.id);
-      if(this.graph.getConnectedLinks(sourceElement, {outbound: true}).length <= 1){
-        this.props.onLinkDeleteAndVariable(link.id, sourceElement.id);
+      const targetElement = this.graph.getCell(link.attributes.target.id);
+      const sourcesChildren = this.graph.getConnectedLinks(sourceElement, {outbound: true});
+      if(sourcesChildren.length == 1){ // Delete variable only when going from 2 links to 1 link
+        this.props.onRemoveVariable(sourcesChildren[0].attributes.target.id);
+        this.props.onRemoveVariable(targetElement.id); // TODO: Batch deleting variables
+        this.props.onLinkDelete(link.id);
+      }else if(targetElement.attributes.dfGui.variableName && countInPorts(targetElement) == 1) {
+        this.props.onLinkDeleteAndVariable(link.id, targetElement.id);
       }else{
         this.props.onLinkDelete(link.id);
       }
+
       this.occupiedPorts[link.attributes.target.id].delete(link.attributes.target.port);
     }
   }
@@ -271,6 +287,7 @@ const mapDispatchToProps = (dispatch) => {
         ]);
       },
       onUpdateVariable: (nid, newVariableName ,oldVariableName) => dispatch(graphActions.updateVariable(nid, newVariableName, oldVariableName)),
+      onRemoveVariable: (nid) => dispatch(graphActions.removeVariable(nid)),
       onCanvasResize: (dimensions) => dispatch(canvasResize(dimensions)),
       onNodeMove: (nid, x, y) => dispatch(graphActions.moveNode(nid, x, y)),
       onNodeUpdate: (elementObject) => dispatch(graphActions.updateNode(elementObject)),
