@@ -72,8 +72,6 @@ class Canvas extends Component {
     this.paper.on('cell:pointerup', this.onPointerUp.bind(this));
     this.paper.on('blank:pointerclick', this.onNodeDetail.bind(this));
     this.paper.el.addEventListener('input', this.onInput.bind(this));
-    this.paper.el.addEventListener('focus', this.onFocus.bind(this));
-    this.paper.el.addEventListener('blur', this.onBlur.bind(this));
     this.graph.on('remove', this.removeLink.bind(this));
     document.addEventListener('keyup', this.onKeyUp.bind(this));
   }
@@ -87,6 +85,7 @@ class Canvas extends Component {
     this.paper.el.querySelectorAll('input').forEach(input => {
       input.addEventListener('focus', this.onFocus.bind(this));
       input.addEventListener('blur', this.onBlur.bind(this));
+      input.addEventListener('change', this.onVariableNameChange.bind(this));
     });
 
     if(this.props.detailNodeId){ // TODO: Fix - on DetailNode change double highlighting
@@ -104,6 +103,7 @@ class Canvas extends Component {
     const parentNode = element.findView(this.paper).el;
     const input = parentNode.querySelectorAll('input')[0];
     input.value = name;
+    input.setAttribute('data-old-value', name);
 
     const classList = parentNode.querySelectorAll('.variableName')[0].classList;
     classList.add.apply(classList, styles.active.split(' '));
@@ -196,6 +196,11 @@ class Canvas extends Component {
     this.recalculateWidthOfVariableName(e.target);
   }
 
+  onVariableNameChange(e){
+    const nodeId = e.target.closest('.joint-cell').getAttribute('model-id');
+    this.props.onUpdateVariable(nodeId, e.target.value, e.target.getAttribute('data-old-value'))
+  }
+
   onFocus(e){
     const node = e.target.parentNode.parentNode.parentNode;
     node.classList.add.apply(node.classList, styles.focused.split(' '));
@@ -265,6 +270,7 @@ const mapDispatchToProps = (dispatch) => {
           graphActions.updateNode(linkObject)
         ]);
       },
+      onUpdateVariable: (nid, newVariableName ,oldVariableName) => dispatch(graphActions.updateVariable(nid, newVariableName, oldVariableName)),
       onCanvasResize: (dimensions) => dispatch(canvasResize(dimensions)),
       onNodeMove: (nid, x, y) => dispatch(graphActions.moveNode(nid, x, y)),
       onNodeUpdate: (elementObject) => dispatch(graphActions.updateNode(elementObject)),
