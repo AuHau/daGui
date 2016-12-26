@@ -7,7 +7,7 @@ import Config from '../../../../config/index.js';
 import cssVariables from '!!sass-variable-loader!../../variables.scss';
 import styles from './NodesGroup.scss';
 
-import {addNode} from '../../../shared/actions/graph';
+import {addNode, updateVariable} from '../../../shared/actions/graph';
 
 const nodeWidth = parseInt(cssVariables.nodesSidebarNodeWidth);
 const nodeHeight = parseInt(cssVariables.nodesSidebarNodeHeight);
@@ -60,7 +60,14 @@ class NodesGroup extends Component {
         s.position(x - canvas.get('left') - offset.x, y - canvas.get('top') - offset.y);
 
         // Redux action
-        this.props.addNode(s.toJSON());
+        if(this.countInPorts(s) > 1){
+          const sJson = s.toJSON();
+          const variableName = this.props.language.nameNode(this.props.adapter.getNodeTemplates()[s.attributes.type], this.props.usedVariables);
+          sJson.dfGui.variableName = variableName;
+          this.props.addNodeAndVariable(sJson, variableName);
+        }else{
+          this.props.addNode(s.toJSON());
+        }
       }
 
       // Cleap up
@@ -72,6 +79,15 @@ class NodesGroup extends Component {
 
     document.body.addEventListener('mousemove', moveHandler);
     document.body.addEventListener('mouseup', dropHandler);
+  }
+
+  countInPorts(element){
+    let count = 0;
+    for(let port of element.portData.ports){
+      if(port.group == 'in') count++;
+    }
+
+    return count;
   }
 
   filterOutNodes(){
@@ -161,13 +177,21 @@ NodesGroup.propTypes = {
 };
 
 const mapStateToProps = (state) => {
+  const activeFile = state.getIn(['files', 'active']);
   return {
-    canvasContainerSpec: state.getIn(['ui', 'canvasContainerSpec'])
+    canvasContainerSpec: state.getIn(['ui', 'canvasContainerSpec']),
+    language: state.getIn(['files', 'opened', activeFile, 'language']),
+    usedVariables: state.getIn(['files', 'opened', activeFile, 'usedVariables']).toJS(),
+    adapter: state.getIn(['files', 'opened', activeFile, 'adapter'])
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    addNodeAndVariable: (nodeObject, variableName) => dispatch([
+      addNode(nodeObject),
+      updateVariable(nodeObject.id, variableName)
+    ]),
     addNode: (node) => {
       dispatch(addNode(node));
     }
