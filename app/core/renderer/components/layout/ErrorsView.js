@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 
-import levels, {classTranslation, textTranslation} from 'graph/ErrorLevel';
+import levels, {classTranslation, textTranslation} from '../../../shared/enums/ErrorLevel.js';
 import styles from './ErrorsView.scss';
 
 const MESSAGES_CYCLE = 4000;

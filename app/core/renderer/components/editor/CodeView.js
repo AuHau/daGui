@@ -4,7 +4,7 @@ import ace from 'brace';
 import 'brace/mode/python';
 import 'brace/theme/chrome';
 
-import levels, {classTranslation, textTranslation} from 'graph/ErrorLevel';
+import levels, {classTranslation, textTranslation} from '../../../shared/enums/ErrorLevel';
 import styles from './CodeView.scss';
 
 export default class CodeView extends Component {

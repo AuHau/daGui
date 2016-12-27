@@ -1,5 +1,5 @@
-import ErrorLevel from 'graph/ErrorLevel';
-import ErrorType from 'graph/ErrorType';
+import ErrorLevel from '../../core/shared/enums/ErrorLevel.js';
+import ErrorType from '../../core/shared/enums/ErrorType.js';
 
 const createError = (id, type, description, importance = 10, level = ErrorLevel.ERROR) => {
   return {
