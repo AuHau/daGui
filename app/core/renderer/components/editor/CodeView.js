@@ -19,13 +19,13 @@ export default class CodeView extends Component {
     this.editor = ace.edit('aceCodeEditor');
     this.editor.getSession().setMode('ace/mode/python');
     this.editor.setTheme('ace/theme/chrome');
-    this.editor.setValue(this.props.code);
+    this.editor.setValue(this.props.codeBuilder.getCode());
     this.editor.setReadOnly(true);
     this.editor.clearSelection();
   }
 
   componentDidUpdate(){
-    this.editor.setValue(this.props.code);
+    this.editor.setValue(this.props.codeBuilder.getCode());
     this.editor.clearSelection();
   }
 
@@ -54,7 +54,7 @@ export default class CodeView extends Component {
 }
 
 CodeView.propTypes = {
-  code: React.PropTypes.string,
+  codeBuilder: React.PropTypes.object,
   errors: React.PropTypes.array,
   onHighlight: React.PropTypes.func.isRequired,
   highlight: React.PropTypes.string

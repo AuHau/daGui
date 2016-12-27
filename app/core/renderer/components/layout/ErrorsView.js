@@ -56,10 +56,10 @@ export default class ErrorsView extends Component {
   }
 
   getClass() {
-    if (this.props.messages.find(msg => msg.level == levels.ERROR) != null)
+    if (this.props.messages.find(msg => msg.level == levels.VARIABLE) != null)
       return styles.error;
 
-    if (this.props.messages.find(msg => msg.level == levels.WARNING) != null)
+    if (this.props.messages.find(msg => msg.level == levels.NODE) != null)
       return styles.warning;
 
     if (this.props.messages.find(msg => msg.level == levels.INFO) != null)

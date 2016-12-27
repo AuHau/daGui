@@ -1,7 +1,7 @@
 import ErrorLevel from '../../core/shared/enums/ErrorLevel.js';
 import ErrorType from '../../core/shared/enums/ErrorType.js';
 
-const createError = (id, type, description, importance = 10, level = ErrorLevel.ERROR) => {
+const createError = (id, type, description, importance = 10, level = ErrorLevel.VARIABLE) => {
   return {
     id,
     type,

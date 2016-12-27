@@ -1,31 +1,54 @@
-import _ from 'lodash';
 import Python from 'languages/Python';
+import CodeBuilder from 'graph/CodeBuilder';
+import CodeMarker, {countLines} from 'shared/enums/CodeMarker';
 
 const IMPORT = 'from pyspark import SparkConf, SparkContext';
-const INIT = 'conf = SparkConf() \nsc = SparkContext(\'local\', \'test\', conf=conf)'; // TODO: SparkContext and SparkConf based on Running configuration
+const INIT = ['conf = SparkConf()', 'sc = SparkContext(\'local\', \'test\', conf=conf)']; // TODO: SparkContext and SparkConf based on Running configuration
 
-export function processNode(node, prevNode, templates, graph, variableStack, usedVariables, afterOutBreak = false) {
-  let newNodeName, generatedCode, output = '';
+const INDENTATION = '    '; // TODO: Load from user's settings
+
+export function processNode(output, node, prevNode, templates, graph, variableStack, afterOutBreak = false) {
+  let generatedCode;
 
   if(node.prevNodes.length > 1){
     node.prevNodes.find(node => node.id == prevNode.id)['variable'] = variableStack.pop();
 
     if(node.prevNodes.find(node => !node.variable)){
-      return ''; // Not all in-break dependencies are satisfied => backtrack
+      return; // Not all in-break dependencies are satisfied => backtrack
     }
 
     generatedCode = templates[node.type].generateCode(node.parameters, Python, node.prevNodes);
-    output = '\n' + node.variableName + ' = ' + generatedCode + '\n';
+
+    output
+      .breakLine()
+      .startMarker()
+      .add(node.variableName)
+      .marker(node.id, CodeMarker.VARIABLE)
+      .add(' = ' + generatedCode)
+      .finishMarker(node.id)
+      .breakLine();
+
     variableStack.push(node.variableName);
 
   }else{
     generatedCode = templates[node.type].generateCode(node.parameters, Python);
 
     if(afterOutBreak){
-      output = '\n' + node.variableName + ' = ' + variableStack.pop() + '.' + generatedCode + '\n';
+      output
+        .breakLine()
+        .startMarker()
+        .add(node.variableName)
+        .marker(node.id, CodeMarker.VARIABLE)
+        .add(' = ' + variableStack.pop() + '.' + generatedCode)
+        .finishMarker(node.id)
+        .breakLine();
+
       variableStack.push(node.variableName);
     }else{
-      output = (prevNode ? '\t.' : '.') + generatedCode + '\n';
+      output
+        .add((prevNode ? INDENTATION : ''), '.' + generatedCode)
+        .marker(node.id)
+        .breakLine();
     }
   }
 
@@ -33,34 +56,51 @@ export function processNode(node, prevNode, templates, graph, variableStack, use
   if(node.nextNodes.length > 1){
     const multipliedVar = variableStack.pop();
     for(let i = 0; i < node.nextNodes.length; i++) variableStack.push(multipliedVar);
-    output += '\t.cache()\n';
+
+    output
+      .add(INDENTATION, '.cache()')
+      .marker(node.id)
+      .breakLine();
   }
 
   if(!node.nextNodes.length){
     variableStack.pop();
-    return output;
+    return;
   }
 
   for(let nextNode of node.nextNodes){
-    output += processNode(graph[nextNode], node, templates, graph, variableStack, usedVariables, node.nextNodes.length > 1);
+    processNode(output, graph[nextNode], node, templates, graph, variableStack, node.nextNodes.length > 1);
   }
-
-  return output;
 }
 
 export default function generatePython(adapter, normalizedGraph, inputs) {
   const templates = adapter.getNodeTemplates();
   const variableStack = [];
-  const usedVariables = {};
-  let output = '';
+  let output = new CodeBuilder();
 
-  output += IMPORT + '\n\n';
-  output += INIT + '\n\n';
+  output
+    .add(IMPORT)
+    .breakLine()
+    .breakLine();
+
+  output
+    .add(INIT[0])
+    .breakLine()
+    .add(INIT[0])
+    .breakLine()
+    .breakLine();
 
   for(let input of inputs) {
     variableStack.push(input.variableName);
 
-    output += input.variableName + ' = sc' + processNode(input, null, templates, normalizedGraph, variableStack, usedVariables) + '\n';
+    output
+      .startMarker()
+      .add(input.variableName)
+      .marker(input.id, CodeMarker.VARIABLE)
+      .add(' = sc')
+      .finishMarker(input.id);
+    processNode(output, input, null, templates, normalizedGraph, variableStack);
+    output.breakLine();
   }
 
   return output;

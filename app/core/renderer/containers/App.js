@@ -66,7 +66,7 @@ class App extends Component {
         <NodesSidebar adapter={adapter} />
         <Canvas onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>
         {this.props.nodeDetail && <DetailSidebar node={this.props.nodeDetail.toJS()} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/>}
-        {this.props.showCodeView && <CodeView code={this.generatedCode} errors={this.graphErrors} onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>}
+        {this.props.showCodeView && <CodeView codeBuilder={this.generatedCode} errors={this.graphErrors} onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>}
         <Footer messages={this.graphErrors} framework={adapter.getName()} language={this.props.file.get('language').getName()}/>
       </div>
     );
