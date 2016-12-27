@@ -14,9 +14,15 @@
   border-top: 1px solid $code-view-border-color;
 }
 
-.code{
-  padding: 0 10px;
-  white-space: pre;
+.codeEditor{
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  // Editor styling
+  font-size: $font-size-normal;
 }
 
 .errorsOverlay{

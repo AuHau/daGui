@@ -141,6 +141,7 @@
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "brace": "^0.9.1",
     "closest": "0.0.1",
     "electron-debug": "^1.0.1",
     "electron-redux": "^1.2.1",
