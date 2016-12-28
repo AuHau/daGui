@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import joint from 'jointjs';
 import {hashGraph, normalizeGraph} from 'graph/graphToolkit.js';
+import CodeBuilder from 'graph/CodeBuilder';
 
 import {updateNode} from '../../shared/actions/graph';
 
@@ -21,7 +22,7 @@ class App extends Component {
       highlightNodeId: null
     };
 
-    this.generatedCode = null;
+    this.codeBuilder = new CodeBuilder();
     this.graphErrors = [];
     this.graphHash = null;
     this.onHighlight = this.onHighlight.bind(this);
@@ -50,7 +51,7 @@ class App extends Component {
       return; // Generation will only happen when has to (eq. when CodeView is active)
 
     if (!this.graphErrors.length) {
-      this.generatedCode = adapter.generateCode(jointGraph, normalizedGraph, inputs, language);
+      adapter.generateCode(this.codeBuilder, normalizedGraph, inputs, language);
     }
 
     this.graphHash = newHash;
@@ -66,7 +67,7 @@ class App extends Component {
         <NodesSidebar adapter={adapter} />
         <Canvas onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>
         {this.props.nodeDetail && <DetailSidebar node={this.props.nodeDetail.toJS()} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/>}
-        {this.props.showCodeView && <CodeView codeBuilder={this.generatedCode} errors={this.graphErrors} onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>}
+        {this.props.showCodeView && <CodeView language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>}
         <Footer messages={this.graphErrors} framework={adapter.getName()} language={this.props.file.get('language').getName()}/>
       </div>
     );

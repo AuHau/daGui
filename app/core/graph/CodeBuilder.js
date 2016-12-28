@@ -2,18 +2,11 @@ import CodeMarker from 'shared/enums/CodeMarker';
 
 const countLines = (string) => {
   return (string.match(/\n/g)||[]).length
-}
+};
 
 export default class CodeBuilder {
   constructor() {
-    this.code = '';
-    this.markers = [];
-    this.lineCount = 1;
-    this.lastCharPosition = 0;
-    this.actualCharPosition = 0;
-
-    this.startMarkerChar = 0;
-    this.startMarkerLine = 0;
+    this.reset();
   }
 
   add(code){
@@ -25,6 +18,10 @@ export default class CodeBuilder {
       }
 
       return this;
+    }
+
+    if(code.includes('\n')){
+      throw new Error('String passed to \'add\' cannot contain new line characters! For new line use breakLine()!');
     }
 
     this.lastCharPosition = this.actualCharPosition;
@@ -77,6 +74,17 @@ export default class CodeBuilder {
     this.actualCharPosition = 0;
 
     return this;
+  }
+
+  reset() {
+    this.code = '';
+    this.markers = [];
+    this.lineCount = 1;
+    this.lastCharPosition = 0;
+    this.actualCharPosition = 0;
+
+    this.startMarkerChar = 0;
+    this.startMarkerLine = 0;
   }
 
   getCode() {

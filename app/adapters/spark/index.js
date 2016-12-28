@@ -82,10 +82,10 @@ export default class SparkAdapter extends BaseAdapter{
 // Not actually needed - the graphs can be generated independently and after generation order them based on the dependency list, which can
 // be build during code generation, but actually dependency is already issue in one graph --> when you have branches, you have to
 // decide which branch to iterate through first <-- it will depend on the dependencies (one branch can use the output of the other one)
-  static generateCode(graph, normalizedGraph, inputs, language){
+  static generateCode(output, normalizedGraph, inputs, language){
     switch (language.getName()){
       case 'Python':
-        return pythonGenerator(SparkAdapter, normalizedGraph, inputs);
+        return pythonGenerator(output, SparkAdapter, normalizedGraph, inputs);
       default:
         throw new Error("Not supported language!");
     }

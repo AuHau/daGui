@@ -1,5 +1,4 @@
 import Python from 'languages/Python';
-import CodeBuilder from 'graph/CodeBuilder';
 import CodeMarker, {countLines} from 'shared/enums/CodeMarker';
 
 const IMPORT = 'from pyspark import SparkConf, SparkContext';
@@ -73,10 +72,10 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
   }
 }
 
-export default function generatePython(adapter, normalizedGraph, inputs) {
+export default function generatePython(output, adapter, normalizedGraph, inputs) {
   const templates = adapter.getNodeTemplates();
   const variableStack = [];
-  let output = new CodeBuilder();
+  output.reset();
 
   output
     .add(IMPORT)
@@ -86,7 +85,7 @@ export default function generatePython(adapter, normalizedGraph, inputs) {
   output
     .add(INIT[0])
     .breakLine()
-    .add(INIT[0])
+    .add(INIT[1])
     .breakLine()
     .breakLine();
 
@@ -102,6 +101,4 @@ export default function generatePython(adapter, normalizedGraph, inputs) {
     processNode(output, input, null, templates, normalizedGraph, variableStack);
     output.breakLine();
   }
-
-  return output;
 };

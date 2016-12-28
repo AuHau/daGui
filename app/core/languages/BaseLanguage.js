@@ -8,6 +8,10 @@ export default class BaseLanguage {
     throw new TypeError("Method 'getName' has to be implemented!");
   }
 
+  static getAceName() {
+    throw new TypeError("Method 'getAceName' has to be implemented!");
+  }
+
   static getLID(){
     throw new TypeError("Method 'getLID' has to be implemented!");
   }

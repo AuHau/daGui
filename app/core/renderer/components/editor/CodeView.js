@@ -1,7 +1,6 @@
 // @flow
 import React, {Component} from 'react';
 import ace from 'brace';
-import 'brace/mode/python';
 import 'brace/theme/chrome';
 
 import levels, {classTranslation, textTranslation} from '../../../shared/enums/ErrorLevel';
@@ -16,11 +15,13 @@ export default class CodeView extends Component {
   }
 
   componentDidMount(){
+    const aceMode = this.props.language.getAceName();
+    require('brace/mode/' + aceMode);
+
     this.editor = ace.edit('aceCodeEditor');
-    this.editor.getSession().setMode('ace/mode/python');
+    this.editor.getSession().setMode('ace/mode/' + aceMode);
     this.editor.setTheme('ace/theme/chrome');
     this.editor.setValue(this.props.codeBuilder.getCode());
-    this.editor.setReadOnly(true);
     this.editor.clearSelection();
   }
 
@@ -54,8 +55,9 @@ export default class CodeView extends Component {
 }
 
 CodeView.propTypes = {
-  codeBuilder: React.PropTypes.object,
-  errors: React.PropTypes.array,
+  codeBuilder: React.PropTypes.object.isRequired,
+  language: React.PropTypes.object.isRequired,
   onHighlight: React.PropTypes.func.isRequired,
+  errors: React.PropTypes.array,
   highlight: React.PropTypes.string
 };
