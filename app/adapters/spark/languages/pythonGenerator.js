@@ -1,5 +1,5 @@
 import Python from 'languages/Python';
-import CodeMarker, {countLines} from 'shared/enums/CodeMarker';
+import CodeMarker from 'shared/enums/CodeMarker';
 
 const IMPORT = 'from pyspark import SparkConf, SparkContext';
 const INIT = ['conf = SparkConf()', 'sc = SparkContext(\'local\', \'test\', conf=conf)']; // TODO: SparkContext and SparkConf based on Running configuration

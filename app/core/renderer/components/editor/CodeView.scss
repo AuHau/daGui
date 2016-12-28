@@ -43,3 +43,17 @@
 .errorsOverlay ~ .code{
   filter: blur(5px);
 }
+
+// Editor styling
+.variable{
+  position: absolute;
+  border: 1px solid $very-dark-grey;
+}
+
+.node{
+  position: absolute;
+  pointer-events: auto;
+}
+.node:hover{
+  border: 1px solid $yellow;
+}

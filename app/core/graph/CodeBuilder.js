@@ -39,7 +39,7 @@ export default class CodeBuilder {
   }
 
   marker(nid, type = CodeMarker.NODE, charStart = this.startMarkerChar || this.lastCharPosition, charEnd = this.actualCharPosition, lineStart = this.startMarkerLine || this.lineCount, lineEnd = lineStart) {
-    this.markers.push({
+    this.ranges.push({
       lineStart,
       lineEnd,
       charStart,
@@ -52,7 +52,7 @@ export default class CodeBuilder {
   }
 
   finishMarker(nid, type = CodeMarker.NODE){
-    this.markers.push({
+    this.ranges.push({
       lineStart: this.startMarkerLine,
       lineEnd : this.lineCount,
       charStart: this.startMarkerChar,
@@ -78,8 +78,8 @@ export default class CodeBuilder {
 
   reset() {
     this.code = '';
-    this.markers = [];
-    this.lineCount = 1;
+    this.ranges = [];
+    this.lineCount = 0;
     this.lastCharPosition = 0;
     this.actualCharPosition = 0;
 
@@ -97,6 +97,6 @@ export default class CodeBuilder {
   }
 
   getMarkers(){
-    return this.markers
+    return this.ranges
   }
 }
