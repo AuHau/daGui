@@ -50,7 +50,7 @@ export default class CodeView extends Component {
       rangeTmp.end = session.doc.createAnchor(rangeTmp.end);
       rangeTmp.end.$insertRight = true;
 
-      this.ranges[codeMarker.type].push(rangeTmp);
+      this.markers[codeMarker.type].push(rangeTmp);
     }
   }
 
@@ -114,13 +114,13 @@ export default class CodeView extends Component {
   }
 
   resetRanges(){
-    this.ranges = {};
-    this.ranges[CodeMarker.VARIABLE] = [];
-    this.ranges[CodeMarker.NODE] = [];
+    this.markers = {};
+    this.markers[CodeMarker.VARIABLE] = [];
+    this.markers[CodeMarker.NODE] = [];
   }
 
   intersects(type) {
-    for(let range of this.ranges[type]){
+    for(let range of this.markers[type]){
       if(this.editor.getSelectionRange().intersects(range)) return true;
     }
 

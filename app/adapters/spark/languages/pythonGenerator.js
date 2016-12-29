@@ -89,16 +89,21 @@ export default function generatePython(output, adapter, normalizedGraph, inputs)
     .breakLine()
     .breakLine();
 
+  let markerIndex;
   for(let input of inputs) {
     variableStack.push(input.variableName);
 
-    output
+    markerIndex = output
       .startMarker()
       .add(input.variableName)
       .marker(input.id, CodeMarker.VARIABLE)
       .add(' = sc')
-      .finishMarker(input.id);
+      .finishMarker(input.id)
+      .getLastMarkerIndex();
+
     processNode(output, input, null, templates, normalizedGraph, variableStack);
+    output.mergeMarkers(markerIndex, markerIndex+1);
+
     output.breakLine();
   }
 };

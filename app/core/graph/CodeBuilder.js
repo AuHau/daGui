@@ -40,7 +40,7 @@ export default class CodeBuilder {
   }
 
   marker(nid, type = CodeMarker.NODE, charStart = this.startMarkerChar || this.lastCharPosition, charEnd = this.actualCharPosition, lineStart = this.startMarkerLine || this.lineCount, lineEnd = lineStart) {
-    this.ranges.push({
+    this.markers.push({
       lineStart,
       lineEnd,
       charStart,
@@ -54,7 +54,7 @@ export default class CodeBuilder {
   }
 
   finishMarker(nid, type = CodeMarker.NODE){
-    this.ranges.push({
+    this.markers.push({
       lineStart: this.startMarkerLine,
       lineEnd : this.lineCount,
       charStart: this.startMarkerChar,
@@ -70,6 +70,16 @@ export default class CodeBuilder {
     return this;
   }
 
+  getLastMarkerIndex(){
+    return this.markers.length - 1;
+  }
+
+  mergeMarkers(index1, index2){
+    // TODO: Add intelligant comparsment of start/end of chars and lines
+    this.markers[index1].charEnd = this.markers[index2].charEnd;
+    this.markers.splice(index2, 1);
+  }
+
   breakLine() {
     this.code += '\n';
     this.lineCount++;
@@ -81,7 +91,7 @@ export default class CodeBuilder {
 
   reset() {
     this.code = '';
-    this.ranges = [];
+    this.markers = [];
     this.lineCount = 0;
     this.lastCharPosition = 0;
     this.actualCharPosition = 0;
@@ -109,7 +119,7 @@ export default class CodeBuilder {
 
   getMarkers(){
     this.markersChanged = false;
-    return this.ranges
+    return this.markers
   }
 
   didMarkersChanged() {
