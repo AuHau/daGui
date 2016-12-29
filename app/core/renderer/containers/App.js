@@ -7,6 +7,8 @@ import CodeBuilder from 'graph/CodeBuilder';
 
 import {updateNode} from '../../shared/actions/graph';
 
+// Components
+import ToggleDisplay from 'react-toggle-display';
 import Menu from '../components/layout/Menu';
 import Footer from '../components/layout/Footer';
 import NodesSidebar from '../components/sidebar_node/NodesSidebar';
@@ -61,13 +63,14 @@ class App extends Component {
     const adapter = this.props.file.get('adapter');
     const language = this.props.file.get('language');
 
+    // TODO: Convert toggeling visibility for DetailSidebar also into ToggleDisplay component
     return (
       <div>
         <Menu />
         <NodesSidebar adapter={adapter} />
         <Canvas onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>
         {this.props.nodeDetail && <DetailSidebar node={this.props.nodeDetail.toJS()} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/>}
-        {this.props.showCodeView && <CodeView language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>}
+        <ToggleDisplay show={this.props.showCodeView}><CodeView language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/></ToggleDisplay>
         <Footer messages={this.graphErrors} framework={adapter.getName()} language={this.props.file.get('language').getName()}/>
       </div>
     );

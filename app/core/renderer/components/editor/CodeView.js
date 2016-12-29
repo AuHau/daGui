@@ -1,6 +1,6 @@
 // @flow
 import React, {Component} from 'react';
-import CodeMarker from 'shared/enums/CodeMarker';
+import CodeMarker, {values as CodeMarkerValues} from 'shared/enums/CodeMarker';
 
 import ace from 'brace';
 import 'brace/theme/chrome';
@@ -27,27 +27,14 @@ export default class CodeView extends Component {
     super(props);
 
     this.editor = null;
-    this.ranges = {};
-    this.ranges[CodeMarker.VARIABLE] = [];
-    this.ranges[CodeMarker.NODE] = [];
-  }
-
-  intersects(type) {
-    for(let range of this.ranges[type]){
-      if(this.editor.getSelectionRange().intersects(range)) return true;
-    }
-
-    return false;
-  }
-
-  preventReadonly(next, args) {
-    if (!this.intersects(CodeMarker.VARIABLE)) return;
-    next();
   }
 
   hookMarkers(codeMarkers) {
     const session = this.editor.getSession();
     const Range = ace.acequire('ace/range').Range;
+
+    this.removeAllMarkers();
+    this.resetRanges();
 
     let rangeTmp;
     for(let codeMarker of codeMarkers){
@@ -65,6 +52,18 @@ export default class CodeView extends Component {
 
       this.ranges[codeMarker.type].push(rangeTmp);
     }
+  }
+
+  componentDidMount(){
+    const aceMode = this.props.language.getAceName();
+    require('brace/mode/' + aceMode);
+
+    this.editor = ace.edit('aceCodeEditor');
+    this.editor.getSession().setMode('ace/mode/' + aceMode);
+    this.editor.setTheme('ace/theme/chrome');
+    this.editor.setValue(this.props.codeBuilder.getCode());
+    this.editor.clearSelection();
+    this.hookMarkers(this.props.codeBuilder.getMarkers());
 
     this.editor.keyBinding.addKeyboardHandler({
       handleKeyboard : (data, hash, keyString, keyCode, event) => {
@@ -78,23 +77,17 @@ export default class CodeView extends Component {
 
     before(this.editor, 'onPaste', this.preventReadonly.bind(this));
     before(this.editor, 'onCut', this.preventReadonly.bind(this));
-  }
 
-  componentDidMount(){
-    const aceMode = this.props.language.getAceName();
-    require('brace/mode/' + aceMode);
-
-    this.editor = ace.edit('aceCodeEditor');
-    this.editor.getSession().setMode('ace/mode/' + aceMode);
-    this.editor.setTheme('ace/theme/chrome');
-    this.editor.setValue(this.props.codeBuilder.getCode());
-    this.editor.clearSelection();
-    this.hookMarkers(this.props.codeBuilder.getMarkers());
   }
 
   componentDidUpdate(){
     this.editor.setValue(this.props.codeBuilder.getCode());
+    this.hookMarkers(this.props.codeBuilder.getMarkers());
     this.editor.clearSelection();
+  }
+
+  shouldComponentUpdate(){
+    return this.props.codeBuilder.didCodeChanged();
   }
 
   render() {
@@ -118,6 +111,35 @@ export default class CodeView extends Component {
       <h3>Errors found!</h3>
       {detailedErrors}
       </div>)
+  }
+
+  resetRanges(){
+    this.ranges = {};
+    this.ranges[CodeMarker.VARIABLE] = [];
+    this.ranges[CodeMarker.NODE] = [];
+  }
+
+  intersects(type) {
+    for(let range of this.ranges[type]){
+      if(this.editor.getSelectionRange().intersects(range)) return true;
+    }
+
+    return false;
+  }
+
+  preventReadonly(next, args) {
+    if (!this.intersects(CodeMarker.VARIABLE)) return;
+    next();
+  }
+
+  removeAllMarkers(){
+    const session = this.editor.getSession();
+    const currentMarkers = session.getMarkers();
+    for(let index in currentMarkers){
+      if(currentMarkers.hasOwnProperty(index) && CodeMarkerValues.includes(currentMarkers[index].type)){
+        session.removeMarker(currentMarkers[index].id);
+      }
+    }
   }
 }
 

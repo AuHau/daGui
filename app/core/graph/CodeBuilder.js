@@ -27,6 +27,7 @@ export default class CodeBuilder {
     this.lastCharPosition = this.actualCharPosition;
     this.actualCharPosition += code.length;
     this.code += code;
+    this.codeChanged = true;
 
     return this;
   }
@@ -48,6 +49,7 @@ export default class CodeBuilder {
       type
     });
 
+    this.markersChanged = true;
     return this;
   }
 
@@ -64,6 +66,7 @@ export default class CodeBuilder {
     this.startMarkerChar = 0;
     this.startMarkerLine = 0;
 
+    this.markersChanged = true;
     return this;
   }
 
@@ -85,6 +88,9 @@ export default class CodeBuilder {
 
     this.startMarkerChar = 0;
     this.startMarkerLine = 0;
+
+    this.markersChanged = true;
+    this.codeChanged = true;
   }
 
   getCode() {
@@ -93,10 +99,20 @@ export default class CodeBuilder {
       console.warn('CodeBuilder: The generated code has ' + countedLines + ' lines, but the builder was informed only about ' + this.lineCount + ' of them!');
     }
 
+    this.codeChanged = false;
     return this.code;
   }
 
+  didCodeChanged() {
+    return this.codeChanged;
+  }
+
   getMarkers(){
+    this.markersChanged = false;
     return this.ranges
+  }
+
+  didMarkersChanged() {
+    return this.markersChanged;
   }
 }
