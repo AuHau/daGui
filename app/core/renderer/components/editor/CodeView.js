@@ -27,6 +27,7 @@ export default class CodeView extends Component {
     super(props);
 
     this.editor = null;
+    this.shouldUpdateWithNextChange = true;
   }
 
   hookMarkers(codeMarkers) {
@@ -40,17 +41,29 @@ export default class CodeView extends Component {
     for(let codeMarker of codeMarkers){
       rangeTmp = new Range(codeMarker.lineStart, codeMarker.charStart, codeMarker.lineEnd, codeMarker.charEnd);
 
-      if(codeMarker.type == CodeMarker.VARIABLE){
-        session.addMarker(rangeTmp, styles.variable, codeMarker.type);
-      }else if(codeMarker.type == CodeMarker.NODE){
-        session.addMarker(rangeTmp, styles.node, codeMarker.type);
-      }
-
       rangeTmp.start = session.doc.createAnchor(rangeTmp.start);
       rangeTmp.end = session.doc.createAnchor(rangeTmp.end);
       rangeTmp.end.$insertRight = true;
 
+      if(codeMarker.type == CodeMarker.VARIABLE){
+        session.addMarker(rangeTmp, styles.variable, codeMarker.type);
+        rangeTmp.end.on('change', this.onAnchorChange.bind(this));
+      }else if(codeMarker.type == CodeMarker.NODE){
+        session.addMarker(rangeTmp, styles.node, codeMarker.type);
+      }
+
       this.markers[codeMarker.type][codeMarker.nid] = rangeTmp;
+    }
+  }
+
+  onAnchorChange(e) {
+    const intersectedNid = this.intersects(CodeMarker.VARIABLE);
+
+    // TODO: Old condition - does it make sense? What about editing first line?
+    if (intersectedNid && (e.old.column != 0 && e.old.row != 0 && e.value.column != 0 && e.value.row != 0)) {
+      const newVariableName = this.editor.getSession().doc.getTextRange(this.markers[CodeMarker.VARIABLE][intersectedNid]);
+      this.shouldUpdateWithNextChange = false;
+      this.props.onVariableNameChange(intersectedNid, newVariableName); // TODO: Validation of variable name
     }
   }
 
@@ -59,7 +72,9 @@ export default class CodeView extends Component {
     require('brace/mode/' + aceMode);
 
     this.editor = ace.edit('aceCodeEditor');
-    this.editor.getSession().setMode('ace/mode/' + aceMode);
+    const session = this.editor.getSession();
+    session.setMode('ace/mode/' + aceMode);
+    this.editor.$blockScrolling = Infinity;
     this.editor.setTheme('ace/theme/chrome');
     this.editor.setValue(this.props.codeBuilder.getCode());
     this.editor.clearSelection();
@@ -87,7 +102,10 @@ export default class CodeView extends Component {
   }
 
   shouldComponentUpdate(){
-    return this.props.codeBuilder.didCodeChanged();
+    // TODO: Think of some better way how to handle changes in components from which the actions originate
+    const result = this.shouldUpdateWithNextChange && this.props.codeBuilder.didCodeChanged();
+    this.shouldUpdateWithNextChange = true;
+    return result;
   }
 
   render() {
@@ -114,6 +132,14 @@ export default class CodeView extends Component {
   }
 
   resetRanges(){
+    if(this.markers){
+      const variableMarkers = this.markers[CodeMarker.VARIABLE];
+      for(let nid in variableMarkers){
+        if(!variableMarkers.hasOwnProperty(nid)) continue;
+        variableMarkers[nid].end.detach();
+      }
+    }
+
     this.markers = {};
     this.markers[CodeMarker.VARIABLE] = {};
     this.markers[CodeMarker.NODE] = {};
@@ -149,6 +175,7 @@ CodeView.propTypes = {
   codeBuilder: React.PropTypes.object.isRequired,
   language: React.PropTypes.func.isRequired,
   onHighlight: React.PropTypes.func.isRequired,
+  onVariableNameChange: React.PropTypes.func.isRequired,
   errors: React.PropTypes.array,
   highlight: React.PropTypes.string
 };

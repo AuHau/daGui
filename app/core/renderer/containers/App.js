@@ -5,7 +5,7 @@ import joint from 'jointjs';
 import {hashGraph, normalizeGraph} from 'graph/graphToolkit.js';
 import CodeBuilder from 'graph/CodeBuilder';
 
-import {updateNode} from '../../shared/actions/graph';
+import {updateNode, updateVariable} from '../../shared/actions/graph';
 
 // Components
 import ToggleDisplay from 'react-toggle-display';
@@ -70,7 +70,7 @@ class App extends Component {
         <NodesSidebar adapter={adapter} />
         <Canvas onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>
         {this.props.nodeDetail && <DetailSidebar node={this.props.nodeDetail.toJS()} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/>}
-        <ToggleDisplay show={this.props.showCodeView}><CodeView language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/></ToggleDisplay>
+        <ToggleDisplay show={this.props.showCodeView}><CodeView language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange} onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/></ToggleDisplay>
         <Footer messages={this.graphErrors} framework={adapter.getName()} language={this.props.file.get('language').getName()}/>
       </div>
     );
@@ -89,9 +89,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onNodeChange: (node) => {
-        dispatch(updateNode(node));
-    }
+    onNodeChange: (node) => dispatch(updateNode(node)),
+    onVariableChange: (nid, newVariableName) => dispatch(updateVariable(nid, newVariableName))
   };
 };
 
