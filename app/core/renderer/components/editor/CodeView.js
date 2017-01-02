@@ -50,7 +50,7 @@ export default class CodeView extends Component {
       rangeTmp.end = session.doc.createAnchor(rangeTmp.end);
       rangeTmp.end.$insertRight = true;
 
-      this.markers[codeMarker.type].push(rangeTmp);
+      this.markers[codeMarker.type][codeMarker.nid] = rangeTmp;
     }
   }
 
@@ -115,16 +115,18 @@ export default class CodeView extends Component {
 
   resetRanges(){
     this.markers = {};
-    this.markers[CodeMarker.VARIABLE] = [];
-    this.markers[CodeMarker.NODE] = [];
+    this.markers[CodeMarker.VARIABLE] = {};
+    this.markers[CodeMarker.NODE] = {};
   }
 
   intersects(type) {
-    for(let range of this.markers[type]){
-      if(this.editor.getSelectionRange().intersects(range)) return true;
+    const markersGroup = this.markers[type];
+    for(let nid in markersGroup){
+      if(!markersGroup.hasOwnProperty(nid)) continue;
+      if(this.editor.getSelectionRange().intersects(markersGroup[nid])) return nid;
     }
 
-    return false;
+    return null;
   }
 
   preventReadonly(next, args) {
