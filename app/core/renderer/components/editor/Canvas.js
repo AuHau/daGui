@@ -104,7 +104,6 @@ class Canvas extends Component {
     const parentNode = element.findView(this.paper).el;
     const input = parentNode.querySelectorAll('input')[0];
     input.value = name;
-    input.setAttribute('data-old-value', name);
 
     const classList = parentNode.querySelectorAll('.variableName')[0].classList;
     classList.add.apply(classList, styles.active.split(' '));
@@ -214,7 +213,7 @@ class Canvas extends Component {
 
   onVariableNameChange(e){
     const nodeId = e.target.closest('.joint-cell').getAttribute('model-id');
-    this.props.onUpdateVariable(nodeId, e.target.value, e.target.getAttribute('data-old-value'))
+    this.props.onUpdateVariable(nodeId, e.target.value)
   }
 
   onFocus(e){
@@ -286,7 +285,7 @@ const mapDispatchToProps = (dispatch) => {
           graphActions.updateNode(linkObject)
         ]);
       },
-      onUpdateVariable: (nid, newVariableName ,oldVariableName) => dispatch(graphActions.updateVariable(nid, newVariableName, oldVariableName)),
+      onUpdateVariable: (nid, newVariableName) => dispatch(graphActions.updateVariable(nid, newVariableName)),
       onRemoveVariable: (nid) => dispatch(graphActions.removeVariable(nid)),
       onCanvasResize: (dimensions) => dispatch(canvasResize(dimensions)),
       onNodeMove: (nid, x, y) => dispatch(graphActions.moveNode(nid, x, y)),

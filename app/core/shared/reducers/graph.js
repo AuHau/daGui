@@ -36,8 +36,9 @@ export default (state, action) => {
 
     case GRAPH.UPDATE_VARIABLE:
       index = findIndex(state, action.payload.nid);
-      let tmp = state.setIn(['opened', getActive(state), 'graph', 'cells', index, 'dfGui', 'variableName'], action.payload.newVariableName);
-      return tmp.deleteIn(['opened', getActive(state), 'usedVariables', action.payload.oldVariableName])
+      const oldVariableName = state.getIn(['opened', getActive(state), 'graph', 'cells', index, 'dfGui', 'variableName']);
+      return state.setIn(['opened', getActive(state), 'graph', 'cells', index, 'dfGui', 'variableName'], action.payload.newVariableName)
+                .deleteIn(['opened', getActive(state), 'usedVariables', oldVariableName])
                 .setIn(['opened', getActive(state), 'usedVariables', action.payload.newVariableName], true);
 
     case GRAPH.REMOVE_VARIABLE:

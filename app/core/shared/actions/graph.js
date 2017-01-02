@@ -23,10 +23,10 @@ export const updateNode = (nodeObject) => {
   }
 };
 
-export const updateVariable = (nid, newVariableName, oldVariableName) => {
+export const updateVariable = (nid, newVariableName) => {
   return {
     type: GRAPH.UPDATE_VARIABLE,
-    payload: { nid, newVariableName, oldVariableName}
+    payload: { nid, newVariableName}
   }
 };
 
