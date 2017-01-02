@@ -4,14 +4,16 @@ import CodeMarker, {values as CodeMarkerValues} from 'shared/enums/CodeMarker';
 
 import ace from 'brace';
 import 'brace/theme/chrome';
+const event = ace.acequire('ace/lib/event');
+const Range = ace.acequire('ace/range').Range;
 
 import levels, {classTranslation, textTranslation} from '../../../shared/enums/ErrorLevel';
 import styles from './CodeView.scss';
 
 function before(obj, method, wrapper) {
-  var orig = obj[method];
+  const orig = obj[method];
   obj[method] = function() {
-    var args = Array.prototype.slice.call(arguments);
+    const args = Array.prototype.slice.call(arguments);
     return wrapper.call(this, function(){
       return orig.apply(obj, args);
     }, args);
@@ -28,11 +30,11 @@ export default class CodeView extends Component {
 
     this.editor = null;
     this.shouldUpdateWithNextChange = true;
+    this.currentNidToHighlight = null;
   }
 
   hookMarkers(codeMarkers) {
     const session = this.editor.getSession();
-    const Range = ace.acequire('ace/range').Range;
 
     this.removeAllMarkers();
     this.resetRanges();
@@ -80,6 +82,13 @@ export default class CodeView extends Component {
     this.editor.clearSelection();
     this.hookMarkers(this.props.codeBuilder.getMarkers());
 
+    // Highlighting nodes
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseOut = this.onMouseOut.bind(this);
+    event.addListener(this.editor.renderer.scroller, "mousemove", this.onMouseMove);
+    event.addListener(this.editor.renderer.content, "mouseout", this.onMouseOut);
+
+    // Enable editting only variable names
     this.editor.keyBinding.addKeyboardHandler({
       handleKeyboard : (data, hash, keyString, keyCode, event) => {
         if (hash === -1 || (keyCode <= 40 && keyCode >= 37)) return false;
@@ -89,7 +98,6 @@ export default class CodeView extends Component {
         }
       }
     });
-
     before(this.editor, 'onPaste', this.preventReadonly.bind(this));
     before(this.editor, 'onCut', this.preventReadonly.bind(this));
 
@@ -99,6 +107,12 @@ export default class CodeView extends Component {
     this.editor.setValue(this.props.codeBuilder.getCode());
     this.hookMarkers(this.props.codeBuilder.getMarkers());
     this.editor.clearSelection();
+  }
+
+  componentWillUnmount(){
+    this.onMouseOut();
+    event.removeListener(this.editor.renderer.scroller, "mousemove", this.onMouseMove);
+    event.removeListener(this.editor.renderer.content, "mouseout", this.onMouseOut);
   }
 
   shouldComponentUpdate(){
@@ -115,6 +129,28 @@ export default class CodeView extends Component {
         <div className={styles.codeEditor} id="aceCodeEditor"></div>
       </div>
     );
+  }
+
+  onMouseMove(e){
+    const x = e.clientX;
+    const y = e.clientY;
+
+    const r = this.editor.renderer;
+    const canvasPos = r.rect || (r.rect = r.scroller.getBoundingClientRect());
+    const offset = (x + r.scrollLeft - canvasPos.left - r.$padding) / r.characterWidth;
+    const row = Math.floor((y + r.scrollTop - canvasPos.top) / r.lineHeight);
+    const col = Math.round(offset);
+
+    const screenPos = {row: row, column: col, side: offset - col > 0 ? 1 : -1};
+    const docPos = this.editor.getSession().screenToDocumentPosition(screenPos.row, screenPos.column);
+    const currentRange = new Range(docPos.row, docPos.column, docPos.row, docPos.column);
+
+    const nidToHighlight = this.intersects(CodeMarker.NODE, currentRange);
+    if(nidToHighlight != this.currentNidToHighlight) this.props.onHighlight(nidToHighlight); // Null can be desired
+  }
+
+  onMouseOut(){
+    this.props.onHighlight(null);
   }
 
   renderErrors(){
@@ -145,11 +181,11 @@ export default class CodeView extends Component {
     this.markers[CodeMarker.NODE] = {};
   }
 
-  intersects(type) {
+  intersects(type, withRange = this.editor.getSelectionRange()) {
     const markersGroup = this.markers[type];
     for(let nid in markersGroup){
       if(!markersGroup.hasOwnProperty(nid)) continue;
-      if(this.editor.getSelectionRange().intersects(markersGroup[nid])) return nid;
+      if(withRange.intersects(markersGroup[nid])) return nid;
     }
 
     return null;

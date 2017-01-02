@@ -31,6 +31,7 @@ class Canvas extends Component {
     this.graph = new joint.dia.Graph();
     this.currentDetailCell = null;
     this.startingPointerPosition = null;
+    this.currentNidToHighlight = null;
     this.occupiedPorts = {};
 
     // TODO: Find better place to place this
@@ -90,10 +91,18 @@ class Canvas extends Component {
     });
 
     if(this.props.detailNodeId){ // TODO: Fix - on DetailNode change double highlighting
-      const detailNode = this.graph.getCell(this.props.detailNodeId);
-      const view = this.paper.findViewByModel(detailNode);
-      view.highlight(view.el.querySelectorAll('rect')); // TODO: Delegate returning element for highlightint to Node Template
+      this.highlightNode(this.props.detailNodeId);
     }
+
+    if(this.props.highlight){
+      this.highlightNode(this.props.highlight);
+    }
+  }
+
+  highlightNode(nid){
+    const detailNode = this.graph.getCell(nid);
+    const view = this.paper.findViewByModel(detailNode);
+    view.highlight(view.el.querySelectorAll('rect')); // TODO: Delegate returning element for highlightint to Node Template
   }
 
   render() {
