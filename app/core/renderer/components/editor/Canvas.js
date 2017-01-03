@@ -30,7 +30,6 @@ class Canvas extends Component {
     super(props);
     this.graph = new joint.dia.Graph();
     this.currentDetailCell = null;
-    this.currentHoverCell = null;
     this.startingPointerPosition = null;
     this.currentNidToHighlight = null;
     this.occupiedPorts = {};
@@ -82,7 +81,7 @@ class Canvas extends Component {
   }
 
   componentDidUpdate(){
-    // TODO: Optimalization - don't update when the action was created by graph's event
+    // TODO: Optimalization - don't update when the action was created by graph's event or graph can be just modified
     this.graph.fromJSON(this.props.graphJson.toJS());
     this.variableNameIterator(this.graph.getElements());
 
@@ -105,22 +104,7 @@ class Canvas extends Component {
   highlightNode(nid, className = styles.nodeDetail){
     const detailNode = this.graph.getCell(nid);
     const view = this.paper.findViewByModel(detailNode);
-    this.highlight(view, className);
-  }
-
-  highlight(view, className = styles.nodeDetail){
-    view.highlight(view.el.querySelectorAll('rect'), {
-      highlighter: {
-        name: 'addClass',
-        options: {
-          className: className
-        }
-      }
-    }); // TODO: Delegate returning element for highlightint to Node Template
-  }
-
-  unhighlight(view, className = styles.nodeDetail){
-    view.unhighlight(view.el.querySelectorAll('rect'), {
+    view.highlight(view.el.querySelectorAll('rect'), {     // TODO: Delegate returning element for highlightint to Node Template
       highlighter: {
         name: 'addClass',
         options: {
@@ -220,7 +204,6 @@ class Canvas extends Component {
     // blank:pointerclick event
     if(cellView.originalEvent){
       if(this.currentDetailCell){
-        this.unhighlight(this.currentDetailCell);
         this.props.onNodeDetail(null);
         this.currentDetailCell = null;
       }
@@ -258,15 +241,12 @@ class Canvas extends Component {
   }
 
   onMouseOut(cellView, e){
-    this.currentHoverCell && this.unhighlight(this.currentHoverCell, styles.nodeHover);
     this.props.onHighlight(null);
   }
 
   onMouseOver(cellView, e){
     if(!this.props.showCodeView || cellView.model.isLink()) return;
 
-    this.currentHoverCell = cellView;
-    this.highlight(cellView, styles.nodeHover);
     this.props.onHighlight(cellView.model.id);
   }
 
