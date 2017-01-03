@@ -30,7 +30,8 @@ export default class CodeView extends Component {
 
     this.editor = null;
     this.shouldUpdateWithNextChange = true;
-    this.currentNidToHighlight = null;
+    this.currentHoveredNid = null;
+    this.currentActiveNid = null;
   }
 
   hookMarkers(codeMarkers) {
@@ -88,6 +89,20 @@ export default class CodeView extends Component {
     event.addListener(this.editor.renderer.scroller, "mousemove", this.onMouseMove);
     event.addListener(this.editor.renderer.content, "mouseout", this.onMouseOut);
 
+    // Nodes under cursor highlighting
+    session.selection.on('changeCursor', () => {
+      const nid = this.intersects(CodeMarker.NODE);
+
+      if(this.currentActiveNid == nid) return;
+
+      this.removeMarkers(CodeMarker.ACTIVE);
+      this.props.onActive(nid);
+      this.currentActiveNid = nid;
+      if(nid){
+        session.addMarker(this.markers[CodeMarker.NODE][nid], styles.nodeActive, CodeMarker.ACTIVE);
+      }
+    });
+
     // Enable editting only variable names
     this.editor.keyBinding.addKeyboardHandler({
       handleKeyboard : (data, hash, keyString, keyCode, event) => {
@@ -133,11 +148,11 @@ export default class CodeView extends Component {
   }
 
   highlight(nid){
-    this.removeMarkers(CodeMarker.HIGHLIGHT);
+    this.removeMarkers(CodeMarker.HOVER);
 
     if(nid) {
       const range = this.markers[CodeMarker.NODE][nid];
-      this.editor.getSession().addMarker(range, styles.nodeHover, CodeMarker.HIGHLIGHT);
+      this.editor.getSession().addMarker(range, styles.nodeHover, CodeMarker.HOVER);
     }
   }
 
@@ -156,9 +171,9 @@ export default class CodeView extends Component {
     const currentRange = new Range(docPos.row, docPos.column, docPos.row, docPos.column);
 
     const nidToHighlight = this.intersects(CodeMarker.NODE, currentRange);
-    if(nidToHighlight != this.currentNidToHighlight) {
+    if(nidToHighlight != this.currentHoveredNid) {
       this.props.onHighlight(nidToHighlight); // Null can be desired
-      this.currentNidToHighlight = nidToHighlight;
+      this.currentHoveredNid = nidToHighlight;
     }
   }
 
@@ -225,6 +240,7 @@ CodeView.propTypes = {
   codeBuilder: React.PropTypes.object.isRequired,
   language: React.PropTypes.func.isRequired,
   onHighlight: React.PropTypes.func.isRequired,
+  onActive: React.PropTypes.func.isRequired,
   onVariableNameChange: React.PropTypes.func.isRequired,
   errors: React.PropTypes.array,
   highlight: React.PropTypes.string

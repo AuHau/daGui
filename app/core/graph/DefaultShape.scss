@@ -31,8 +31,7 @@
 }
 
 .nodeHover{
-  stroke-width: $node-hover-stroke-width;
-  stroke: $node-hover-color;
+  fill: $node-hover-color;
 }
 
 .nodeActive{

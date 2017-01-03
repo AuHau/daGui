@@ -31,7 +31,7 @@ class Canvas extends Component {
     this.graph = new joint.dia.Graph();
     this.currentDetailCell = null;
     this.startingPointerPosition = null;
-    this.currentNidToHighlight = null;
+    this.currentHoveredNid = null;
     this.occupiedPorts = {};
 
     // TODO: Find better place to place this
@@ -96,8 +96,12 @@ class Canvas extends Component {
       this.highlightNode(this.props.detailNodeId, styles.nodeDetail);
     }
 
-    if(this.props.highlight){
-      this.highlightNode(this.props.highlight, styles.nodeHover);
+    if(this.props.hover){
+      this.highlightNode(this.props.hover, styles.nodeHover);
+    }
+
+    if(this.props.active){
+      this.highlightNode(this.props.active, styles.nodeActive);
     }
   }
 
@@ -241,13 +245,13 @@ class Canvas extends Component {
   }
 
   onMouseOut(cellView, e){
-    this.props.onHighlight(null);
+    this.props.onHover(null);
   }
 
   onMouseOver(cellView, e){
     if(!this.props.showCodeView || cellView.model.isLink()) return;
 
-    this.props.onHighlight(cellView.model.id);
+    this.props.onHover(cellView.model.id);
   }
 
   onPointerDown(cellView, e, x, y){
@@ -331,8 +335,9 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 Canvas.propTypes = {
-  highlight: React.PropTypes.string,
-  onHighlight: React.PropTypes.func.isRequired
+  active: React.PropTypes.string,
+  hover: React.PropTypes.string,
+  onHover: React.PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Canvas);

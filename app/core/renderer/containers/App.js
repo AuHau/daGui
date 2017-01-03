@@ -21,17 +21,23 @@ class App extends Component {
     super(props);
 
     this.state = {
-      highlightNodeId: null
+      hoverNid: null,
+      activeNid: null,
     };
 
     this.codeBuilder = new CodeBuilder();
     this.graphErrors = [];
     this.graphHash = null;
-    this.onHighlight = this.onHighlight.bind(this);
+    this.onHover = this.onHover.bind(this);
+    this.onActive = this.onActive.bind(this);
   }
 
-  onHighlight(nid){
-    this.setState({highlightNodeId: nid});
+  onHover(nid){
+    this.setState({hoverNid: nid});
+  }
+
+  onActive(nid){
+    this.setState({activeNid: nid});
   }
 
   componentWillUpdate(nextProps){
@@ -68,9 +74,9 @@ class App extends Component {
       <div>
         <Menu />
         <NodesSidebar adapter={adapter} />
-        <Canvas onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/>
+        <Canvas onHover={this.onHover} hover={this.state.hoverNid} active={this.state.activeNid}/>
         {this.props.nodeDetail && <DetailSidebar node={this.props.nodeDetail.toJS()} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/>}
-        <ToggleDisplay show={this.props.showCodeView}><CodeView language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange} onHighlight={this.onHighlight} highlight={this.state.highlightNodeId}/></ToggleDisplay>
+        <ToggleDisplay show={this.props.showCodeView}><CodeView language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange} onActive={this.onActive} onHighlight={this.onHover} highlight={this.state.hoverNid}/></ToggleDisplay>
         <Footer messages={this.graphErrors} framework={adapter.getName()} language={this.props.file.get('language').getName()}/>
       </div>
     );
