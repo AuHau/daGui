@@ -24,3 +24,18 @@
 .focused{
   opacity: 1;
 }
+
+.nodeDetail{
+  stroke-width: $node-detail-stroke-width;
+  stroke: $node-detail-color;
+}
+
+.nodeHover{
+  stroke-width: $node-hover-stroke-width;
+  stroke: $node-hover-color;
+}
+
+.nodeActive{
+  stroke-width: $node-active-stroke-width;
+  stroke: $node-active-color;
+}

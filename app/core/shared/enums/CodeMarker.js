@@ -1,9 +1,10 @@
 const definition = {
   VARIABLE: 'VARIABLE',
-  NODE: 'NODE'
+  NODE: 'NODE',
+  HIGHLIGHT: 'HIGHLIGHT'
 };
 export default definition;
-export const values = [definition.VARIABLE, definition.NODE];
+export const values = [definition.VARIABLE, definition.NODE, definition.HIGHLIGHT];
 
 const classTranslation = {};
 classTranslation[definition.VARIABLE] = 'variableMarker';

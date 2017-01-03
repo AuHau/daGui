@@ -9,10 +9,4 @@
   height: calc(100% - #{$menu-height} - #{$footer-height});
 }
 
-.focused{
-  composes: focused from '../../../graph/DefaultShape.scss'
-}
-
-.active{
-  composes: active from '../../../graph/DefaultShape.scss'
-}
+@import "../../../graph/DefaultShape.scss";

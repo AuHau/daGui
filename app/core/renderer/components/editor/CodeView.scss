@@ -54,7 +54,8 @@
   position: absolute;
   pointer-events: auto;
 }
-.node:hover{
+.node:hover, .nodeHover{
+  position:absolute;
   border: 1px solid $yellow;
   background-color: rgba($yellow, 0.4);
 }

@@ -36,7 +36,7 @@ export default class CodeView extends Component {
   hookMarkers(codeMarkers) {
     const session = this.editor.getSession();
 
-    this.removeAllMarkers();
+    this.removeMarkers();
     this.resetRanges();
 
     let rangeTmp;
@@ -103,23 +103,24 @@ export default class CodeView extends Component {
 
   }
 
-  componentDidUpdate(){
-    this.editor.setValue(this.props.codeBuilder.getCode());
-    this.hookMarkers(this.props.codeBuilder.getMarkers());
-    this.editor.clearSelection();
+  componentWillUpdate(nextProps) {
+    // TODO: Think of some better way how to handle changes in components from which the actions originate
+    if (this.shouldUpdateWithNextChange && nextProps.codeBuilder.didCodeChanged()) {
+      this.editor.setValue(nextProps.codeBuilder.getCode());
+      this.hookMarkers(nextProps.codeBuilder.getMarkers());
+      this.editor.clearSelection();
+      this.shouldUpdateWithNextChange = true;
+    }
+
+    if(this.props.highlight != nextProps.highlight){
+      this.highlight(nextProps.highlight);
+    }
   }
 
   componentWillUnmount(){
     this.onMouseOut();
     event.removeListener(this.editor.renderer.scroller, "mousemove", this.onMouseMove);
     event.removeListener(this.editor.renderer.content, "mouseout", this.onMouseOut);
-  }
-
-  shouldComponentUpdate(){
-    // TODO: Think of some better way how to handle changes in components from which the actions originate
-    const result = this.shouldUpdateWithNextChange && this.props.codeBuilder.didCodeChanged();
-    this.shouldUpdateWithNextChange = true;
-    return result;
   }
 
   render() {
@@ -129,6 +130,15 @@ export default class CodeView extends Component {
         <div className={styles.codeEditor} id="aceCodeEditor"></div>
       </div>
     );
+  }
+
+  highlight(nid){
+    this.removeMarkers(CodeMarker.HIGHLIGHT);
+
+    if(nid) {
+      const range = this.markers[CodeMarker.NODE][nid];
+      this.editor.getSession().addMarker(range, styles.nodeHover, CodeMarker.HIGHLIGHT);
+    }
   }
 
   onMouseMove(e){
@@ -146,7 +156,10 @@ export default class CodeView extends Component {
     const currentRange = new Range(docPos.row, docPos.column, docPos.row, docPos.column);
 
     const nidToHighlight = this.intersects(CodeMarker.NODE, currentRange);
-    if(nidToHighlight != this.currentNidToHighlight) this.props.onHighlight(nidToHighlight); // Null can be desired
+    if(nidToHighlight != this.currentNidToHighlight) {
+      this.props.onHighlight(nidToHighlight); // Null can be desired
+      this.currentNidToHighlight = nidToHighlight;
+    }
   }
 
   onMouseOut(){
@@ -196,11 +209,12 @@ export default class CodeView extends Component {
     next();
   }
 
-  removeAllMarkers(){
+  removeMarkers(type){
     const session = this.editor.getSession();
     const currentMarkers = session.getMarkers();
     for(let index in currentMarkers){
-      if(currentMarkers.hasOwnProperty(index) && CodeMarkerValues.includes(currentMarkers[index].type)){
+      if(currentMarkers.hasOwnProperty(index) &&
+          ((!type && CodeMarkerValues.includes(currentMarkers[index].type)) || currentMarkers[index].type == type)){
         session.removeMarker(currentMarkers[index].id);
       }
     }

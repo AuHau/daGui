@@ -30,6 +30,7 @@ class Canvas extends Component {
     super(props);
     this.graph = new joint.dia.Graph();
     this.currentDetailCell = null;
+    this.currentHoverCell = null;
     this.startingPointerPosition = null;
     this.currentNidToHighlight = null;
     this.occupiedPorts = {};
@@ -70,6 +71,8 @@ class Canvas extends Component {
     this.graph.fromJSON(this.props.graphJson.toJS());
 
     // Event listeners
+    this.paper.on('cell:mouseout', this.onMouseOut.bind(this));
+    this.paper.on('cell:mouseover', this.onMouseOver.bind(this));
     this.paper.on('cell:pointerdown', this.onPointerDown.bind(this));
     this.paper.on('cell:pointerup', this.onPointerUp.bind(this));
     this.paper.on('blank:pointerclick', this.onNodeDetail.bind(this));
@@ -91,18 +94,40 @@ class Canvas extends Component {
     });
 
     if(this.props.detailNodeId){ // TODO: Fix - on DetailNode change double highlighting
-      this.highlightNode(this.props.detailNodeId);
+      this.highlightNode(this.props.detailNodeId, styles.nodeDetail);
     }
 
     if(this.props.highlight){
-      this.highlightNode(this.props.highlight);
+      this.highlightNode(this.props.highlight, styles.nodeHover);
     }
   }
 
-  highlightNode(nid){
+  highlightNode(nid, className = styles.nodeDetail){
     const detailNode = this.graph.getCell(nid);
     const view = this.paper.findViewByModel(detailNode);
-    view.highlight(view.el.querySelectorAll('rect')); // TODO: Delegate returning element for highlightint to Node Template
+    this.highlight(view, className);
+  }
+
+  highlight(view, className = styles.nodeDetail){
+    view.highlight(view.el.querySelectorAll('rect'), {
+      highlighter: {
+        name: 'addClass',
+        options: {
+          className: className
+        }
+      }
+    }); // TODO: Delegate returning element for highlightint to Node Template
+  }
+
+  unhighlight(view, className = styles.nodeDetail){
+    view.unhighlight(view.el.querySelectorAll('rect'), {
+      highlighter: {
+        name: 'addClass',
+        options: {
+          className: className
+        }
+      }
+    });
   }
 
   render() {
@@ -195,7 +220,7 @@ class Canvas extends Component {
     // blank:pointerclick event
     if(cellView.originalEvent){
       if(this.currentDetailCell){
-        this.currentDetailCell.unhighlight();
+        this.unhighlight(this.currentDetailCell);
         this.props.onNodeDetail(null);
         this.currentDetailCell = null;
       }
@@ -209,10 +234,7 @@ class Canvas extends Component {
       return;
     }
 
-    cellView.highlight(cellView.el.querySelectorAll('rect'));
-    if(this.currentDetailCell) this.currentDetailCell.unhighlight();
     this.currentDetailCell = cellView;
-
     this.props.onNodeDetail(cellView.model.id);
   }
 
@@ -233,6 +255,19 @@ class Canvas extends Component {
   onBlur(e){
     const node = e.target.parentNode.parentNode.parentNode;
     node.classList.remove.apply(node.classList, styles.focused.split(' '));
+  }
+
+  onMouseOut(cellView, e){
+    this.currentHoverCell && this.unhighlight(this.currentHoverCell, styles.nodeHover);
+    this.props.onHighlight(null);
+  }
+
+  onMouseOver(cellView, e){
+    if(!this.props.showCodeView || cellView.model.isLink()) return;
+
+    this.currentHoverCell = cellView;
+    this.highlight(cellView, styles.nodeHover);
+    this.props.onHighlight(cellView.model.id);
   }
 
   onPointerDown(cellView, e, x, y){
@@ -282,7 +317,8 @@ const mapStateToProps = (state) => {
     usedVariables: state.getIn(['files', 'opened', activeFile, 'usedVariables']).toJS(),
     adapter: state.getIn(['files', 'opened', activeFile, 'adapter']),
     graphJson: state.getIn(['files', 'opened', activeFile, 'graph']),
-    detailNodeId: state.getIn('ui.detailNodeId'.split('.'))
+    detailNodeId: state.getIn('ui.detailNodeId'.split('.')),
+    showCodeView: state.getIn('ui.showCodeView'.split('.'))
   };
 };
 
