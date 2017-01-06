@@ -59,7 +59,6 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
 
     output
       .add(INDENTATION, '.cache()')
-      .marker(node.id)
       .breakLine();
   }
 
