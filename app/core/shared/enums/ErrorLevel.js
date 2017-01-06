@@ -1,20 +1,20 @@
 const definition = {
-  VARIABLE: 'ERROR',
-  NODE: 'WARNING',
+  ERROR: 'ERROR',
+  WARNING: 'WARNING',
   INFO: 'INFO'
 };
 export default definition;
 
 const classTranslation = {};
-classTranslation[definition.VARIABLE] = 'errorMessage';
-classTranslation[definition.NODE] = 'warningMessage';
+classTranslation[definition.ERROR] = 'errorMessage';
+classTranslation[definition.WARNING] = 'warningMessage';
 classTranslation[definition.INFO] = 'infoMessage';
 
 export {classTranslation};
 
 const textTranslation = {};
-textTranslation[definition.VARIABLE] = 'Error';
-textTranslation[definition.NODE] = 'Warning';
+textTranslation[definition.ERROR] = 'Error';
+textTranslation[definition.WARNING] = 'Warning';
 textTranslation[definition.INFO] = 'Info';
 
 export {textTranslation};

@@ -2,11 +2,9 @@ import topsort from 'topsort';
 
 let variablesComponent = {};
 let componentVariables = {};
-// let renamedComponents = {};
 
 function processNode(node, component, graph, usedVariables, language, afterOutBreak = false) {
   if (node.component) {
-    // if (node.component != component) renamedComponents[component] = node.component; // Rename component
     return; // Node visited ==> backtrack
   }
 
@@ -39,7 +37,6 @@ function processNode(node, component, graph, usedVariables, language, afterOutBr
 export default function detectDependencies(graph, inputs, usedVariables, language) {
   variablesComponent = {};
   componentVariables = {};
-  // renamedComponents = {};
   let componentCounter = 1;
 
   for (let input of inputs) {
@@ -70,7 +67,14 @@ export default function detectDependencies(graph, inputs, usedVariables, languag
     componentInputs[input.component] = input;
   }
 
-  let sortedDependencies = topsort(dependencyGraph);
+  let sortedDependencies;
+  try{
+    sortedDependencies = topsort(dependencyGraph);
+  }catch (e){
+    throw {name: 'CircularDependency', message: 'The code contains circular dependency between variables!'}; // TODO: Find out where is the cycle.
+  }
+
+
   let sortedInputs = [];
   for(let component of sortedDependencies){
     sortedInputs.unshift(componentInputs[component]);

@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import joint from 'jointjs';
 import {hashGraph, normalizeGraph} from 'graph/graphToolkit.js';
 import CodeBuilder from 'graph/CodeBuilder';
+import ErrorType from '../../shared/enums/ErrorType';
+import ErrorLevel from '../../shared/enums/ErrorLevel';
 
 import {updateNode, updateVariable} from '../../shared/actions/graph';
 
@@ -60,7 +62,23 @@ class App extends Component {
       return; // Generation will only happen when has to (eq. when CodeView is active)
 
     if (!this.graphErrors.length) {
-      adapter.generateCode(this.codeBuilder, normalizedGraph, inputs, usedVariables, language);
+      try {
+        adapter.generateCode(this.codeBuilder, normalizedGraph, inputs, usedVariables, language);
+      } catch (e){
+        if(e.name == 'CircularDependency'){
+          this.graphErrors = [
+            {
+              id: null,
+              type: ErrorType.DEPENDENCIES_CYCLE,
+              description: e.message,
+              level: ErrorLevel.ERROR,
+              importance: 10
+            }
+          ]
+        }else{
+          throw e;
+        }
+      }
     }
 
     this.graphHash = newHash;
