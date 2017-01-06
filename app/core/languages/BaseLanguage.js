@@ -20,4 +20,8 @@ export default class BaseLanguage {
     throw new TypeError("Method 'nameNode' has to be implemented!");
   }
 
+  static parseVariables(){
+    throw new TypeError("Method 'parseExternalVariables' has to be implemented!");
+  }
+
 };

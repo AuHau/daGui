@@ -15,12 +15,30 @@ export default class Python extends BaseLanguage {
   }
 
   static nameNode(nodeTemplate, usedVariables){
-    // TODO: Implement SnakeCase generator to drop lodash depdendency
+    // TODO: Implement SnakeCase generator to drop lodash depedendency
     const baseName = _.snakeCase(nodeTemplate.getName());
 
     let num;
     for(num = 1; usedVariables[baseName + num]; num++ ){}
 
     return baseName + num;
+  }
+
+  // TODO: Implement intelligent Python parsing (ignoring scope variables, keywords etc)
+  static parseVariables(parameters, usedVariables){
+    let variables = [];
+
+    let splittedParameter;
+    for(let parameter of parameters){
+      splittedParameter = parameter.split(' ');
+
+      for(let word of splittedParameter){
+        if(usedVariables[word]){
+          variables.push(word);
+        }
+      }
+    }
+
+    return variables;
   }
 }

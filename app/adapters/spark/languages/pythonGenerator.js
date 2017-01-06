@@ -1,5 +1,6 @@
 import Python from 'languages/Python';
 import CodeMarker from 'shared/enums/CodeMarker';
+import detectDependencies from '../../utils/detectDependencies';
 
 const IMPORT = 'from pyspark import SparkConf, SparkContext';
 const INIT = ['conf = SparkConf()', 'sc = SparkContext(\'local\', \'test\', conf=conf)']; // TODO: SparkContext and SparkConf based on Running configuration
@@ -72,7 +73,8 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
   }
 }
 
-export default function generatePython(output, adapter, normalizedGraph, inputs) {
+export default function generatePython(output, adapter, normalizedGraph, inputs, usedVariables) {
+  let {sortedInputs, dependencies} = detectDependencies(normalizedGraph, inputs, usedVariables, Python);
   const templates = adapter.getNodeTemplates();
   const variableStack = [];
   output.reset();
@@ -90,7 +92,7 @@ export default function generatePython(output, adapter, normalizedGraph, inputs)
     .breakLine();
 
   let markerIndex;
-  for(let input of inputs) {
+  for(let input of sortedInputs) {
     variableStack.push(input.variableName);
 
     markerIndex = output

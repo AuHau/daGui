@@ -44,6 +44,7 @@ class App extends Component {
     const adapter = nextProps.file.get('adapter');
     const language = nextProps.file.get('language');
     const graph = nextProps.file.get('graph').toJS();
+    const usedVariables = nextProps.file.get('usedVariables').toJS();
 
     const {normalizedGraph, inputs}= normalizeGraph(graph, adapter.isTypeInput);
     const newHash = hashGraph(normalizedGraph);
@@ -59,7 +60,7 @@ class App extends Component {
       return; // Generation will only happen when has to (eq. when CodeView is active)
 
     if (!this.graphErrors.length) {
-      adapter.generateCode(this.codeBuilder, normalizedGraph, inputs, language);
+      adapter.generateCode(this.codeBuilder, normalizedGraph, inputs, usedVariables, language);
     }
 
     this.graphHash = newHash;

@@ -10,7 +10,7 @@ import styles from "./Canvas.scss";
 import {changeNodeDetail, canvasResize} from '../../../shared/actions/ui';
 import * as graphActions from '../../../shared/actions/graph';
 
-const CLICK_TRESHOLD = 5;
+const CLICK_TRESHOLD = 2;
 const VARIABLE_NAME_MAX_WIDTH = 150;
 const VARIABLE_NAME_MIN_WIDTH = 30;
 

@@ -34,7 +34,7 @@ const isNodeTypeInGroup = (adapter, nodeType, groupName) => {
 
 /**
  * Implements topological ordering to check if graph contains cycles ==> O(|E|+|V|)
- * Inspiried from: https://simplapi.wordpress.com/2015/08/19/detect-graph-cycle-in-javascript/
+ * Inspired from: https://simplapi.wordpress.com/2015/08/19/detect-graph-cycle-in-javascript/
  * TODO: Implement algorithm for searching Strongly connected component to identify cycles (not just its presents)
  *
  * @param normalizedGraph
