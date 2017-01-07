@@ -19,7 +19,7 @@ import oneGraphWithUnionAndDependencies from '../../../test/data/graphs/oneGraph
 
 const initState = Immutable.fromJS({
   files: {
-    active: 4, // Index of active file
+    active: 2, // Index of active file
     opened: [
       blank,
       simpleSingleSubgraph,

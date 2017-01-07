@@ -73,7 +73,7 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
 }
 
 export default function generatePython(output, adapter, normalizedGraph, inputs, usedVariables) {
-  let {sortedInputs, dependencies} = detectDependencies(normalizedGraph, inputs, usedVariables, Python);
+  inputs = detectDependencies(normalizedGraph, inputs, usedVariables, Python);
   const templates = adapter.getNodeTemplates();
   const variableStack = [];
   output.reset();
@@ -91,7 +91,7 @@ export default function generatePython(output, adapter, normalizedGraph, inputs,
     .breakLine();
 
   let markerIndex;
-  for(let input of sortedInputs) {
+  for(let input of inputs) {
     variableStack.push(input.variableName);
 
     markerIndex = output
