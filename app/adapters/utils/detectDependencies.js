@@ -20,6 +20,16 @@ function findSubdependencies(subcomponent, subcomponents, dependenciesList){
     }
 }
 
+/**
+ * Recursive function for DFS of dependencies
+ *
+ * @param node
+ * @param component
+ * @param graph
+ * @param usedVariables
+ * @param language
+ * @returns {{variables: Set, dependencies: Set}}
+ */
 function processNode(node, component, graph, usedVariables, language) {
   if (node.component) { // Node visited ==> backtrack
     return {
@@ -101,7 +111,7 @@ function processNode(node, component, graph, usedVariables, language) {
 /**
  * Detects dependencies between variables in the graph.
  * Return sorted inputs based on dependencies between different graphs.
- * Moreover it sorts nextNode lists based on their sub-dependencies between graph's branches
+ * Moreover it sorts nextNode lists in graph based on their sub-dependencies between graph's branches
  * (this is done in-place!)
  *
  * @param {Object} graph - Normalized graph
