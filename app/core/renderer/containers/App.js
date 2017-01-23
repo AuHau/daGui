@@ -41,6 +41,9 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps){
+    if(!nextProps.showCodeView)
+      return; // Generation will only happen when has to (eq. when CodeView is active)
+
     const currentFile = nextProps.files.get(nextProps.currentFileIndex);
     const adapter = currentFile.get('adapter');
     const language = currentFile.get('language');
@@ -58,8 +61,6 @@ class App extends Component {
     jointGraph.fromJSON(graph);
     let tmpErrors = adapter.validateGraph(jointGraph, normalizedGraph, inputs, language);
 
-    if(!nextProps.showCodeView)
-      return; // Generation will only happen when has to (eq. when CodeView is active)
 
     if (!tmpErrors.length) {
       try {
