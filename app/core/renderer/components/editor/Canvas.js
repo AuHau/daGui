@@ -2,10 +2,11 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import { connect } from 'react-redux'
-
 import joint from 'jointjs';
+
 import {countInPorts} from '../../../graph/graphToolkit';
 import styles from "./Canvas.scss";
+import highlightTypes, {classTranslation as highlightTypeClasses} from 'shared/enums/HighlightType';
 
 import {changeNodeDetail, canvasResize} from '../../../shared/actions/ui';
 import * as graphActions from '../../../shared/actions/graph';
@@ -56,6 +57,7 @@ class Canvas extends Component {
         attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } },
         smooth: true
       }),
+      // TODO: Move occupiedPorts into file in Redux's state
       validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
         if (magnetS && magnetS.getAttribute('port-group') === 'in') return false;
         if (cellViewS === cellViewT) return false;
@@ -92,23 +94,31 @@ class Canvas extends Component {
       input.addEventListener('change', this.onVariableNameChange.bind(this));
     });
 
-    if(this.props.detailNodeId){ // TODO: Fix - on DetailNode change double highlighting
+    if(this.props.detailNodeId){
       this.highlightNode(this.props.detailNodeId, styles.nodeDetail);
     }
 
-    if(this.props.hover){
-      this.highlightNode(this.props.hover, styles.nodeHover);
+    if(this.props.highlights){
+      this.highlightNodes(this.props.highlights);
+    }
+  }
+
+  highlightNodes(highlights) {
+    if(!highlights) return;
+
+    if (!Array.isArray(highlights)) {
+      highlights = [highlights];
     }
 
-    if(this.props.active){
-      this.highlightNode(this.props.active, styles.nodeActive);
+    for(let highlight of highlights){
+      this.highlightNode(highlight.nid, styles[highlightTypeClasses[highlight.type]])
     }
   }
 
   highlightNode(nid, className = styles.nodeDetail){
     const detailNode = this.graph.getCell(nid);
     const view = this.paper.findViewByModel(detailNode);
-    view.highlight(view.el.querySelectorAll('rect'), {     // TODO: Delegate returning element for highlightint to Node Template
+    view.highlight(view.el.querySelectorAll('rect'), {     // TODO: Delegate returning element for highlighting to Node Template
       highlighter: {
         name: 'addClass',
         options: {
@@ -245,13 +255,19 @@ class Canvas extends Component {
   }
 
   onMouseOut(cellView, e){
-    this.props.onHover(null);
+    if(!this.props.showCodeView) return;
+
+    this.props.onHighlight(null);
+    this.currentHoveredNid = null;
   }
 
   onMouseOver(cellView, e){
     if(!this.props.showCodeView || cellView.model.isLink()) return;
 
-    this.props.onHover(cellView.model.id);
+    if(this.currentHoveredNid != cellView.model.id){
+      this.props.onHighlight({nid: cellView.model.id, type: highlightTypes.HOVER});
+      this.currentHoveredNid = cellView.model.id;
+    }
   }
 
   onPointerDown(cellView, e, x, y){
@@ -335,9 +351,8 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 Canvas.propTypes = {
-  active: React.PropTypes.string,
-  hover: React.PropTypes.string,
-  onHover: React.PropTypes.func.isRequired
+  onHighlight: React.PropTypes.func.isRequired,
+  highlights: React.PropTypes.oneOfType([React.PropTypes.array, React.PropTypes.object])
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Canvas);

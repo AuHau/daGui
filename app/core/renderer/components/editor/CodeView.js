@@ -8,6 +8,7 @@ const event = ace.acequire('ace/lib/event');
 const Range = ace.acequire('ace/range').Range;
 
 import levels, {classTranslation, textTranslation} from '../../../shared/enums/ErrorLevel';
+import highlightTypes, {classTranslation as highlightTypeClasses} from '../../../shared/enums/HighlightType';
 import styles from './CodeView.scss';
 
 function before(obj, method, wrapper) {
@@ -30,8 +31,7 @@ export default class CodeView extends Component {
 
     this.editor = null;
     this.shouldUpdateWithNextChange = true;
-    this.currentHoveredNid = null;
-    this.currentActiveNid = null;
+    this.codeViewHighlights = {};
   }
 
   hookMarkers(codeMarkers) {
@@ -93,11 +93,11 @@ export default class CodeView extends Component {
     session.selection.on('changeCursor', () => {
       const nid = this.intersects(CodeMarker.NODE);
 
-      if(this.currentActiveNid == nid) return;
+      if(this.codeViewHighlights.active == nid) return;
 
       this.removeMarkers(CodeMarker.ACTIVE);
-      this.props.onActive(nid);
-      this.currentActiveNid = nid;
+      this.codeViewHighlights.active = nid;
+      this.fireHighlights();
       if(nid){
         session.addMarker(this.markers[CodeMarker.NODE][nid], styles.nodeActive, CodeMarker.ACTIVE);
       }
@@ -127,9 +127,7 @@ export default class CodeView extends Component {
       this.shouldUpdateWithNextChange = true;
     }
 
-    if(this.props.highlight != nextProps.highlight){
-      this.highlight(nextProps.highlight);
-    }
+    this.highlights(nextProps.highlights);
   }
 
   componentWillUnmount(){
@@ -147,12 +145,33 @@ export default class CodeView extends Component {
     );
   }
 
-  highlight(nid){
-    this.removeMarkers(CodeMarker.HOVER);
+  fireHighlights(){
+    const highlights = [];
 
-    if(nid) {
-      const range = this.markers[CodeMarker.NODE][nid];
-      this.editor.getSession().addMarker(range, styles.nodeHover, CodeMarker.HOVER);
+    if(this.codeViewHighlights.active){
+      highlights.push({nid: this.codeViewHighlights.active, type: highlightTypes.ACTIVE});
+    }
+
+    if(this.codeViewHighlights.hover){
+      highlights.push({nid: this.codeViewHighlights.hover, type: highlightTypes.HOVER});
+    }
+
+    this.props.onHighlight(highlights);
+  }
+
+  // TODO: Does it make sense to have multiple highlights? Mostly hover, but in future branch highlighting?
+  highlights(highlights){
+    this.removeMarkers(CodeMarker.HOVER); // TODO: Only hover?
+
+    if(!highlights) return; // Nothing to highlight
+
+    if(!Array.isArray(highlights)){
+      highlights = [highlights];
+    }
+
+    for(let highlight of highlights){
+      const range = this.markers[CodeMarker.NODE][highlight.nid];
+      this.editor.getSession().addMarker(range, styles[highlightTypeClasses[highlight.type]], CodeMarker.HOVER);
     }
   }
 
@@ -171,14 +190,15 @@ export default class CodeView extends Component {
     const currentRange = new Range(docPos.row, docPos.column, docPos.row, docPos.column);
 
     const nidToHighlight = this.intersects(CodeMarker.NODE, currentRange);
-    if(nidToHighlight != this.currentHoveredNid) {
-      this.props.onHighlight(nidToHighlight); // Null can be desired
-      this.currentHoveredNid = nidToHighlight;
+    if(nidToHighlight != this.codeViewHighlights.hover) {
+      this.codeViewHighlights.hover = nidToHighlight; // Null can be desired
+      this.fireHighlights();
     }
   }
 
   onMouseOut(){
-    this.props.onHighlight(null);
+    this.codeViewHighlights.hover = null;
+    this.fireHighlights();
   }
 
   renderErrors(){
@@ -237,11 +257,10 @@ export default class CodeView extends Component {
 }
 
 CodeView.propTypes = {
+  onVariableNameChange: React.PropTypes.func.isRequired,
+  onHighlight: React.PropTypes.func.isRequired,
   codeBuilder: React.PropTypes.object.isRequired,
   language: React.PropTypes.func.isRequired,
-  onHighlight: React.PropTypes.func.isRequired,
-  onActive: React.PropTypes.func.isRequired,
-  onVariableNameChange: React.PropTypes.func.isRequired,
   errors: React.PropTypes.array,
-  highlight: React.PropTypes.string
+  highlights: React.PropTypes.oneOfType([React.PropTypes.array, React.PropTypes.object])
 };

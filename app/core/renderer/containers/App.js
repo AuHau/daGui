@@ -23,23 +23,17 @@ class App extends Component {
     super(props);
 
     this.state = {
-      hoverNid: null,
-      activeNid: null,
+      highlights: null
     };
 
     this.codeBuilder = new CodeBuilder();
     this.graphErrors = [];
     this.graphHash = null;
-    this.onHover = this.onHover.bind(this);
-    this.onActive = this.onActive.bind(this);
+    this.onHighlight = this.onHighlight.bind(this);
   }
 
-  onHover(nid){
-    this.setState({hoverNid: nid});
-  }
-
-  onActive(nid){
-    this.setState({activeNid: nid});
+  onHighlight(highlights){
+    this.setState({highlights});
   }
 
   componentWillUpdate(nextProps){
@@ -88,14 +82,14 @@ class App extends Component {
     const adapter = this.props.file.get('adapter');
     const language = this.props.file.get('language');
 
-    // TODO: Convert toggeling visibility for DetailSidebar also into ToggleDisplay component
+    // TODO: Convert toggeling visibility for DetailSidebar also into ToggleDisplay component (needs to have ability of updating state)
     return (
       <div>
         <Menu />
         <NodesSidebar adapter={adapter} />
-        <Canvas onHover={this.onHover} hover={this.state.hoverNid} active={this.state.activeNid}/>
+        <Canvas onHighlight={this.onHighlight} highlights={this.state.highlights}/>
         {this.props.nodeDetail && <DetailSidebar node={this.props.nodeDetail.toJS()} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/>}
-        <ToggleDisplay show={this.props.showCodeView}><CodeView language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange} onActive={this.onActive} onHighlight={this.onHover} highlight={this.state.hoverNid}/></ToggleDisplay>
+        <ToggleDisplay show={this.props.showCodeView}><CodeView onHighlight={this.onHighlight} highlights={this.state.highlights} language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange}/></ToggleDisplay>
         <Footer messages={this.graphErrors} framework={adapter.getName()} language={this.props.file.get('language').getName()}/>
       </div>
     );
