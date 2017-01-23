@@ -7,4 +7,14 @@
   z-index: 5;
   width: calc(100% - #{$nodes-sidebar-width});
   height: $tabs-height;
+
+  padding-top: 5px;
+}
+
+:global .nav-tabs > li > a{
+  line-height: 0.8;
+}
+
+:global .nav{
+  padding-left: 5px;
 }
