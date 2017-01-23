@@ -38,3 +38,8 @@
   stroke-width: $node-active-stroke-width;
   stroke: $node-active-color;
 }
+
+.nodeError{
+  stroke-width: $node-error-stroke-width;
+  stroke: $node-error-color;
+}

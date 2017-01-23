@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import joint from 'jointjs';
 import {hashGraph, normalizeGraph} from 'graph/graphToolkit.js';
 import CodeBuilder from 'graph/CodeBuilder';
-import ErrorType from '../../shared/enums/ErrorType';
-import ErrorLevel from '../../shared/enums/ErrorLevel';
+import ErrorType from 'shared/enums/ErrorType';
+import ErrorLevel from 'shared/enums/ErrorLevel';
+import highlightTypes, {classTranslation as highlightTypeClasses} from 'shared/enums/HighlightType';
 
 import {updateNode, updateVariable} from '../../shared/actions/graph';
 
@@ -33,10 +34,11 @@ class App extends Component {
   }
 
   onHighlight(highlights){
+    if(this.graphErrors.length) return; // When errors don't do any highlighting, except error highlighting
     this.setState({highlights});
   }
 
-  componentWillUpdate(nextProps){
+  componentWillReceiveProps(nextProps){
     const adapter = nextProps.file.get('adapter');
     const language = nextProps.file.get('language');
     const graph = nextProps.file.get('graph').toJS();
@@ -46,21 +48,22 @@ class App extends Component {
     const newHash = hashGraph(normalizedGraph);
     if(this.graphHash == newHash)
       return; // No graph's changes which are connected with code ===> don't re-generate the code
+    this.graphHash = newHash;
 
     // TODO: Optimalization - drop JointJS graph dependency (use only normalized graph)
     const jointGraph = new joint.dia.Graph();
     jointGraph.fromJSON(graph);
-    this.graphErrors = adapter.validateGraph(jointGraph, normalizedGraph, inputs, language);
+    let tmpErrors = adapter.validateGraph(jointGraph, normalizedGraph, inputs, language);
 
     if(!nextProps.showCodeView)
       return; // Generation will only happen when has to (eq. when CodeView is active)
 
-    if (!this.graphErrors.length) {
+    if (!tmpErrors.length) {
       try {
         adapter.generateCode(this.codeBuilder, normalizedGraph, inputs, usedVariables, language);
       } catch (e){
         if(e.name == 'CircularDependency'){
-          this.graphErrors = [
+          tmpErrors = [
             {
               id: null,
               type: ErrorType.DEPENDENCIES_CYCLE,
@@ -73,9 +76,27 @@ class App extends Component {
           throw e;
         }
       }
+
+      if(this.graphErrors.length && !tmpErrors.length){
+        this.setState({highlights: []});
+      }
+      this.graphErrors = tmpErrors;
+    }else{
+      this.graphErrors = tmpErrors;
+      this.highlightErrors();
     }
 
-    this.graphHash = newHash;
+  }
+
+  highlightErrors(){
+    const errHighlights = [];
+    for(let err of this.graphErrors){
+      if(err.id){
+        errHighlights.push({nid: err.id, type: highlightTypes.ERROR})
+      }
+    }
+
+    this.setState({highlights: errHighlights});
   }
 
   render() {
