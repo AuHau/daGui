@@ -52,7 +52,7 @@ function processNode(node, component, graph, usedVariables, language) {
   }
 
   // Parse all variables from parameter of this node and mark it as dependencies
-  let variables = language.parseVariables(node.parameters, usedVariables); // TODO: Should parse all variables or just those related to graph variables?
+  let variables = language.parseVariables(node.parameters, usedVariables); // TODO: [Q] Should parse all variables or just those related to graph variables?
   for (let variable of variables) {
     output.dependencies.add(variable);
   }
@@ -90,7 +90,7 @@ function processNode(node, component, graph, usedVariables, language) {
   try{
     sortedSubdependencies = topsort(subdependenciesGraph);
   }catch (e){
-    throw {name: 'CircularDependency', message: 'The code contains circular dependency between variables!'}; // TODO: Find out where is the cycle.
+    throw {name: 'CircularDependency', message: 'The code contains circular dependency between variables!'}; // TODO: [Low] Find out where is the cycle.
   }
 
   // Create new array with sorted dependencies + branches without dependencies
@@ -151,7 +151,7 @@ export default function detectDependencies(graph, inputs, usedVariables, languag
   try{
     sortedDependencies = topsort(dependencyGraph);
   }catch (e){
-    throw {name: 'CircularDependency', message: 'The code contains circular dependency between variables!'}; // TODO: Find out where is the cycle.
+    throw {name: 'CircularDependency', message: 'The code contains circular dependency between variables!'}; // TODO: [Low] Find out where is the cycle.
   }
 
 

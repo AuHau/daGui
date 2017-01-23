@@ -24,7 +24,7 @@ export default class CodeInput extends Component {
     const parameterValue = e.target.textContent;
 
     if(!parameters || !parameters[index] || parameters[index] != parameterValue){
-      const newNode = this.props.node; // TODO: Not deep clonning - problem?
+      const newNode = this.props.node; // TODO: [Q] Not deep clonning - problem?
 
       if(!parameters) newNode.dfGui.parameters = [];
       newNode.dfGui.parameters[index] = parameterValue;

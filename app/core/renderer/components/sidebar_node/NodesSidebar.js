@@ -33,7 +33,7 @@ export default class NodesSidebar extends Component {
     const groups = this.props.adapter.getGroupedNodeTemplates();
     const renderedGroups = groups.map((group, index) => <NodesGroup key={index} displayHiddenNodes={this.state.showHiddenNodes} name={group.name} nodeTemplates={group.templates} searchedText={this.state.searchedText} />);
 
-    // TODO: Collapse groups
+    // TODO: [Medium] Collapse groups
     return (
       <div className={styles.container}>
         <div className={styles.search}>

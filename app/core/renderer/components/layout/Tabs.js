@@ -14,7 +14,7 @@ export default class Tabs extends Component {
   render() {
     const renderedTabs = this.props.files.map((file, index) => <li key={index} onClick={this.onClick(index)} className={this.props.currentFileIndex == index ? 'active' : ''}><a href="#">{file.name}</a></li>);
 
-    // TODO: Important! Handle overflowing of tabs because of long file names.
+    // TODO: [Critical] Important! Handle overflowing of tabs because of long file names.
     return (
       <div className={styles.container}>
         <ul className="nav nav-tabs">

@@ -35,7 +35,7 @@ class Canvas extends Component {
     this.currentHoveredNid = null;
     this.occupiedPorts = {};
 
-    // TODO: Find better place to place this
+    // TODO: [Low] Find better place to place this
     joint.setTheme('modern');
   }
 
@@ -57,7 +57,7 @@ class Canvas extends Component {
         attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } },
         smooth: true
       }),
-      // TODO: Move occupiedPorts into file in Redux's state
+      // TODO: [Critical] Move occupiedPorts into file in Redux's state
       validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
         if (magnetS && magnetS.getAttribute('port-group') === 'in') return false;
         if (cellViewS === cellViewT) return false;
@@ -83,7 +83,7 @@ class Canvas extends Component {
   }
 
   componentDidUpdate(){
-    // TODO: Optimalization - don't update when the action was created by graph's event or graph can be just modified
+    // TODO: [Low] Optimalization - don't update when the action was created by graph's event or graph can be just modified
     this.graph.fromJSON(this.props.graphJson.toJS());
     this.variableNameIterator(this.graph.getElements());
 
@@ -118,7 +118,7 @@ class Canvas extends Component {
   highlightNode(nid, className = styles.nodeDetail){
     const detailNode = this.graph.getCell(nid);
     const view = this.paper.findViewByModel(detailNode);
-    view.highlight(view.el.querySelectorAll('rect'), {     // TODO: Delegate returning element for highlighting to Node Template
+    view.highlight(view.el.querySelectorAll('rect'), {     // TODO: [Medium] Delegate returning element for highlighting to Node Template
       highlighter: {
         name: 'addClass',
         options: {
@@ -172,7 +172,7 @@ class Canvas extends Component {
         childrenElement = this.graph.getCell(children.attributes.target.id);
         if(!childrenElement.attributes.dfGui.variableName){
           const variableName = this.props.language.nameNode(this.props.adapter.getNodeTemplates()[childrenElement.attributes.type], this.props.usedVariables);
-          this.props.onUpdateVariable(childrenElement.id, variableName); // TODO: Batch adding the variable and adding link
+          this.props.onUpdateVariable(childrenElement.id, variableName); // TODO: [Low] Batch adding the variable and adding link
         }
       }
       this.props.onNodeUpdate(cellView.model.toJSON());
@@ -189,7 +189,7 @@ class Canvas extends Component {
       const sourcesChildren = this.graph.getConnectedLinks(sourceElement, {outbound: true});
       if(sourcesChildren.length == 1){ // Delete variable only when going from 2 links to 1 link
         this.props.onRemoveVariable(sourcesChildren[0].attributes.target.id);
-        this.props.onRemoveVariable(targetElement.id); // TODO: Batch deleting variables
+        this.props.onRemoveVariable(targetElement.id); // TODO: [Low] Batch deleting variables
         this.props.onLinkDelete(link.id);
       }else if(targetElement.attributes.dfGui.variableName && countInPorts(targetElement) == 1) {
         this.props.onLinkDeleteAndVariable(link.id, targetElement.id);

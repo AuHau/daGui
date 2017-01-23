@@ -62,11 +62,11 @@ export default class CodeView extends Component {
   onAnchorChange(e) {
     const intersectedNid = this.intersects(CodeMarker.VARIABLE);
 
-    // TODO: Old condition - does it make sense? What about editing first line?
+    // TODO: [Q] Old condition - does it make sense? What about editing first line?
     if (intersectedNid && (e.old.column != 0 && e.old.row != 0 && e.value.column != 0 && e.value.row != 0)) {
       const newVariableName = this.editor.getSession().doc.getTextRange(this.markers[CodeMarker.VARIABLE][intersectedNid]);
       this.shouldUpdateWithNextChange = false;
-      this.props.onVariableNameChange(intersectedNid, newVariableName); // TODO: Validation of variable name
+      this.props.onVariableNameChange(intersectedNid, newVariableName); // TODO: [Medium] Validation of variable name
     }
   }
 
@@ -119,7 +119,7 @@ export default class CodeView extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    // TODO: Think of some better way how to handle changes in components from which the actions originate
+    // TODO: [Medium] Think of some better way how to handle changes in components from which the actions originate
     if (this.shouldUpdateWithNextChange && nextProps.codeBuilder.didCodeChanged()) {
       this.editor.setValue(nextProps.codeBuilder.getCode());
       this.hookMarkers(nextProps.codeBuilder.getMarkers());
@@ -159,7 +159,7 @@ export default class CodeView extends Component {
     this.props.onHighlight(highlights);
   }
 
-  // TODO: Does it make sense to have multiple highlights? Mostly hover, but in future branch highlighting?
+  // TODO: [Q] Does it make sense to have multiple highlights? Mostly hover, but in future branch highlighting?
   highlights(highlights){
     this.removeMarkers(CodeMarker.HOVER); // TODO: Only hover?
 

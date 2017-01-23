@@ -75,7 +75,7 @@ export default class CodeBuilder {
   }
 
   mergeMarkers(index1, index2){
-    // TODO: Add intelligant comparsment of start/end of chars and lines
+    // TODO: [Low] Add intelligant comparsment of start/end of chars and lines
     this.markers[index1].charEnd = this.markers[index2].charEnd;
     this.markers.splice(index2, 1);
   }

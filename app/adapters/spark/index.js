@@ -78,10 +78,6 @@ export default class SparkAdapter extends BaseAdapter{
     return validateGraph(graph, normalizedGraph, language, inputs, SparkAdapter);
   }
 
-  // TODO: Compute connected components to see how many "DAGs" are there + identify dependencies between them (which needs to be first)
-// Not actually needed - the graphs can be generated independently and after generation order them based on the dependency list, which can
-// be build during code generation, but actually dependency is already issue in one graph --> when you have branches, you have to
-// decide which branch to iterate through first <-- it will depend on the dependencies (one branch can use the output of the other one)
   static generateCode(output, normalizedGraph, inputs, usedVariables, language){
     switch (language.getName()){
       case 'Python':

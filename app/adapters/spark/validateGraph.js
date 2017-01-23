@@ -35,7 +35,7 @@ const isNodeTypeInGroup = (adapter, nodeType, groupName) => {
 /**
  * Implements topological ordering to check if graph contains cycles ==> O(|E|+|V|)
  * Inspired from: https://simplapi.wordpress.com/2015/08/19/detect-graph-cycle-in-javascript/
- * TODO: Implement algorithm for searching Strongly connected component to identify cycles (not just its presents)
+ * TODO: [Medium] Implement algorithm for searching Strongly connected component to identify cycles (not just its presents)
  *
  * @param normalizedGraph
  * @param inputs
@@ -104,8 +104,7 @@ const checkLinks = (graph, node, nodeTemplate) => {
   return [];
 };
 
-// TODO: Check if all branches ends with action
-// TODO: Get rid of jointjs graph dependency and use only normalizedGraph
+// TODO: [High] Get rid of jointjs graph dependency and use only normalizedGraph
 export default function validateGraph(graph, normalizedGraph, lang, inputs, adapter) {
   const nodes = graph.getElements();
 

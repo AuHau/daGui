@@ -95,7 +95,7 @@ class NodesGroup extends Component {
       const model = nodeTemplate.getModel();
       return new model({
         position: { x: centeredPositionX, y: (nodeHeight+nodeMargin)*index },
-        size: { width: nodeWidth, height: nodeHeight } // TODO: Let Adaptor's authors decide the size ==> Figure out centering & scaling to fit
+        size: { width: nodeWidth, height: nodeHeight } // TODO: [High] Let Adaptor's authors decide the size ==> Figure out centering & scaling to fit
       })
     });
 
@@ -115,7 +115,7 @@ class NodesGroup extends Component {
       interactive: false
     });
 
-    // TODO: setTimeout - Any better solution?
+    // TODO: [Q] setTimeout - Any better solution?
     setTimeout(() => {
       this.paper.setDimensions(this.wrapperElem.offsetWidth, totalHeight);
 
