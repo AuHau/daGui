@@ -34,6 +34,7 @@ class Canvas extends Component {
     this.startingPointerPosition = null;
     this.currentHoveredNid = null;
     this.occupiedPorts = {};
+    this.freezed = false;
 
     // TODO: [Low] Find better place to place this
     joint.setTheme('modern');
@@ -101,6 +102,10 @@ class Canvas extends Component {
     if(this.props.highlights){
       this.highlightNodes(this.props.highlights);
     }
+  }
+
+  shouldComponentUpdate(){
+    return !this.freezed;
   }
 
   highlightNodes(highlights) {
@@ -247,22 +252,24 @@ class Canvas extends Component {
   onFocus(e){
     const node = e.target.parentNode.parentNode.parentNode;
     node.classList.add.apply(node.classList, styles.focused.split(' '));
+    this.freezed = true;
   }
 
   onBlur(e){
     const node = e.target.parentNode.parentNode.parentNode;
     node.classList.remove.apply(node.classList, styles.focused.split(' '));
+    this.freezed = false;
   }
 
   onMouseOut(cellView, e){
-    if(!this.props.showCodeView) return;
+    if(!this.props.showCodeView || this.freezed) return;
 
     this.props.onHighlight(null);
     this.currentHoveredNid = null;
   }
 
   onMouseOver(cellView, e){
-    if(!this.props.showCodeView || cellView.model.isLink()) return;
+    if(!this.props.showCodeView || cellView.model.isLink() || this.freezed) return;
 
     if(this.currentHoveredNid != cellView.model.id){
       this.props.onHighlight({nid: cellView.model.id, type: highlightTypes.HOVER});
@@ -270,15 +277,17 @@ class Canvas extends Component {
     }
   }
 
+  // TODO: [BUG/Medium] When dragging node Z value should be the highest in graph
   onPointerDown(cellView, e, x, y){
     this.startingPointerPosition = {x, y};
+    this.freezed = true;
   }
 
   onPointerUp(cellView, e, x, y){
     if(Math.abs(this.startingPointerPosition.x - x) < CLICK_TRESHOLD
         && Math.abs(this.startingPointerPosition.y - y) < CLICK_TRESHOLD) {
       // Click
-      if(e.target && e.target.type == 'text'){
+      if(e.target && e.target.type == 'text'){ // Variable input
         e.target.focus();
       }else if(cellView.model.isElement()){
         this.onNodeDetail(cellView);
@@ -296,6 +305,7 @@ class Canvas extends Component {
       ) this.addLink(cellView);
     }
 
+    if(!e.target || e.target.type != 'text') this.freezed = false;
     this.startingPointerPosition = null;
   }
 
