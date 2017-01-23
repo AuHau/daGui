@@ -2,11 +2,9 @@
 
 .container {
   position: absolute;
-  top: $menu-height + $tabs-height;
+  top: $menu-height;
   left: $nodes-sidebar-width;
   z-index: 5;
   width: calc(100% - #{$nodes-sidebar-width});
-  height: calc(100% - #{$menu-height} - #{$footer-height});
+  height: $tabs-height;
 }
-
-@import "../../../graph/DefaultShape.scss";

@@ -1,9 +1,19 @@
+
+import FILE from '../actions/file';
+
 import graphReducer from './graph';
 
 export default (state, action) => {
   if(action.type.startsWith('GRAPH_')){
     return graphReducer(state, action);
   }else{
-    return state;
+
+    switch (action.type){
+      case FILE.SWITCH_TAB:
+        return state.set('active', action.payload);
+
+      default:
+        return state;
+    }
   }
 };

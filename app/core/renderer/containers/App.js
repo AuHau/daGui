@@ -9,10 +9,12 @@ import ErrorLevel from 'shared/enums/ErrorLevel';
 import highlightTypes, {classTranslation as highlightTypeClasses} from 'shared/enums/HighlightType';
 
 import {updateNode, updateVariable} from '../../shared/actions/graph';
+import {switchTab} from '../../shared/actions/file';
 
 // Components
 import ToggleDisplay from 'react-toggle-display';
 import Menu from '../components/layout/Menu';
+import Tabs from '../components/layout/Tabs';
 import Footer from '../components/layout/Footer';
 import NodesSidebar from '../components/sidebar_node/NodesSidebar';
 import DetailSidebar from '../components/sidebar_detail/DetailSidebar';
@@ -39,10 +41,11 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    const adapter = nextProps.file.get('adapter');
-    const language = nextProps.file.get('language');
-    const graph = nextProps.file.get('graph').toJS();
-    const usedVariables = nextProps.file.get('usedVariables').toJS();
+    const currentFile = nextProps.files.get(nextProps.currentFileIndex);
+    const adapter = currentFile.get('adapter');
+    const language = currentFile.get('language');
+    const graph = currentFile.get('graph').toJS();
+    const usedVariables = currentFile.get('usedVariables').toJS();
 
     const {normalizedGraph, inputs}= normalizeGraph(graph, adapter.isTypeInput);
     const newHash = hashGraph(normalizedGraph);
@@ -100,18 +103,20 @@ class App extends Component {
   }
 
   render() {
-    const adapter = this.props.file.get('adapter');
-    const language = this.props.file.get('language');
+    const currentFile = this.props.files.get(this.props.currentFileIndex);
+    const adapter = currentFile.get('adapter');
+    const language = currentFile.get('language');
 
     // TODO: Convert toggeling visibility for DetailSidebar also into ToggleDisplay component (needs to have ability of updating state)
     return (
       <div>
         <Menu />
         <NodesSidebar adapter={adapter} />
+        <Tabs currentFileIndex={this.props.currentFileIndex} files={this.props.files.toJS()} onTabChange={(newIndex) => {this.props.onTabChange(newIndex); this.graphHash = null;}}/>
         <Canvas onHighlight={this.onHighlight} highlights={this.state.highlights}/>
         {this.props.nodeDetail && <DetailSidebar node={this.props.nodeDetail.toJS()} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/>}
         <ToggleDisplay show={this.props.showCodeView}><CodeView onHighlight={this.onHighlight} highlights={this.state.highlights} language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange}/></ToggleDisplay>
-        <Footer messages={this.graphErrors} framework={adapter.getName()} language={this.props.file.get('language').getName()}/>
+        <Footer messages={this.graphErrors} framework={adapter.getName()} language={currentFile.get('language').getName()}/>
       </div>
     );
   }
@@ -121,7 +126,8 @@ const mapStateToProps = (state) => {
   const activeFile = state.getIn(['files', 'active']);
 
   return {
-    file: state.getIn(['files', 'opened', state.getIn(['files', 'active'])]),
+    currentFileIndex: state.getIn(['files', 'active']),
+    files: state.getIn(['files', 'opened']),
     nodeDetail: (nodeId ? state.getIn(['files', 'opened', activeFile, 'graph', 'cells']).find(node => node.get('id') == nodeId) : null),
     showCodeView: state.getIn('ui.showCodeView'.split('.')),
   };
@@ -130,7 +136,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onNodeChange: (node) => dispatch(updateNode(node)),
-    onVariableChange: (nid, newVariableName) => dispatch(updateVariable(nid, newVariableName))
+    onVariableChange: (nid, newVariableName) => dispatch(updateVariable(nid, newVariableName)),
+    onTabChange: (newIndex) => dispatch(switchTab(newIndex))
   };
 };
 

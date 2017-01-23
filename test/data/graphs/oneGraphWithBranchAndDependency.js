@@ -2,7 +2,7 @@ import SparkAdapter from '../../../app/adapters/spark';
 import Python from '../../../app/core/languages/Python';
 
 export default {
-  "name": "Test.scala",
+  "name": "BranchDependency.py",
   adapter: SparkAdapter,
   language: Python,
   "usedVariables": {
