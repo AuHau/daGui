@@ -2,14 +2,18 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import joint from 'jointjs';
+import Immutable from 'immutable';
 import {hashGraph, normalizeGraph} from 'graph/graphToolkit.js';
 import CodeBuilder from 'graph/CodeBuilder';
+
+// Enums
 import ErrorType from 'shared/enums/ErrorType';
 import ErrorLevel from 'shared/enums/ErrorLevel';
-import highlightTypes, {classTranslation as highlightTypeClasses} from 'shared/enums/HighlightType';
+import HighlightType, {classTranslation as highlightTypeClasses} from 'shared/enums/HighlightType';
+import HighlightDestination, {values as HighlightDestinations} from 'shared/enums/HighlightDestination';
 
-import {updateNode, updateVariable} from '../../shared/actions/graph';
-import {switchTab} from '../../shared/actions/file';
+import {updateNode, updateVariable} from 'shared/actions/graph';
+import {switchTab} from 'shared/actions/file';
 
 // Components
 import ToggleDisplay from 'react-toggle-display';
@@ -25,19 +29,33 @@ class App extends Component {
   constructor(props){
     super(props);
 
+    const highlights = {};
+    for(let val of HighlightDestinations){
+      highlights[val] = [];
+    }
+    this.highlightsTemplate = Immutable.fromJS(highlights);
+
     this.state = {
-      highlights: null
+      highlights: this.highlightsTemplate
     };
 
     this.codeBuilder = new CodeBuilder();
     this.graphErrors = [];
     this.graphHash = null;
-    this.onHighlight = this.onHighlight.bind(this);
+    this.addHighlight = this.addHighlight.bind(this);
+    this.removeHighlight = this.removeHighlight.bind(this);
   }
 
-  onHighlight(highlights){
-    if(this.graphErrors.length) return; // When errors don't do any highlighting, except error highlighting
-    this.setState({highlights});
+  addHighlight(nid, type, destination){
+    this.setState({ highlights: this.state.highlights.set(destination, this.state.highlights.get(destination).push({nid, type})) })
+  }
+
+  removeHighlight(nid, type, destination){
+    this.setState({ highlights: this.state.highlights.set(destination, this.state.highlights.get(destination).filter(highlight => highlight.nid !== nid || highlight.type !== type )) })
+  }
+
+  resetHighlights(){
+    this.setState({highlights: this.highlightsTemplate});
   }
 
   componentWillReceiveProps(nextProps){
@@ -96,7 +114,7 @@ class App extends Component {
     const errHighlights = [];
     for(let err of this.graphErrors){
       if(err.id){
-        errHighlights.push({nid: err.id, type: highlightTypes.ERROR})
+        errHighlights.push({nid: err.id, type: HighlightType.ERROR, destination: HighlightDestination.CANVAS})
       }
     }
 
@@ -108,15 +126,15 @@ class App extends Component {
     const adapter = currentFile.get('adapter');
     const language = currentFile.get('language');
 
-    // TODO: Convert toggeling visibility for DetailSidebar also into ToggleDisplay component (needs to have ability of updating state)
+    // TODO: [Low] Convert toggeling visibility for DetailSidebar also into ToggleDisplay component (needs to have ability of updating state)
     return (
       <div>
         <Menu />
         <NodesSidebar adapter={adapter} />
         <Tabs currentFileIndex={this.props.currentFileIndex} files={this.props.files.toJS()} onTabChange={(newIndex) => {this.props.onTabChange(newIndex); this.graphHash = null;}}/>
-        <Canvas onHighlight={this.onHighlight} highlights={this.state.highlights}/>
+        <Canvas onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} highlights={this.state.highlights.get(HighlightDestination.CANVAS)}/>
         {this.props.nodeDetail && <DetailSidebar node={this.props.nodeDetail.toJS()} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/>}
-        <ToggleDisplay show={this.props.showCodeView}><CodeView onHighlight={this.onHighlight} highlights={this.state.highlights} language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange}/></ToggleDisplay>
+        <ToggleDisplay show={this.props.showCodeView}><CodeView onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} highlights={this.state.highlights.get(HighlightDestination.CODE_VIEW)} language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange}/></ToggleDisplay>
         <Footer messages={this.graphErrors} framework={adapter.getName()} language={currentFile.get('language').getName()}/>
       </div>
     );

@@ -8,7 +8,9 @@ const event = ace.acequire('ace/lib/event');
 const Range = ace.acequire('ace/range').Range;
 
 import levels, {classTranslation, textTranslation} from '../../../shared/enums/ErrorLevel';
-import highlightTypes, {classTranslation as highlightTypeClasses} from '../../../shared/enums/HighlightType';
+import HighlightTypes, {classTranslation as highlightTypeClasses} from '../../../shared/enums/HighlightType';
+import HighlightDestination from 'shared/enums/HighlightDestination';
+
 import styles from './CodeView.scss';
 
 function before(obj, method, wrapper) {
@@ -95,9 +97,17 @@ export default class CodeView extends Component {
 
       if(this.codeViewHighlights.active == nid) return;
 
-      this.removeMarkers(CodeMarker.ACTIVE);
+      // Highlighting
+      if(this.codeViewHighlights.active != null) { // Have to remove old highlight
+        this.props.onRemoveHighlight(this.codeViewHighlights.active, HighlightTypes.ACTIVE, HighlightDestination.CANVAS);
+      }
+      if(nid){ // Adding new highlight
+        this.props.onAddHighlight(nid, HighlightTypes.ACTIVE, HighlightDestination.CANVAS);
+      }
       this.codeViewHighlights.active = nid;
-      this.fireHighlights();
+
+      // Markers
+      this.removeMarkers(CodeMarker.ACTIVE);
       if(nid){
         session.addMarker(this.markers[CodeMarker.NODE][nid], styles.nodeActive, CodeMarker.ACTIVE);
       }
@@ -145,34 +155,16 @@ export default class CodeView extends Component {
     );
   }
 
-  fireHighlights(){
-    const highlights = [];
-
-    if(this.codeViewHighlights.active){
-      highlights.push({nid: this.codeViewHighlights.active, type: highlightTypes.ACTIVE});
-    }
-
-    if(this.codeViewHighlights.hover){
-      highlights.push({nid: this.codeViewHighlights.hover, type: highlightTypes.HOVER});
-    }
-
-    this.props.onHighlight(highlights);
-  }
-
   // TODO: [Q] Does it make sense to have multiple highlights? Mostly hover, but in future branch highlighting?
   highlights(highlights){
     this.removeMarkers(CodeMarker.HOVER); // TODO: Only hover?
 
-    if(!highlights) return; // Nothing to highlight
+    if(highlights.isEmpty()) return; // Nothing to highlight
 
-    if(!Array.isArray(highlights)){
-      highlights = [highlights];
-    }
-
-    for(let highlight of highlights){
+    highlights.forEach(highlight => {
       const range = this.markers[CodeMarker.NODE][highlight.nid];
       this.editor.getSession().addMarker(range, styles[highlightTypeClasses[highlight.type]], CodeMarker.HOVER);
-    }
+    });
   }
 
   onMouseMove(e){
@@ -191,14 +183,20 @@ export default class CodeView extends Component {
 
     const nidToHighlight = this.intersects(CodeMarker.NODE, currentRange);
     if(nidToHighlight != this.codeViewHighlights.hover) {
+      if(this.codeViewHighlights.hover != null) {
+        this.props.onRemoveHighlight(this.codeViewHighlights.hover, HighlightTypes.HOVER, HighlightDestination.CANVAS)
+      }
+
+      if(nidToHighlight){
+        this.props.onAddHighlight(nidToHighlight, HighlightTypes.HOVER, HighlightDestination.CANVAS)
+      }
       this.codeViewHighlights.hover = nidToHighlight; // Null can be desired
-      this.fireHighlights();
     }
   }
 
   onMouseOut(){
+    this.props.onRemoveHighlight(this.codeViewHighlights.hover, HighlightTypes.HOVER, HighlightDestination.CANVAS)
     this.codeViewHighlights.hover = null;
-    this.fireHighlights();
   }
 
   renderErrors(){
@@ -258,7 +256,8 @@ export default class CodeView extends Component {
 
 CodeView.propTypes = {
   onVariableNameChange: React.PropTypes.func.isRequired,
-  onHighlight: React.PropTypes.func.isRequired,
+  onAddHighlight: React.PropTypes.func.isRequired,
+  onRemoveHighlight: React.PropTypes.func.isRequired,
   codeBuilder: React.PropTypes.object.isRequired,
   language: React.PropTypes.func.isRequired,
   errors: React.PropTypes.array,

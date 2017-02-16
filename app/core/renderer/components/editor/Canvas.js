@@ -6,7 +6,8 @@ import joint from 'jointjs';
 
 import {countInPorts} from '../../../graph/graphToolkit';
 import styles from "./Canvas.scss";
-import highlightTypes, {classTranslation as highlightTypeClasses} from 'shared/enums/HighlightType';
+import HighlightTypes, {classTranslation as highlightTypeClasses} from 'shared/enums/HighlightType';
+import HighlightDestination from 'shared/enums/HighlightDestination';
 
 import {changeNodeDetail, canvasResize} from '../../../shared/actions/ui';
 import * as graphActions from '../../../shared/actions/graph';
@@ -99,7 +100,7 @@ class Canvas extends Component {
       this.highlightNode(this.props.detailNodeId, styles.nodeDetail);
     }
 
-    if(this.props.highlights){
+    if(!this.props.highlights.isEmpty()){
       this.highlightNodes(this.props.highlights);
     }
   }
@@ -109,15 +110,9 @@ class Canvas extends Component {
   }
 
   highlightNodes(highlights) {
-    if(!highlights) return;
-
-    if (!Array.isArray(highlights)) {
-      highlights = [highlights];
-    }
-
-    for(let highlight of highlights){
+    highlights.forEach(highlight => {
       this.highlightNode(highlight.nid, styles[highlightTypeClasses[highlight.type]])
-    }
+    });
   }
 
   highlightNode(nid, className = styles.nodeDetail){
@@ -264,7 +259,7 @@ class Canvas extends Component {
   onMouseOut(cellView, e){
     if(!this.props.showCodeView || this.freezed) return;
 
-    this.props.onHighlight(null);
+    this.props.onRemoveHighlight(this.currentHoveredNid, HighlightTypes.HOVER, HighlightDestination.CODE_VIEW);
     this.currentHoveredNid = null;
   }
 
@@ -272,7 +267,10 @@ class Canvas extends Component {
     if(!this.props.showCodeView || cellView.model.isLink() || this.freezed) return;
 
     if(this.currentHoveredNid != cellView.model.id){
-      this.props.onHighlight({nid: cellView.model.id, type: highlightTypes.HOVER});
+      // There is active Node highlighted ==> for switch have to remove the old one
+      if(this.currentHoveredNid !== null) this.props.onRemoveHighlight(this.currentHoveredNid, HighlightTypes.HOVER, HighlightDestination.CODE_VIEW);
+
+      this.props.onAddHighlight(cellView.model.id, HighlightTypes.HOVER, HighlightDestination.CODE_VIEW);
       this.currentHoveredNid = cellView.model.id;
     }
   }
@@ -361,7 +359,8 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 Canvas.propTypes = {
-  onHighlight: React.PropTypes.func.isRequired,
+  onAddHighlight: React.PropTypes.func.isRequired,
+  onRemoveHighlight: React.PropTypes.func.isRequired,
   highlights: React.PropTypes.oneOfType([React.PropTypes.array, React.PropTypes.object])
 };
 
