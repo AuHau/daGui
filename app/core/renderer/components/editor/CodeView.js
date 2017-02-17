@@ -11,6 +11,7 @@ import levels, {classTranslation, textTranslation} from '../../../shared/enums/E
 import HighlightTypes, {classTranslation as highlightTypeClasses} from '../../../shared/enums/HighlightType';
 import HighlightDestination from 'shared/enums/HighlightDestination';
 
+import Resizable from 'renderer/components/utils/Resizable';
 import styles from './CodeView.scss';
 
 function before(obj, method, wrapper) {
@@ -148,10 +149,10 @@ export default class CodeView extends Component {
 
   render() {
     return (
-      <div className={styles.container}>
+      <Resizable class={styles.container} side={"top"}>
         {this.renderErrors()}
         <div className={styles.codeEditor} id="aceCodeEditor"></div>
-      </div>
+      </Resizable>
     );
   }
 

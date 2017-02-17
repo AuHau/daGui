@@ -1,0 +1,82 @@
+@import "../../variables";
+
+.contentWrapper{
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.overlay{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 10000;
+}
+
+.overlayVertical{
+  composes: overlay;
+  cursor: row-resize;
+}
+
+.overlayHorizontal{
+  composes: overlay;
+  cursor: col-resize;
+}
+
+.topContainer{
+  padding-top: $resizable-size;
+
+  .bar{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: $resizable-size;
+	background-color: $resizable-color;
+	cursor: row-resize;
+  }
+}
+
+.bottomContainer{
+  padding-bottom: $resizable-size;
+
+  .bar{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: $resizable-size;
+	background-color: $resizable-color;
+	cursor: row-resize;
+  }
+}
+
+.leftContainer{
+  padding-left: $resizable-size;
+
+  .bar{
+	position: absolute;
+	bottom: 0;
+	top: 0;
+	left: 0;
+	width: $resizable-size;
+	background-color: $resizable-color;
+	cursor: col-resize;
+  }
+}
+
+.rightContainer{
+  padding-right: $resizable-size;
+
+  .bar{
+	position: absolute;
+	bottom: 0;
+	top: 0;
+	right: 0;
+	width: $resizable-size;
+	background-color: $resizable-color;
+	cursor: col-resize;
+  }
+}

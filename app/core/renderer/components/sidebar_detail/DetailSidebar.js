@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
+import Resizable from 'renderer/components/utils/Resizable';
 import CodeInput from '../editor/CodeInput';
 import styles from './DetailSidebar.scss';
 
@@ -58,7 +59,7 @@ export default class DetailSidebar extends Component {
     }
 
     return (
-      <div className={styles.container}>
+      <Resizable side={"left"} class={styles.container}>
         <div>
           <strong>Node type: </strong>
           {this.nodeTemplate.getName()}
@@ -68,7 +69,7 @@ export default class DetailSidebar extends Component {
           <input type="text" defaultValue={this.props.node.dfGui.description} ref="descriptionInput"/>
         </div>
         {codeInput}
-      </div>
+      </Resizable>
     );
   }
 }

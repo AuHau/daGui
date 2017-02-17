@@ -44,6 +44,13 @@ class App extends Component {
     this.graphHash = null;
     this.addHighlight = this.addHighlight.bind(this);
     this.removeHighlight = this.removeHighlight.bind(this);
+    this.changeTab = this.changeTab.bind(this);
+  }
+
+  changeTab(newIndex){
+    this.setState({highlights: this.highlightsTemplate});
+    this.props.onTabChange(newIndex);
+    this.graphHash = null;
   }
 
   addHighlight(nid, type, destination){
@@ -131,7 +138,7 @@ class App extends Component {
       <div>
         <Menu />
         <NodesSidebar adapter={adapter} />
-        <Tabs currentFileIndex={this.props.currentFileIndex} files={this.props.files.toJS()} onTabChange={(newIndex) => {this.props.onTabChange(newIndex); this.graphHash = null;}}/>
+        <Tabs currentFileIndex={this.props.currentFileIndex} files={this.props.files.toJS()} onTabChange={this.changeTab}/>
         <Canvas onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} highlights={this.state.highlights.get(HighlightDestination.CANVAS)}/>
         {this.props.nodeDetail && <DetailSidebar node={this.props.nodeDetail.toJS()} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/>}
         <ToggleDisplay show={this.props.showCodeView}><CodeView onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} highlights={this.state.highlights.get(HighlightDestination.CODE_VIEW)} language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange}/></ToggleDisplay>
