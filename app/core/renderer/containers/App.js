@@ -128,6 +128,8 @@ class App extends Component {
     this.setState({highlights: errHighlights});
   }
 
+
+
   render() {
     const currentFile = this.props.files.get(this.props.currentFileIndex);
     const adapter = currentFile.get('adapter');
@@ -137,7 +139,7 @@ class App extends Component {
     return (
       <div>
         <Menu />
-        <NodesSidebar adapter={adapter} />
+        <NodesSidebar ref={(n) => {this.refSidebar = n}} adapter={adapter} />
         <Tabs currentFileIndex={this.props.currentFileIndex} files={this.props.files.toJS()} onTabChange={this.changeTab}/>
         <Canvas onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} highlights={this.state.highlights.get(HighlightDestination.CANVAS)}/>
         {this.props.nodeDetail && <DetailSidebar node={this.props.nodeDetail.toJS()} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/>}

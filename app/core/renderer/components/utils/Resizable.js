@@ -32,7 +32,6 @@ export default class Resizable extends Component {
     this.overlay.addEventListener('mouseup', this.onMouseUp);
 
     document.body.appendChild(this.overlay);
-
   }
 
   onMouseDown(e){
@@ -49,17 +48,39 @@ export default class Resizable extends Component {
         }
       };
 
+    if(this.props.getMax){
+      this.start.max = this.props.getMax();
+    }
+
+    if(this.props.getMin){
+      this.start.min = this.props.getMin();
+    }
+
     this.createOverlay();
   }
 
   onMouseMove(e){
-    if(!this.start) return;
-
     const container = findDOMNode(this.refs.container);
     if(this.props.side == "top" || this.props.side == "bottom"){
-        container.style.height = this.start.size.height + (this.start.mouse.y - e.clientY) + "px";
+      let newHeight = this.start.size.height + (this.start.mouse.y - e.clientY);
+
+      if (this.start.min && newHeight < this.start.min)
+         newHeight = this.start.min;
+
+      if (this.start.max && newHeight > this.start.max)
+        newHeight = this.start.max;
+
+      container.style.height = newHeight + "px";
     }else{
-      container.style.width = this.start.size.width + (this.start.mouse.x - e.clientX) + "px";
+      let newWidth = this.start.size.width + (this.start.mouse.x - e.clientX);
+
+      if (this.start.min && newWidth < this.start.min)
+        newWidth = this.start.min;
+
+      if (this.start.max && newWidth > this.start.max)
+        newWidth = this.start.max;
+
+      container.style.width = newWidth + "px";
     }
   }
 
@@ -95,4 +116,6 @@ export default class Resizable extends Component {
 Resizable.propTypes = {
   class: React.PropTypes.string.isRequired,
   side: React.PropTypes.string.isRequired,
+  getMin: React.PropTypes.func,
+  getMax: React.PropTypes.func
 };

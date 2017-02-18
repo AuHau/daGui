@@ -5,7 +5,9 @@ import ReactDOM from 'react-dom';
 import Resizable from 'renderer/components/utils/Resizable';
 import CodeInput from '../editor/CodeInput';
 import styles from './DetailSidebar.scss';
+import cssVariables from '!!sass-variable-loader!../../variables.scss';
 
+const detailSidebarWidth = parseInt(cssVariables.detailSidebarWidth);
 
 export default class DetailSidebar extends Component {
 
@@ -44,6 +46,10 @@ export default class DetailSidebar extends Component {
     descriptionInput.value = this.props.node.dfGui.description;
   }
 
+  getMaxWidth(){
+    return document.documentElement.clientWidth - detailSidebarWidth;
+  }
+
   render() {
     let codeInput;
     if (this.nodeTemplate.hasCodeToFill()) {
@@ -59,7 +65,7 @@ export default class DetailSidebar extends Component {
     }
 
     return (
-      <Resizable side={"left"} class={styles.container}>
+      <Resizable side={"left"} class={styles.container} getMax={this.getMaxWidth}>
         <div>
           <strong>Node type: </strong>
           {this.nodeTemplate.getName()}

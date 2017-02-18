@@ -13,6 +13,10 @@ import HighlightDestination from 'shared/enums/HighlightDestination';
 
 import Resizable from 'renderer/components/utils/Resizable';
 import styles from './CodeView.scss';
+import cssVariables from '!!sass-variable-loader!../../variables.scss';
+
+const tabsHeight = parseInt(cssVariables.tabsHeight);
+const menuHeight = parseInt(cssVariables.menuHeight);
 
 function before(obj, method, wrapper) {
   const orig = obj[method];
@@ -149,7 +153,7 @@ export default class CodeView extends Component {
 
   render() {
     return (
-      <Resizable class={styles.container} side={"top"}>
+      <Resizable class={styles.container} side={"top"} getMax={this.getMaxHeight}>
         {this.renderErrors()}
         <div className={styles.codeEditor} id="aceCodeEditor"></div>
       </Resizable>
@@ -252,6 +256,10 @@ export default class CodeView extends Component {
         session.removeMarker(currentMarkers[index].id);
       }
     }
+  }
+
+  getMaxHeight(){
+    return document.documentElement.clientHeight - tabsHeight - menuHeight;
   }
 }
 
