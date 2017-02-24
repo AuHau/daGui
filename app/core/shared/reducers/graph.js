@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import GRAPH from '../actions/graph';
+import GRAPH from 'shared/actions/graph';
 
 const getActive = (state) => {
   return state.get('active');

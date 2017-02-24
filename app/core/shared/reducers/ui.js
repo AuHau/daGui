@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
 
-import UI from '../actions/ui';
+import UI from 'shared/actions/ui';
 
 export default (state, action) => {
 

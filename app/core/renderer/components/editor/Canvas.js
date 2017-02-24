@@ -4,13 +4,13 @@ import { findDOMNode } from 'react-dom';
 import { connect } from 'react-redux'
 import joint from 'jointjs';
 
-import {countInPorts} from '../../../graph/graphToolkit';
+import {countInPorts} from 'graph/graphToolkit';
 import styles from "./Canvas.scss";
 import HighlightTypes, {classTranslation as highlightTypeClasses} from 'shared/enums/HighlightType';
 import HighlightDestination from 'shared/enums/HighlightDestination';
 
-import {changeNodeDetail, canvasResize} from '../../../shared/actions/ui';
-import * as graphActions from '../../../shared/actions/graph';
+import {changeNodeDetail, canvasResize} from 'shared/actions/ui';
+import * as graphActions from 'shared/actions/graph';
 
 const CLICK_TRESHOLD = 2;
 const VARIABLE_NAME_MAX_WIDTH = 150;

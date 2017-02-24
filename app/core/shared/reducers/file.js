@@ -1,5 +1,5 @@
 
-import FILE from '../actions/file';
+import FILE from 'shared/actions/file';
 
 import graphReducer from './graph';
 

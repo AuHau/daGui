@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 import Resizable from 'renderer/components/utils/Resizable';
-import CodeInput from '../editor/CodeInput';
+import CodeInput from 'renderer/components/editor/CodeInput';
 import styles from './DetailSidebar.scss';
-import cssVariables from '!!sass-variable-loader!../../variables.scss';
+import cssVariables from '!!sass-variable-loader!renderer/variables.scss';
 
 const detailSidebarWidth = parseInt(cssVariables.detailSidebarWidth);
 

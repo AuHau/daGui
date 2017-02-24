@@ -7,13 +7,13 @@ import 'brace/theme/chrome';
 const event = ace.acequire('ace/lib/event');
 const Range = ace.acequire('ace/range').Range;
 
-import levels, {classTranslation, textTranslation} from '../../../shared/enums/ErrorLevel';
-import HighlightTypes, {classTranslation as highlightTypeClasses} from '../../../shared/enums/HighlightType';
+import levels, {classTranslation, textTranslation} from 'shared/enums/ErrorLevel';
+import HighlightTypes, {classTranslation as highlightTypeClasses} from 'shared/enums/HighlightType';
 import HighlightDestination from 'shared/enums/HighlightDestination';
 
 import Resizable from 'renderer/components/utils/Resizable';
 import styles from './CodeView.scss';
-import cssVariables from '!!sass-variable-loader!../../variables.scss';
+import cssVariables from '!!sass-variable-loader!renderer/variables.scss';
 
 const tabsHeight = parseInt(cssVariables.tabsHeight);
 const menuHeight = parseInt(cssVariables.menuHeight);

@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import joint from 'jointjs';
 import { connect } from 'react-redux'
 import Config from '../../../../config/index.js';
-import {countInPorts} from '../../../graph/graphToolkit';
+import {countInPorts} from 'graph/graphToolkit';
 
-import cssVariables from '!!sass-variable-loader!../../variables.scss';
+import cssVariables from '!!sass-variable-loader!renderer/variables.scss';
 import styles from './NodesGroup.scss';
 
-import {addNode, updateVariable} from '../../../shared/actions/graph';
+import {addNode, updateVariable} from 'shared/actions/graph';
 
 const nodeWidth = parseInt(cssVariables.nodesSidebarNodeWidth);
 const nodeHeight = parseInt(cssVariables.nodesSidebarNodeHeight);

@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
 import styles from './Menu.scss';
-import * as uiActions from '../../../shared/actions/ui';
+import * as uiActions from 'shared/actions/ui';
 
 class Menu extends Component {
   render() {

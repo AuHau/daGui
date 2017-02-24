@@ -17,13 +17,13 @@ import {switchTab} from 'shared/actions/file';
 
 // Components
 import ToggleDisplay from 'react-toggle-display';
-import Menu from '../components/layout/Menu';
-import Tabs from '../components/layout/Tabs';
-import Footer from '../components/layout/Footer';
-import NodesSidebar from '../components/sidebar_node/NodesSidebar';
-import DetailSidebar from '../components/sidebar_detail/DetailSidebar';
-import Canvas from '../components/editor/Canvas';
-import CodeView from '../components/editor/CodeView';
+import Menu from 'renderer/components/layout/Menu';
+import Tabs from 'renderer/components/layout/Tabs';
+import Footer from 'renderer/components/layout/Footer';
+import NodesSidebar from 'renderer/components/sidebar_node/NodesSidebar';
+import DetailSidebar from 'renderer/components/sidebar_detail/DetailSidebar';
+import Canvas from 'renderer/components/editor/Canvas';
+import CodeView from 'renderer/components/editor/CodeView';
 
 class App extends Component {
   constructor(props){
