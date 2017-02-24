@@ -23,6 +23,7 @@ export default class Resizable extends Component {
     this.overlay = null;
 
     // TODO: [Medium] After finishing resizing the window store it to user's settings
+    if(this.props.onResize) this.props.onResize();
   }
 
   createOverlay(){
@@ -117,5 +118,6 @@ Resizable.propTypes = {
   class: React.PropTypes.string.isRequired,
   side: React.PropTypes.string.isRequired,
   getMin: React.PropTypes.func,
-  getMax: React.PropTypes.func
+  getMax: React.PropTypes.func,
+  onResize: React.PropTypes.func
 };

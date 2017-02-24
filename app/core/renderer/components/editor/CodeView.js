@@ -39,6 +39,7 @@ export default class CodeView extends Component {
     this.editor = null;
     this.shouldUpdateWithNextChange = true;
     this.codeViewHighlights = {};
+    this.onResize = this.onResize.bind(this);
   }
 
   hookMarkers(codeMarkers) {
@@ -59,7 +60,7 @@ export default class CodeView extends Component {
         session.addMarker(rangeTmp, styles.variable, codeMarker.type);
         rangeTmp.end.on('change', this.onAnchorChange.bind(this));
       }else if(codeMarker.type == CodeMarker.NODE){
-        session.addMarker(rangeTmp, styles.node, codeMarker.type);
+        session.addMarker(rangeTmp, styles.node + ' nid-' + codeMarker.nid, codeMarker.type);
       }
 
       this.markers[codeMarker.type][codeMarker.nid] = rangeTmp;
@@ -91,10 +92,11 @@ export default class CodeView extends Component {
     this.hookMarkers(this.props.codeBuilder.getMarkers());
 
     // Highlighting nodes
-    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseOver = this.onMouseOver.bind(this);
     this.onMouseOut = this.onMouseOut.bind(this);
-    event.addListener(this.editor.renderer.scroller, "mousemove", this.onMouseMove);
-    event.addListener(this.editor.renderer.content, "mouseout", this.onMouseOut);
+    this.container.addEventListener('mouseover', this.onMouseOver);
+    this.container.addEventListener('mouseout', this.onMouseOut);
+
 
     // Nodes under cursor highlighting
     session.selection.on('changeCursor', () => {
@@ -147,15 +149,16 @@ export default class CodeView extends Component {
 
   componentWillUnmount(){
     this.onMouseOut();
-    event.removeListener(this.editor.renderer.scroller, "mousemove", this.onMouseMove);
-    event.removeListener(this.editor.renderer.content, "mouseout", this.onMouseOut);
+    this.container.removeEventListener('mouseover', this.onMouseOver);
+    this.container.removeEventListener('mouseout', this.onMouseOut);
+
   }
 
   render() {
     return (
-      <Resizable class={styles.container} side={"top"} getMax={this.getMaxHeight}>
+      <Resizable class={styles.container} side={"top"} getMax={this.getMaxHeight} onResize={this.onResize}>
         {this.renderErrors()}
-        <div className={styles.codeEditor} id="aceCodeEditor"></div>
+        <div className={styles.codeEditor} id="aceCodeEditor" ref={(container) => {this.container = container}}></div>
       </Resizable>
     );
   }
@@ -172,36 +175,24 @@ export default class CodeView extends Component {
     });
   }
 
-  onMouseMove(e){
-    const x = e.clientX;
-    const y = e.clientY;
+  onMouseOver(e){
+    const target = e.target;
 
-    const r = this.editor.renderer;
-    const canvasPos = r.rect || (r.rect = r.scroller.getBoundingClientRect());
-    const offset = (x + r.scrollLeft - canvasPos.left - r.$padding) / r.characterWidth;
-    const row = Math.floor((y + r.scrollTop - canvasPos.top) / r.lineHeight);
-    const col = Math.round(offset);
+    if(!target.classList.contains(styles.node)) return e.stopPropagation();
 
-    const screenPos = {row: row, column: col, side: offset - col > 0 ? 1 : -1};
-    const docPos = this.editor.getSession().screenToDocumentPosition(screenPos.row, screenPos.column);
-    const currentRange = new Range(docPos.row, docPos.column, docPos.row, docPos.column);
-
-    const nidToHighlight = this.intersects(CodeMarker.NODE, currentRange);
-    if(nidToHighlight != this.codeViewHighlights.hover) {
-      if(this.codeViewHighlights.hover != null) {
-        this.props.onRemoveHighlight(this.codeViewHighlights.hover, HighlightTypes.HOVER, HighlightDestination.CANVAS)
-      }
-
-      if(nidToHighlight){
-        this.props.onAddHighlight(nidToHighlight, HighlightTypes.HOVER, HighlightDestination.CANVAS)
-      }
-      this.codeViewHighlights.hover = nidToHighlight; // Null can be desired
-    }
+    const regex = /nid-([\w-]*)/;
+    const nid = regex.exec(target.className)[1];
+    this.props.onAddHighlight(nid, HighlightTypes.HOVER, HighlightDestination.CANVAS)
   }
 
-  onMouseOut(){
-    this.props.onRemoveHighlight(this.codeViewHighlights.hover, HighlightTypes.HOVER, HighlightDestination.CANVAS)
-    this.codeViewHighlights.hover = null;
+  onMouseOut(e){
+    const target = e.target;
+
+    if(!target.classList.contains(styles.node)) return e.stopPropagation();
+
+    const regex = /nid-([\w-]*)/;
+    const nid = regex.exec(target.className)[1];
+    this.props.onRemoveHighlight(nid, HighlightTypes.HOVER, HighlightDestination.CANVAS)
   }
 
   renderErrors(){
@@ -223,6 +214,7 @@ export default class CodeView extends Component {
       const variableMarkers = this.markers[CodeMarker.VARIABLE];
       for(let nid in variableMarkers){
         if(!variableMarkers.hasOwnProperty(nid)) continue;
+        variableMarkers[nid].start.detach();
         variableMarkers[nid].end.detach();
       }
     }
@@ -260,6 +252,13 @@ export default class CodeView extends Component {
 
   getMaxHeight(){
     return document.documentElement.clientHeight - tabsHeight - menuHeight;
+  }
+
+  onResize(){
+    this.editor.resize(true);
+    // this.editor.renderer.
+
+    setTimeout(()=> this.hookMarkers(this.props.codeBuilder.getMarkers()), 1000);
   }
 }
 
