@@ -282,6 +282,8 @@ class Canvas extends Component {
   }
 
   onPointerUp(cellView, e, x, y){
+    if(!e.target || e.target.type != 'text') this.freezed = false;
+
     if(Math.abs(this.startingPointerPosition.x - x) < CLICK_TRESHOLD
         && Math.abs(this.startingPointerPosition.y - y) < CLICK_TRESHOLD) {
       // Click
@@ -303,7 +305,6 @@ class Canvas extends Component {
       ) this.addLink(cellView);
     }
 
-    if(!e.target || e.target.type != 'text') this.freezed = false;
     this.startingPointerPosition = null;
   }
 
@@ -361,6 +362,7 @@ const mapDispatchToProps = (dispatch) => {
 Canvas.propTypes = {
   onAddHighlight: React.PropTypes.func.isRequired,
   onRemoveHighlight: React.PropTypes.func.isRequired,
+  onSwitchHighlight: React.PropTypes.func.isRequired,
   highlights: React.PropTypes.oneOfType([React.PropTypes.array, React.PropTypes.object])
 };
 

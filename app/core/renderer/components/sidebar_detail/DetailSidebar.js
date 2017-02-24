@@ -14,7 +14,7 @@ export default class DetailSidebar extends Component {
   constructor(props){
     super(props);
 
-    this.nodeTemplate = this.props.adapter.getNodeTemplates()[this.props.node.type];
+    this.listenersAttached = false;
   }
 
   onNameChange(e){
@@ -25,16 +25,21 @@ export default class DetailSidebar extends Component {
     this.props.onNodeChange(node);
   }
 
-  componentDidMount(){
+  attacheListeners(){
     const descriptionInput = ReactDOM.findDOMNode(this.refs.descriptionInput);
     descriptionInput.addEventListener('change', this.onNameChange.bind(this));
     descriptionInput.addEventListener('blur', (e) => {e.stopPropagation()});
+    this.listenersAttached = true;
   }
 
-  componentWillReceiveProps(newProps){
+  shouldComponentUpdate(nextProps){
+    return nextProps.node;
+  }
+
+  componentWillUpdate(newProps){
     // Before updating the input, I have to check if the Node's description was changed
     const descriptionInput = ReactDOM.findDOMNode(this.refs.descriptionInput);
-    if(this.props.node.dfGui.description != descriptionInput.value){
+    if(this.props.node && descriptionInput && this.props.node.dfGui.description != descriptionInput.value){
       descriptionInput.blur(); // Blur will fire the change event
     }
 
@@ -42,6 +47,10 @@ export default class DetailSidebar extends Component {
   }
 
   componentDidUpdate(){
+    if(!this.listenersAttached){
+      this.attacheListeners()
+    }
+
     const descriptionInput = ReactDOM.findDOMNode(this.refs.descriptionInput);
     descriptionInput.value = this.props.node.dfGui.description;
   }
@@ -51,6 +60,9 @@ export default class DetailSidebar extends Component {
   }
 
   render() {
+    if(!this.nodeTemplate)
+      return (<div></div>);
+
     let codeInput;
     if (this.nodeTemplate.hasCodeToFill()) {
       codeInput = (
@@ -81,7 +93,7 @@ export default class DetailSidebar extends Component {
 }
 
 DetailSidebar.propTypes = {
-  node: React.PropTypes.object.isRequired,
+  node: React.PropTypes.object,
   adapter: React.PropTypes.func.isRequired,
   language: React.PropTypes.func.isRequired,
   onNodeChange: React.PropTypes.func.isRequired

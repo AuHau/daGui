@@ -44,6 +44,7 @@ class App extends Component {
     this.graphHash = null;
     this.addHighlight = this.addHighlight.bind(this);
     this.removeHighlight = this.removeHighlight.bind(this);
+    this.switchHighlight = this.switchHighlight.bind(this);
     this.changeTab = this.changeTab.bind(this);
   }
 
@@ -59,6 +60,10 @@ class App extends Component {
 
   removeHighlight(nid, type, destination){
     this.setState({ highlights: this.state.highlights.set(destination, this.state.highlights.get(destination).filter(highlight => highlight.nid !== nid || highlight.type !== type )) })
+  }
+
+  switchHighlight(oldNid, newNid, type, destination){
+    this.setState({ highlights: this.state.highlights.set(destination, this.state.highlights.get(destination).filter(highlight => highlight.nid !== oldNid || highlight.type !== type ).push({nid: newNid, type})) })
   }
 
   resetHighlights(){
@@ -135,14 +140,13 @@ class App extends Component {
     const adapter = currentFile.get('adapter');
     const language = currentFile.get('language');
 
-    // TODO: [Low] Convert toggeling visibility for DetailSidebar also into ToggleDisplay component (needs to have ability of updating state)
     return (
       <div>
         <Menu />
         <NodesSidebar ref={(n) => {this.refSidebar = n}} adapter={adapter} />
         <Tabs currentFileIndex={this.props.currentFileIndex} files={this.props.files.toJS()} onTabChange={this.changeTab}/>
-        <Canvas onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} highlights={this.state.highlights.get(HighlightDestination.CANVAS)}/>
-        {this.props.nodeDetail && <DetailSidebar node={this.props.nodeDetail.toJS()} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/>}
+        <Canvas onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} onSwitchHighlight={this.switchHighlight} highlights={this.state.highlights.get(HighlightDestination.CANVAS)}/>
+        <ToggleDisplay show={this.props.nodeDetail !== null}><DetailSidebar node={(this.props.nodeDetail ? this.props.nodeDetail.toJS() : null)} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/></ToggleDisplay>
         <ToggleDisplay show={this.props.showCodeView}><CodeView onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} highlights={this.state.highlights.get(HighlightDestination.CODE_VIEW)} language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange}/></ToggleDisplay>
         <Footer messages={this.graphErrors} framework={adapter.getName()} language={currentFile.get('language').getName()}/>
       </div>
