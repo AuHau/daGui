@@ -10,15 +10,25 @@ const findIndex = (state, id) => {
 };
 
 export default (state, action) => {
-  let index, cells;
+  let index, cells, tmp;
 
   switch (action.type) {
+    case GRAPH.ADD_LINK:
+      tmp = state.updateIn(['opened', getActive(state), 'graph', 'cells'], nodes => nodes.push(Immutable.fromJS(action.payload.linkObject)));
+      tmp = tmp.updateIn(['opened', getActive(state), '$occupiedPorts'], nodes => nodes.update(action.payload.targetNid, ports => (ports ? ports.add(action.payload.targetPort) : Immutable.Set([action.payload.targetPort])) ));
+      return tmp;
+
+    case GRAPH.REMOVE_LINK:
+      cells = state.getIn(['opened', getActive(state), 'graph', 'cells']);
+      tmp = cells.filter(node => node.get('id') != action.payload.linkId && node.getIn(['source', 'id']) != action.payload.linkId && node.getIn(['target', 'id']) != action.payload.linkId );
+      tmp = state.setIn(['opened', getActive(state), 'graph', 'cells'], tmp);
+
+      tmp = tmp.updateIn(['opened', getActive(state), '$occupiedPorts'], nodes => nodes.update(action.payload.targetNid, ports => ports.delete(action.payload.targetPort) ));
+      return tmp;
+
     case GRAPH.UPDATE_NODE:
       index = findIndex(state, action.payload.id);
-      // New link
-      if (index == -1) {
-        return state.updateIn(['opened', getActive(state), 'graph', 'cells'], nodes => nodes.push(Immutable.fromJS(action.payload)));
-      }
+
       return state.setIn(['opened', getActive(state), 'graph', 'cells', index], Immutable.fromJS(action.payload));
 
     case GRAPH.MOVE_NODE:

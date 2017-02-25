@@ -5,7 +5,9 @@ const GRAPH = {
   UPDATE_NODE: 'GRAPH_UPDATE_NODE',
   DELETE_NODE: 'GRAPH_DELETE_NODE',
   UPDATE_VARIABLE: 'GRAPH_UPDATE_VARIABLE',
-  REMOVE_VARIABLE: 'GRAPH_REMOVE_VARIABLE'
+  REMOVE_VARIABLE: 'GRAPH_REMOVE_VARIABLE',
+  ADD_LINK: 'GRAPH_ADD_LINK',
+  REMOVE_LINK: 'GRAPH_REMOVE_LINK'
 };
 export default GRAPH;
 
@@ -20,6 +22,28 @@ export const updateNode = (nodeObject) => {
   return {
     type: GRAPH.UPDATE_NODE,
     payload: nodeObject
+  }
+};
+
+export const addLink = (linkObject, targetNid, targetPort) => {
+  return {
+    type: GRAPH.ADD_LINK,
+    payload: {
+      linkObject,
+      targetNid,
+      targetPort
+    }
+  }
+};
+
+export const removeLink = (linkId, targetNid, targetPort) => {
+  return {
+    type: GRAPH.REMOVE_LINK,
+    payload: {
+      linkId,
+      targetNid,
+      targetPort
+    }
   }
 };
 

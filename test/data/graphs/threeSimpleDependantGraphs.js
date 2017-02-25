@@ -6,10 +6,13 @@ export default {
   adapter: SparkAdapter,
   language: Python,
   "usedVariables": {
-  "var2": "48bb3a41-a987-47f3-9a8e-f0e869c7602c",
+    "var2": "48bb3a41-a987-47f3-9a8e-f0e869c7602c",
     "var1": "222acdee-3545-4e44-86ab-b9a8e17b7b0e",
     "var3": "53693926-a289-48d1-91f6-233e505c2a0c"
-},
+  },
+  $occupiedPorts: {
+
+  },
   "graph": {
   "cells": [
     {

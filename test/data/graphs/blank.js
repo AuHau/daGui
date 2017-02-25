@@ -6,6 +6,9 @@ export default {
   adapter: SparkAdapter,
   language: Python,
   "usedVariables": {},
+  $occupiedPorts: {
+
+  },
   "graph": {
     "cells": []
   }

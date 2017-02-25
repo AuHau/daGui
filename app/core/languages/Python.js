@@ -15,7 +15,7 @@ export default class Python extends BaseLanguage {
   }
 
   static nameNode(nodeTemplate, usedVariables){
-    // TODO: [High] Implement SnakeCase generator to drop lodash depedendency
+    // TODO: [Medium] Implement SnakeCase generator to drop lodash depedendency
     const baseName = _.snakeCase(nodeTemplate.getName());
 
     let num;
@@ -24,7 +24,7 @@ export default class Python extends BaseLanguage {
     return baseName + num;
   }
 
-  // TODO: [High] Implement intelligent Python parsing (ignoring scope variables, keywords etc)
+  // TODO: [Critical] Implement intelligent Python parsing (ignoring scope variables, keywords etc)
   static parseVariables(parameters, usedVariables){
     let variables = [];
 

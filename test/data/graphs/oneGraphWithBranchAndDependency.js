@@ -10,6 +10,9 @@ export default {
     "count": "354735b1-a66f-4f16-83eb-5b5b36296468",
     "input": "c9615ee0-89ee-4b31-8168-fa374461d542"
   },
+  $occupiedPorts: {
+
+  },
   "graph": {
     "cells": [
       {

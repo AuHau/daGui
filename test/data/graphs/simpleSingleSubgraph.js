@@ -8,6 +8,9 @@ export default {
   "usedVariables": {
     "input": "c9615ee0-89ee-4b31-8168-fa374461d542"
   },
+  $occupiedPorts: {
+
+  },
   "graph": {
     "cells": [
       {

@@ -59,13 +59,12 @@ class Canvas extends Component {
         attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } },
         smooth: true
       }),
-      // TODO: [Critical] Move occupiedPorts into file in Redux's state
       validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
         if (magnetS && magnetS.getAttribute('port-group') === 'in') return false;
         if (cellViewS === cellViewT) return false;
         if (!magnetT || magnetT.getAttribute('port-group') !== 'in') return false;
 
-        const ports = this.occupiedPorts[cellViewT.model.id];
+        const ports = this.props.$occupiedPorts.get(cellViewT.model.id);
         return !ports || !ports.has(magnetT.getAttribute('port'));
       }.bind(this)
     });
@@ -175,11 +174,9 @@ class Canvas extends Component {
           this.props.onUpdateVariable(childrenElement.id, variableName); // TODO: [Low] Batch adding the variable and adding link
         }
       }
-      this.props.onNodeUpdate(cellView.model.toJSON());
-    }else{
-      this.props.onNodeUpdate(cellView.model.toJSON());
     }
-    this.occupiedPorts[cellView.model.attributes.target.id] = (this.occupiedPorts[cellView.model.attributes.target.id] || new Set()).add(cellView.model.attributes.target.port);
+
+    this.props.onLinkAdd(cellView.model.toJSON(), cellView.model.attributes.target.id, cellView.model.attributes.target.port);
   }
 
   removeLink(link){
@@ -190,14 +187,12 @@ class Canvas extends Component {
       if(sourcesChildren.length == 1){ // Delete variable only when going from 2 links to 1 link
         this.props.onRemoveVariable(sourcesChildren[0].attributes.target.id);
         this.props.onRemoveVariable(targetElement.id); // TODO: [Low] Batch deleting variables
-        this.props.onLinkDelete(link.id);
+        this.props.onLinkDelete(link.id, link.attributes.target.id, link.attributes.target.port);
       }else if(targetElement.attributes.dfGui.variableName && countInPorts(targetElement) == 1) {
-        this.props.onLinkDeleteAndVariable(link.id, targetElement.id);
+        this.props.onLinkDeleteAndVariable(targetElement.id, link.id, link.attributes.target.id, link.attributes.target.port);
       }else{
-        this.props.onLinkDelete(link.id);
+        this.props.onLinkDelete(link.id, link.attributes.target.id, link.attributes.target.port);
       }
-
-      this.occupiedPorts[link.attributes.target.id].delete(link.attributes.target.port);
     }
   }
 
@@ -327,7 +322,8 @@ const mapStateToProps = (state) => {
     adapter: state.getIn(['files', 'opened', activeFile, 'adapter']),
     graphJson: state.getIn(['files', 'opened', activeFile, 'graph']),
     detailNodeId: state.getIn('ui.detailNodeId'.split('.')),
-    showCodeView: state.getIn('ui.showCodeView'.split('.'))
+    showCodeView: state.getIn('ui.showCodeView'.split('.')),
+    $occupiedPorts: state.getIn(['files', 'opened', activeFile, '$occupiedPorts'])
   };
 };
 
@@ -350,10 +346,11 @@ const mapDispatchToProps = (dispatch) => {
           graphActions.deleteNode(id)
         ]);
       },
-      onLinkDelete: (id) => dispatch(graphActions.deleteNode(id)),
-      onLinkDeleteAndVariable: (lid, nid) => dispatch([
+      onLinkAdd: (linkObject, targetNid, targetPort) => dispatch(graphActions.addLink(linkObject, targetNid, targetPort)),
+      onLinkDelete: (lid, targetNid, targetPort) => dispatch(graphActions.removeLink(lid, targetNid, targetPort)),
+      onLinkDeleteAndVariable: (nid, lid, targetNid, targetPort) => dispatch([
         graphActions.removeVariable(nid),
-        graphActions.deleteNode(lid)
+        graphActions.removeLink(lid, targetNid, targetPort)
       ]),
       onNodeDetail: (nid) => dispatch(changeNodeDetail(nid))
     }
