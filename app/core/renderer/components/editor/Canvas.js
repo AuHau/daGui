@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import { connect } from 'react-redux'
 import joint from 'jointjs';
+import svgPanZoom from 'svg-pan-zoom'
 
 import {countInPorts} from 'graph/graphToolkit';
 import styles from "./Canvas.scss";
@@ -15,6 +16,7 @@ import * as graphActions from 'shared/actions/graph';
 const CLICK_TRESHOLD = 2;
 const VARIABLE_NAME_MAX_WIDTH = 150;
 const VARIABLE_NAME_MIN_WIDTH = 30;
+const GRID_SIZE = 1;
 
 const getTextWidth = (text, font = '14px helvetica') => {
   // re-use canvas object for better performance
@@ -24,6 +26,25 @@ const getTextWidth = (text, font = '14px helvetica') => {
   const metrics = context.measureText(text);
   return metrics.width;
 };
+
+function setGrid(paper, size, color, offset) {
+  const canvas = document.createElement("canvas");
+  canvas.setAttribute('width', size);
+  canvas.setAttribute('height', size);
+
+  const context = canvas.getContext('2d');
+  context.beginPath();
+  context.rect(1, 1, 1, 1);
+  context.fillStyle = color || '#AAAAAA';
+  context.fill();
+
+  // Finally, set the grid background image of the paper container element.
+  const gridBackgroundImage = canvas.toDataURL('image/png');
+  paper.el.childNodes[0].style['background-image'] = 'url("' + gridBackgroundImage + '")';
+  if(offset){
+    paper.el.childNodes[0].style['background-position'] = offset.x + 'px ' + offset.y + 'px';
+  }
+}
 
 
 class Canvas extends Component {
@@ -49,7 +70,7 @@ class Canvas extends Component {
       width: wrapperElem.offsetWidth,
       height: 1000,
       model: this.graph,
-      gridSize: 1,
+      gridSize: GRID_SIZE,
 
       clickThreshold: 1,
       linkPinning: false,
@@ -81,6 +102,35 @@ class Canvas extends Component {
     this.paper.el.addEventListener('input', this.onInput.bind(this));
     this.graph.on('remove', this.removeLink.bind(this));
     document.addEventListener('keyup', this.onKeyUp.bind(this));
+
+    // Grid on background
+    setGrid(this.paper, GRID_SIZE*15, '#808080');
+
+    // Zooming and panning support
+    this.currentScale = 1;
+    this.panAndZoom = svgPanZoom(wrapperElem.childNodes[0],
+      {
+        viewportSelector: wrapperElem.childNodes[0].childNodes[0],
+        fit: false,
+        zoomScaleSensitivity: 0.4,
+        panEnabled: false,
+        onZoom: (scale) => {
+          this.currentScale = scale;
+          setGrid(this.paper, GRID_SIZE*15*this.currentScale, '#808080');
+        },
+        beforePan: (oldpan, newpan) =>{
+          setGrid(this.paper, GRID_SIZE*15*this.currentScale, '#808080', newpan);
+        }
+      });
+
+    this.paper.on('blank:pointerdown', (evt, x, y) => {
+      this.panAndZoom.enablePan();
+      //console.log(x + ' ' + y);
+    });
+
+    this.paper.on('cell:pointerup blank:pointerup', (cellView, event) => {
+      this.panAndZoom.disablePan();
+    });
   }
 
   componentDidUpdate(){

@@ -162,6 +162,7 @@
     "redux-multi": "^0.1.12",
     "redux-thunk": "^2.1.0",
     "source-map-support": "^0.4.6",
+    "svg-pan-zoom": "github:ariutta/svg-pan-zoom",
     "topsort": "0.0.2"
   },
   "devEngines": {
