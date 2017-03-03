@@ -27,4 +27,12 @@ export default class CanvasComponentBase{
   ignoreAction(){
     this.canvas.ignoreAction = true;
   }
+
+  freeze(){
+    this.canvas.freezed = true;
+  }
+
+  unfreeze(){
+    this.canvas.freezed = false;
+  }
 }

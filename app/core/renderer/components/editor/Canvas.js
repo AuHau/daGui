@@ -4,7 +4,6 @@ import { findDOMNode } from 'react-dom';
 import { connect } from 'react-redux'
 import joint from 'jointjs';
 
-import {countInPorts} from 'graph/graphToolkit';
 import styles from "./Canvas.scss";
 import HighlightTypes, {classTranslation as highlightTypeClasses} from 'shared/enums/HighlightType';
 import HighlightDestination from 'shared/enums/HighlightDestination';
@@ -15,8 +14,8 @@ import * as graphActions from 'shared/actions/graph';
 // Canvas components
 import PanAndZoom from './canvas_components/PanAndZoom';
 import Grid from './canvas_components/Grid';
+import Link from './canvas_components/Link';
 
-const CLICK_TRESHOLD = 2;
 const VARIABLE_NAME_MAX_WIDTH = 150;
 const VARIABLE_NAME_MIN_WIDTH = 30;
 
@@ -35,9 +34,13 @@ class Canvas extends Component {
   constructor(props) {
     super(props);
 
+    this.CLICK_TRESHOLD = 2;
+
+    // Canvas components
     this.canvasComponents = {};
     this.canvasComponents['grid'] = new Grid(this);
     this.canvasComponents['panAndZoom'] = new PanAndZoom(this);
+    this.canvasComponents['link'] = new Link(this);
 
     this.graph = new joint.dia.Graph();
     this.currentDetailCell = null;
@@ -98,15 +101,11 @@ class Canvas extends Component {
     this.paper.on('cell:pointerup', this.onPointerUp.bind(this));
     this.paper.on('blank:pointerup', this.resetNodeDetail.bind(this));
     this.paper.el.addEventListener('input', this.onInput.bind(this));
-    this.graph.on('remove', this.removeLink.bind(this));
     document.addEventListener('keyup', this.onKeyUp.bind(this));
 
 
     // Init of Canvas components
     this.iterateComponents('init');
-
-
-    // Zooming and panning support
   }
 
   componentDidUpdate(){
@@ -196,39 +195,7 @@ class Canvas extends Component {
     }
   }
 
-  addLink(cellView){
-    const sourceElement = this.graph.getCell(cellView.model.attributes.source.id);
-    const sourcesChildren = this.graph.getConnectedLinks(sourceElement, {outbound: true});
-    if(sourcesChildren.length > 1){
-      let childrenElement;
-      for(let children of sourcesChildren) {
-        childrenElement = this.graph.getCell(children.attributes.target.id);
-        if(!childrenElement.attributes.dfGui.variableName){
-          const variableName = this.props.language.nameNode(this.props.adapter.getNodeTemplates()[childrenElement.attributes.type], this.props.usedVariables);
-          this.props.onUpdateVariable(childrenElement.id, variableName); // TODO: [Low] Batch adding the variable and adding link
-        }
-      }
-    }
 
-    this.props.onLinkAdd(cellView.model.toJSON(), cellView.model.attributes.target.id, cellView.model.attributes.target.port);
-  }
-
-  removeLink(link){
-    if(link.attributes.target.id){
-      const sourceElement = this.graph.getCell(link.attributes.source.id);
-      const targetElement = this.graph.getCell(link.attributes.target.id);
-      const sourcesChildren = this.graph.getConnectedLinks(sourceElement, {outbound: true});
-      if(sourcesChildren.length == 1){ // Delete variable only when going from 2 links to 1 link
-        this.props.onRemoveVariable(sourcesChildren[0].attributes.target.id);
-        this.props.onRemoveVariable(targetElement.id); // TODO: [Low] Batch deleting variables
-        this.props.onLinkDelete(link.id, link.attributes.target.id, link.attributes.target.port);
-      }else if(targetElement.attributes.dfGui.variableName && countInPorts(targetElement) == 1) {
-        this.props.onLinkDeleteAndVariable(targetElement.id, link.id, link.attributes.target.id, link.attributes.target.port);
-      }else{
-        this.props.onLinkDelete(link.id, link.attributes.target.id, link.attributes.target.port);
-      }
-    }
-  }
 
   onResize(){
     const wrapperElem = findDOMNode(this.refs.placeholder);
@@ -311,25 +278,19 @@ class Canvas extends Component {
   onPointerUp(cellView, e, x, y){
     if(!e.target || e.target.type != 'text') this.freezed = false;
 
-    if(Math.abs(this.startingPointerPosition.x - x) < CLICK_TRESHOLD
-        && Math.abs(this.startingPointerPosition.y - y) < CLICK_TRESHOLD) {
+    if(Math.abs(this.startingPointerPosition.x - x) < this.CLICK_TRESHOLD
+        && Math.abs(this.startingPointerPosition.y - y) < this.CLICK_TRESHOLD) {
       // Click
       if(e.target && e.target.type == 'text'){ // Variable input
         e.target.focus();
       }else if(cellView.model.isElement()){
         this.onNodeDetail(cellView);
-      }else if(
-        cellView.model.isLink()
-        && cellView.model.graph  // Needs to verify, that the click was not on remove button
-      ) this.addLink(cellView)
+      }
     }else{
       // Drag node
       if(cellView.model.isElement()){
         this.onNodeMove(cellView);
-      }else if(
-        cellView.model.isLink()
-        && cellView.model.attributes.target.id // Needs to verify, that the link is not left hanging in middle of nowhere
-      ) this.addLink(cellView);
+      }
     }
 
     this.startingPointerPosition = null;
