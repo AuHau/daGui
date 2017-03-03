@@ -58,10 +58,23 @@ export default class PanAndZoom extends CanvasComponentBase {
   }
 
   afterUpdate() {
+    const panX = this.get('$pan').get('x');
+    const panY = this.get('$pan').get('y');
+
+    if(panX == 'contain' || panY == 'contain'){
+      this.panAndZoom.fit();
+      // this.panAndZoom.center();
+
+      this.ignoreAction();
+      const pan = this.panAndZoom.getPan();
+      this.call('onPan', pan.x, pan.y);
+      return;
+    }
+
     this.panAndZoom.zoom(this.get('zoom'));
     this.panAndZoom.enablePan().pan({
-      x: this.get('$pan').get('x'),
-      y: this.get('$pan').get('y')
+      x: panX,
+      y: panY
     }).disablePan();
   }
 }

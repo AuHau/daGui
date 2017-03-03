@@ -4,8 +4,10 @@ import {connect} from 'react-redux';
 
 import styles from './Menu.scss';
 import * as uiActions from 'shared/actions/ui';
+import * as graphActions from 'shared/actions/graph';
 
 class Menu extends Component {
+  // TODO: [BUG] Contain does not work
   render() {
     return (
       <div className={styles.container}>
@@ -24,6 +26,7 @@ class Menu extends Component {
           <li><a href="#"><i className="fa fa-repeat"/></a></li>
           <li><a href="#"><i className="fa fa-search-plus"/></a></li>
           <li><a href="#"><i className="fa fa-search-minus"/></a></li>
+          {/*<li><a href="#" onClick={this.props.onContain}><i className="fa fa-arrows-alt"/></a></li>*/}
         </ul>
         <ul className={styles.left}>
           <li><a href="#"><i className="fa fa-object-group"/></a></li>
@@ -51,6 +54,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onShowSettings: (node) => {
       dispatch(uiActions.showSettings());
+    },
+    onContain: () => {
+      dispatch(graphActions.pan('contain', 'contain'));
     }
   };
 };
