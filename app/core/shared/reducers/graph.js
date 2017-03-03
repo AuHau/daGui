@@ -37,7 +37,8 @@ export default (state, action) => {
       return state.setIn(['opened', getActive(state), 'graph', 'cells', index, 'position'], newPosition);
 
     case GRAPH.ADD_NODE:
-      return state.updateIn(['opened', getActive(state), 'graph', 'cells'], nodes => nodes.push(Immutable.fromJS(action.payload)));
+      tmp = action.payload;
+      return state.updateIn(['opened', getActive(state), 'graph', 'cells'], nodes => nodes.push(Immutable.fromJS(tmp)));
 
     case GRAPH.DELETE_NODE:
       cells = state.getIn(['opened', getActive(state), 'graph', 'cells']);
@@ -57,6 +58,12 @@ export default (state, action) => {
       return state.deleteIn(['opened', getActive(state), 'graph', 'cells', index, 'dfGui', 'variableName'])
         .deleteIn(['opened', getActive(state), 'usedVariables', variableName]);
 
+    case GRAPH.PAN:
+      return state.updateIn(['opened', getActive(state), '$pan'], pan => pan.set('x', action.payload.x).set('y', action.payload.y));
+
+    case GRAPH.ZOOM:
+      tmp = state.setIn(['opened', getActive(state), 'zoom'], action.payload.scale);
+      return tmp.updateIn(['opened', getActive(state), '$pan'], pan => pan.set('x', action.payload.panX).set('y', action.payload.panY));
 
     default:
       return state;

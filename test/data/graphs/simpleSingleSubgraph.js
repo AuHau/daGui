@@ -8,6 +8,11 @@ export default {
   "usedVariables": {
     "input": "c9615ee0-89ee-4b31-8168-fa374461d542"
   },
+  $pan: {
+    x: 0,
+    y: 0
+  },
+  zoom: 1,
   $occupiedPorts: {
 
   },

@@ -7,7 +7,9 @@ const GRAPH = {
   UPDATE_VARIABLE: 'GRAPH_UPDATE_VARIABLE',
   REMOVE_VARIABLE: 'GRAPH_REMOVE_VARIABLE',
   ADD_LINK: 'GRAPH_ADD_LINK',
-  REMOVE_LINK: 'GRAPH_REMOVE_LINK'
+  REMOVE_LINK: 'GRAPH_REMOVE_LINK',
+  PAN: 'GRAPH_PAN',
+  ZOOM: 'GRAPH_ZOOM'
 };
 export default GRAPH;
 
@@ -67,6 +69,23 @@ export const moveNode = (nid, x, y) => {
     nid,
     x,
     y
+  }
+};
+
+export const pan = (x, y) => {
+  return {
+    type: GRAPH.PAN,
+    payload: {
+      x,
+      y
+    }
+  }
+};
+
+export const zoom = (scale, panX, panY) => {
+  return {
+    type: GRAPH.ZOOM,
+    payload: {scale, panX, panY}
   }
 };
 
