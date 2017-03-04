@@ -15,6 +15,7 @@ import * as graphActions from 'shared/actions/graph';
 import PanAndZoom from './canvas_components/PanAndZoom';
 import Grid from './canvas_components/Grid';
 import Link from './canvas_components/Link';
+import Nodes from './canvas_components/Nodes';
 
 const VARIABLE_NAME_MAX_WIDTH = 150;
 const VARIABLE_NAME_MIN_WIDTH = 30;
@@ -41,6 +42,7 @@ class Canvas extends Component {
     this.canvasComponents['grid'] = new Grid(this);
     this.canvasComponents['panAndZoom'] = new PanAndZoom(this);
     this.canvasComponents['link'] = new Link(this);
+    this.canvasComponents['nodes'] = new Nodes(this);
 
     this.graph = new joint.dia.Graph();
     this.currentDetailCell = null;
@@ -97,11 +99,7 @@ class Canvas extends Component {
     // Event listeners
     this.paper.on('cell:mouseout', this.onMouseOut.bind(this));
     this.paper.on('cell:mouseover', this.onMouseOver.bind(this));
-    this.paper.on('cell:pointerdown', this.onPointerDown.bind(this));
-    this.paper.on('cell:pointerup', this.onPointerUp.bind(this));
-    this.paper.on('blank:pointerup', this.resetNodeDetail.bind(this));
     this.paper.el.addEventListener('input', this.onInput.bind(this));
-    document.addEventListener('keyup', this.onKeyUp.bind(this));
 
 
     // Init of Canvas components
@@ -203,31 +201,6 @@ class Canvas extends Component {
     this.props.onCanvasResize(wrapperElem.getBoundingClientRect());
   }
 
-  onNodeMove(cellView){
-    if(cellView.model.attributes.type != 'link'){
-      const newPosition = cellView.model.attributes.position;
-      this.props.onNodeMove(cellView.model.id, newPosition.x, newPosition.y);
-    }
-  }
-
-  resetNodeDetail(){
-    if(this.currentDetailCell){
-      this.props.onNodeDetail(null);
-      this.currentDetailCell = null;
-    }
-
-    document.querySelectorAll('input').forEach(input => input.blur());
-  }
-
-  onNodeDetail(cellView){
-    if(cellView === this.currentDetailCell
-      || cellView.model.attributes.type == 'link'){
-      return;
-    }
-
-    this.currentDetailCell = cellView;
-    this.props.onNodeDetail(cellView.model.id);
-  }
 
   onInput(e){
     this.recalculateWidthOfVariableName(e.target);
@@ -269,42 +242,7 @@ class Canvas extends Component {
     }
   }
 
-  // TODO: [BUG/Medium] When dragging node Z value should be the highest in graph
-  onPointerDown(cellView, e, x, y){
-    this.startingPointerPosition = {x, y};
-    this.freezed = true;
-  }
 
-  onPointerUp(cellView, e, x, y){
-    if(!e.target || e.target.type != 'text') this.freezed = false;
-
-    if(Math.abs(this.startingPointerPosition.x - x) < this.CLICK_TRESHOLD
-        && Math.abs(this.startingPointerPosition.y - y) < this.CLICK_TRESHOLD) {
-      // Click
-      if(e.target && e.target.type == 'text'){ // Variable input
-        e.target.focus();
-      }else if(cellView.model.isElement()){
-        this.onNodeDetail(cellView);
-      }
-    }else{
-      // Drag node
-      if(cellView.model.isElement()){
-        this.onNodeMove(cellView);
-      }
-    }
-
-    this.startingPointerPosition = null;
-  }
-
-  onKeyUp(e){
-    if(e.keyCode == 46 && this.props.detailNodeId &&
-      !(e.target.matches('input') || e.target.matches('[contenteditable]') || e.target.matches('textarea'))){
-      const model = this.graph.getCell(this.props.detailNodeId);
-      this.graph.getConnectedLinks(model, {outbound: true}).forEach(link => this.occupiedPorts[link.attributes.target.id].delete(link.attributes.target.port));
-
-      this.props.onNodeDelete(this.props.detailNodeId);
-    }
-  }
 }
 
 const mapStateToProps = (state) => {
