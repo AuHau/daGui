@@ -148,10 +148,8 @@ export default class CodeView extends Component {
   }
 
   componentWillUnmount(){
-    this.onMouseOut();
     this.container.removeEventListener('mouseover', this.onMouseOver);
     this.container.removeEventListener('mouseout', this.onMouseOut);
-
   }
 
   render() {
