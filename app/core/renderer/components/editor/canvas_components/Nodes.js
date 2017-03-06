@@ -74,6 +74,9 @@ export default class Nodes extends CanvasComponentBase{
   }
 
   resetNodeDetail(e, x, y){
+    if(!this.startingPointerPosition) return;
+
+    // Was it panning/multiselect or click on canvas?
     if(Math.abs(this.startingPointerPosition.x - e.clientX) < this.canvas.CLICK_TRESHOLD
       && Math.abs(this.startingPointerPosition.y - e.clientY) < this.canvas.CLICK_TRESHOLD) {
 
