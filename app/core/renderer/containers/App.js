@@ -123,14 +123,14 @@ class App extends Component {
   }
 
   highlightErrors(){
-    const errHighlights = [];
+    const errHighlights = this.highlightsTemplate.asMutable();
     for(let err of this.graphErrors){
       if(err.id){
-        errHighlights.push({nid: err.id, type: HighlightType.ERROR, destination: HighlightDestination.CANVAS})
+        errHighlights.set(HighlightDestination.CANVAS, this.state.highlights.get(HighlightDestination.CANVAS).push({nid: err.id, type: HighlightType.ERROR}));
       }
     }
 
-    this.setState({highlights: errHighlights});
+    this.setState({highlights: errHighlights.asImmutable()});
   }
 
 

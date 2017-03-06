@@ -48,9 +48,6 @@ export default class Nodes extends CanvasComponentBase{
   onDeleteKey(e){
     if(e.keyCode == 46 && this.get('detailNodeId') &&
       !(e.target.matches('input') || e.target.matches('[contenteditable]') || e.target.matches('textarea'))){
-      const model = this.graph.getCell(this.get('detailNodeId'));
-      // TODO: [BUG/Critical] On deletion of node, the linked node's occupiedPorts needs to be deleted
-      // this.graph.getConnectedLinks(model, {outbound: true}).forEach(link => this.get('$occupiedPorts').get(link.attributes.target.id).delete(link.attributes.target.port));
 
       this.call('onNodeDelete', this.get('detailNodeId'));
     }
