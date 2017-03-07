@@ -20,7 +20,7 @@ export default class Footer extends Component {
           </span>
         </div>
         <div className={styles.left}>
-          {this.props.messages && <ErrorsView messages={this.props.messages}/>}
+          <ErrorsView messages={this.props.messages}/>
         </div>
       </div>
     );
