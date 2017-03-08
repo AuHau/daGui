@@ -33,7 +33,7 @@ export default class DetailSidebar extends Component {
   }
 
   shouldComponentUpdate(nextProps){
-    return nextProps.node;
+    return nextProps.node !== null && nextProps.node !== undefined;
   }
 
   componentWillUpdate(newProps){

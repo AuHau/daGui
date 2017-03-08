@@ -112,7 +112,7 @@ class App extends Component {
       }
 
       if(this.graphErrors.length && !tmpErrors.length){
-        this.setState({highlights: []});
+        this.setState({highlights: this.highlightsTemplate});
       }
       this.graphErrors = tmpErrors;
     }else{
