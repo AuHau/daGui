@@ -147,6 +147,8 @@ class Canvas extends Component {
 
   highlightNode(nid, className = styles.nodeDetail){
     const detailNode = this.graph.getCell(nid);
+    if(!detailNode) return; // nid doesn't exists in graph ==> abort highlighting
+
     const view = this.paper.findViewByModel(detailNode);
     view.highlight(view.el.querySelectorAll('rect'), {     // TODO: [Medium] Delegate returning element for highlighting to Node Template
       highlighter: {

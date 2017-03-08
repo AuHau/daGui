@@ -49,7 +49,7 @@ class App extends Component {
   }
 
   changeTab(newIndex){
-    this.setState({highlights: this.highlightsTemplate});
+    this.resetHighlights();
     this.props.onTabChange(newIndex);
     this.graphHash = null;
   }
@@ -71,19 +71,23 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    if(!nextProps.showCodeView)
-      return; // Generation will only happen when has to (eq. when CodeView is active)
-
     const currentFile = nextProps.files.get(nextProps.currentFileIndex);
     const adapter = currentFile.get('adapter');
     const language = currentFile.get('language');
     const graph = currentFile.get('graph').toJS();
     const usedVariables = currentFile.get('usedVariables').toJS();
 
-    const {normalizedGraph, inputs}= normalizeGraph(graph, adapter.isTypeInput);
+    const {normalizedGraph, inputs} = normalizeGraph(graph, adapter.isTypeInput);
     const newHash = hashGraph(normalizedGraph);
-    if(this.graphHash == newHash)
-      return; // No graph's changes which are connected with code ===> don't re-generate the code
+    const areThereNodes = Object.keys(normalizedGraph).length;
+    if(!areThereNodes || this.graphHash == newHash){
+      if (!areThereNodes && this.graphErrors.length){
+        this.resetHighlights();
+        this.graphErrors = [];
+      }
+
+      return; // No graph's changes which are connected with code ===> don't re-generate the code OR there are no nodes...
+    }
     this.graphHash = newHash;
 
     // TODO: Optimalization - drop JointJS graph dependency (use only normalized graph)
@@ -91,8 +95,10 @@ class App extends Component {
     jointGraph.fromJSON(graph);
     let tmpErrors = adapter.validateGraph(jointGraph, normalizedGraph, inputs, language);
 
-
     if (!tmpErrors.length) {
+      if(!nextProps.showCodeView)
+        return; // Generation will only happen when has to (eq. when CodeView is active)
+
       try {
         adapter.generateCode(this.codeBuilder, normalizedGraph, inputs, usedVariables, language);
       } catch (e){
@@ -111,10 +117,18 @@ class App extends Component {
         }
       }
 
+      // Previously there were errors, but now they are not ==> reset error highlighting
       if(this.graphErrors.length && !tmpErrors.length){
-        this.setState({highlights: this.highlightsTemplate});
+        this.resetHighlights();
       }
-      this.graphErrors = tmpErrors;
+
+      if(tmpErrors){
+        this.graphErrors = tmpErrors;
+        this.highlightErrors();
+      }else{
+        this.resetHighlights();
+        this.graphErrors = null;
+      }
     }else{
       this.graphErrors = tmpErrors;
       this.highlightErrors();

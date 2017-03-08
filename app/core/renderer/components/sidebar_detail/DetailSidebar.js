@@ -37,6 +37,8 @@ export default class DetailSidebar extends Component {
   }
 
   componentWillUpdate(newProps){
+    if(!newProps.node) return;
+
     // Before updating the input, I have to check if the Node's description was changed
     const descriptionInput = ReactDOM.findDOMNode(this.refs.descriptionInput);
     if(this.props.node && descriptionInput && this.props.node.dfGui.description != descriptionInput.value){
