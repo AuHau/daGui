@@ -5,8 +5,7 @@ import { connect } from 'react-redux'
 import joint from 'jointjs';
 
 import styles from "./Canvas.scss";
-import HighlightTypes, {classTranslation as highlightTypeClasses} from 'shared/enums/HighlightType';
-import HighlightDestination from 'shared/enums/HighlightDestination';
+
 
 import {changeNodeDetail, canvasResize} from 'shared/actions/ui';
 import * as graphActions from 'shared/actions/graph';
@@ -16,6 +15,7 @@ import PanAndZoom from './canvas_components/PanAndZoom';
 import Grid from './canvas_components/Grid';
 import Link from './canvas_components/Link';
 import Nodes from './canvas_components/Nodes';
+import Highlights from './canvas_components/Highlights';
 
 const VARIABLE_NAME_MAX_WIDTH = 150;
 const VARIABLE_NAME_MIN_WIDTH = 30;
@@ -43,12 +43,11 @@ class Canvas extends Component {
     this.canvasComponents['panAndZoom'] = new PanAndZoom(this);
     this.canvasComponents['link'] = new Link(this);
     this.canvasComponents['nodes'] = new Nodes(this);
+    this.canvasComponents['highlights'] = new Highlights(this);
 
     this.graph = new joint.dia.Graph();
     this.currentDetailCell = null;
     this.startingPointerPosition = null;
-    this.currentHoveredNid = null;
-    this.occupiedPorts = {};
     this.freezed = false;
     this.ignoreAction = false;
     this.isPanning = false;
@@ -97,8 +96,6 @@ class Canvas extends Component {
     this.graph.fromJSON(this.props.graphJson.toJS());
 
     // Event listeners
-    this.paper.on('cell:mouseout', this.onMouseOut.bind(this));
-    this.paper.on('cell:mouseover', this.onMouseOver.bind(this));
     this.paper.el.addEventListener('input', this.onInput.bind(this));
 
 
@@ -118,15 +115,6 @@ class Canvas extends Component {
       input.addEventListener('change', this.onVariableNameChange.bind(this));
     });
 
-    if(this.props.detailNodeId){
-      this.highlightNode(this.props.detailNodeId, styles.nodeDetail);
-    }
-
-    if(!this.props.highlights.isEmpty()){
-      this.highlightNodes(this.props.highlights);
-    }
-
-
     this.iterateComponents('afterUpdate');
   }
 
@@ -137,27 +125,6 @@ class Canvas extends Component {
     }
 
     return !this.freezed;
-  }
-
-  highlightNodes(highlights) {
-    highlights.forEach(highlight => {
-      this.highlightNode(highlight.nid, styles[highlightTypeClasses[highlight.type]])
-    });
-  }
-
-  highlightNode(nid, className = styles.nodeDetail){
-    const detailNode = this.graph.getCell(nid);
-    if(!detailNode) return; // nid doesn't exists in graph ==> abort highlighting
-
-    const view = this.paper.findViewByModel(detailNode);
-    view.highlight(view.el.querySelectorAll('rect'), {     // TODO: [Medium] Delegate returning element for highlighting to Node Template
-      highlighter: {
-        name: 'addClass',
-        options: {
-          className: className
-        }
-      }
-    });
   }
 
   render() {
@@ -224,27 +191,6 @@ class Canvas extends Component {
     node.classList.remove.apply(node.classList, styles.focused.split(' '));
     this.freezed = false;
   }
-
-  onMouseOut(cellView, e){
-    if(!this.props.showCodeView || this.freezed) return;
-
-    this.props.onRemoveHighlight(this.currentHoveredNid, HighlightTypes.HOVER, HighlightDestination.CODE_VIEW);
-    this.currentHoveredNid = null;
-  }
-
-  onMouseOver(cellView, e){
-    if(!this.props.showCodeView || cellView.model.isLink() || this.freezed) return;
-
-    if(this.currentHoveredNid != cellView.model.id){
-      // There is active Node highlighted ==> for switch have to remove the old one
-      if(this.currentHoveredNid !== null) this.props.onRemoveHighlight(this.currentHoveredNid, HighlightTypes.HOVER, HighlightDestination.CODE_VIEW);
-
-      this.props.onAddHighlight(cellView.model.id, HighlightTypes.HOVER, HighlightDestination.CODE_VIEW);
-      this.currentHoveredNid = cellView.model.id;
-    }
-  }
-
-
 }
 
 const mapStateToProps = (state) => {

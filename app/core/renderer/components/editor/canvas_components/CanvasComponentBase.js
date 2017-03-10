@@ -5,7 +5,8 @@ export default class CanvasComponentBase{
   }
 
   init(){
-
+    this.graph = this.canvas.graph;
+    this.paper = this.canvas.paper;
   }
 
   beforeUpdate(){

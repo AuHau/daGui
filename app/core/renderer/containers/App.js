@@ -79,9 +79,9 @@ class App extends Component {
 
     const {normalizedGraph, inputs} = normalizeGraph(graph, adapter.isTypeInput);
     const newHash = hashGraph(normalizedGraph);
-    const areThereNodes = Object.keys(normalizedGraph).length;
-    if(!areThereNodes || this.graphHash == newHash){
-      if (!areThereNodes && this.graphErrors.length){
+    const isGraphEmpty = !Object.keys(normalizedGraph).length;
+    if(isGraphEmpty || this.graphHash == newHash){
+      if (isGraphEmpty && this.graphErrors.length){
         this.resetHighlights();
         this.graphErrors = [];
       }
