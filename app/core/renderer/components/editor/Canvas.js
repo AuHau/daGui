@@ -78,9 +78,10 @@ class Canvas extends Component {
         return !ports || !ports.has(magnetT.getAttribute('port'));
       }.bind(this)
     });
-    setTimeout(this.onResize.bind(this), 10);
-
     this.graph.fromJSON(this.props.graphJson.toJS());
+
+    setTimeout(this.onResize.bind(this), 10);
+    window.addEventListener('resize', this.onResize.bind(this));
 
     // Init of Canvas components
     this.iterateComponents('init');
