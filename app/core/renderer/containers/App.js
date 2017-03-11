@@ -80,12 +80,13 @@ class App extends Component {
     const {normalizedGraph, inputs} = normalizeGraph(graph, adapter.isTypeInput);
     const newHash = hashGraph(normalizedGraph);
     const isGraphEmpty = !Object.keys(normalizedGraph).length;
-    if(isGraphEmpty || this.graphHash == newHash){
+    if(isGraphEmpty || (this.graphHash == newHash && !(nextProps.showCodeView && this.codeBuilder.isEmpty()))){
       if (isGraphEmpty && this.graphErrors.length){
         this.resetHighlights();
         this.graphErrors = [];
       }
 
+      this.codeBuilder.reset();
       return; // No graph's changes which are connected with code ===> don't re-generate the code OR there are no nodes...
     }
     this.graphHash = newHash;
@@ -122,12 +123,12 @@ class App extends Component {
         this.resetHighlights();
       }
 
-      if(tmpErrors){
+      if(tmpErrors && tmpErrors.length){
         this.graphErrors = tmpErrors;
         this.highlightErrors();
       }else{
         this.resetHighlights();
-        this.graphErrors = null;
+        this.graphErrors = [];
       }
     }else{
       this.graphErrors = tmpErrors;

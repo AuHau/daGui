@@ -125,4 +125,8 @@ export default class CodeBuilder {
   didMarkersChanged() {
     return this.markersChanged;
   }
+
+  isEmpty(){
+    return this.code == '';
+  }
 }
