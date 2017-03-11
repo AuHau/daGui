@@ -6,7 +6,6 @@ import joint from 'jointjs';
 
 import styles from "./Canvas.scss";
 
-
 import {changeNodeDetail, canvasResize} from 'shared/actions/ui';
 import * as graphActions from 'shared/actions/graph';
 
@@ -16,19 +15,7 @@ import Grid from './canvas_components/Grid';
 import Link from './canvas_components/Link';
 import Nodes from './canvas_components/Nodes';
 import Highlights from './canvas_components/Highlights';
-
-const VARIABLE_NAME_MAX_WIDTH = 150;
-const VARIABLE_NAME_MIN_WIDTH = 30;
-
-const getTextWidth = (text, font = '14px helvetica') => {
-  // re-use canvas object for better performance
-  const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-  const context = canvas.getContext("2d");
-  context.font = font;
-  const metrics = context.measureText(text);
-  return metrics.width;
-};
-
+import Variables from './canvas_components/Variables';
 
 class Canvas extends Component {
 
@@ -44,13 +31,13 @@ class Canvas extends Component {
     this.canvasComponents['link'] = new Link(this);
     this.canvasComponents['nodes'] = new Nodes(this);
     this.canvasComponents['highlights'] = new Highlights(this);
+    this.canvasComponents['variables'] = new Variables(this);
 
     this.graph = new joint.dia.Graph();
     this.currentDetailCell = null;
     this.startingPointerPosition = null;
     this.freezed = false;
     this.ignoreAction = false;
-    this.isPanning = false;
 
     // TODO: [Low] Find better place to place this
     joint.setTheme('modern');
@@ -95,10 +82,6 @@ class Canvas extends Component {
 
     this.graph.fromJSON(this.props.graphJson.toJS());
 
-    // Event listeners
-    this.paper.el.addEventListener('input', this.onInput.bind(this));
-
-
     // Init of Canvas components
     this.iterateComponents('init');
   }
@@ -106,15 +89,8 @@ class Canvas extends Component {
   componentDidUpdate(){
     // TODO: [Low] Optimalization - don't update when the action was created by graph's event or graph can be just modified
     this.graph.fromJSON(this.props.graphJson.toJS());
-    this.variableNameIterator(this.graph.getElements());
 
-    // On Blur/Focus of variable name input
-    this.paper.el.querySelectorAll('input').forEach(input => {
-      input.addEventListener('focus', this.onFocus.bind(this));
-      input.addEventListener('blur', this.onBlur.bind(this));
-      input.addEventListener('change', this.onVariableNameChange.bind(this));
-    });
-
+    // Update Canvas components
     this.iterateComponents('afterUpdate');
   }
 
@@ -131,65 +107,10 @@ class Canvas extends Component {
     return <div ref="placeholder" className={styles.container}></div>;
   }
 
-  setVariableName(element, name){
-    const parentNode = element.findView(this.paper).el;
-    const input = parentNode.querySelectorAll('input')[0];
-    input.value = name;
-
-    const classList = parentNode.querySelectorAll('.variableName')[0].classList;
-    classList.add.apply(classList, styles.active.split(' '));
-
-    this.recalculateWidthOfVariableName(input);
-  }
-
-  variableNameIterator(elements){
-    for(let elem of elements) {
-      if(elem.attributes.dfGui.variableName){
-        this.setVariableName(elem, elem.attributes.dfGui.variableName);
-      }
-    }
-  }
-
-  recalculateWidthOfVariableName(input){
-    const width = getTextWidth(input.value) + 13;
-
-    if(width < VARIABLE_NAME_MIN_WIDTH){
-      input.parentNode.parentNode.setAttribute('width', VARIABLE_NAME_MIN_WIDTH);
-    }else if(width > VARIABLE_NAME_MAX_WIDTH){
-      input.parentNode.parentNode.setAttribute('width', VARIABLE_NAME_MAX_WIDTH);
-    }else{
-      input.parentNode.parentNode.setAttribute('width', width);
-    }
-  }
-
-
-
   onResize(){
     const wrapperElem = findDOMNode(this.refs.placeholder);
     this.paper.setDimensions(wrapperElem.offsetWidth, wrapperElem.offsetHeight);
     this.props.onCanvasResize(wrapperElem.getBoundingClientRect());
-  }
-
-
-  onInput(e){
-    this.recalculateWidthOfVariableName(e.target);
-  }
-
-  onVariableNameChange(e){
-    const nodeId = e.target.closest('.joint-cell').getAttribute('model-id');
-    this.props.onUpdateVariable(nodeId, e.target.value)
-  }
-
-  onFocus(e){
-    const node = e.target.parentNode.parentNode.parentNode;
-    node.classList.add.apply(node.classList, styles.focused.split(' '));
-    this.freezed = true;
-  }
-
-  onBlur(e){
-    const node = e.target.parentNode.parentNode.parentNode;
-    node.classList.remove.apply(node.classList, styles.focused.split(' '));
-    this.freezed = false;
   }
 }
 
