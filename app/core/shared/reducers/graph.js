@@ -1,5 +1,6 @@
 import Immutable from 'immutable';
 import GRAPH from 'shared/actions/graph';
+import Config from '../../../config/';
 
 const getActive = (state) => {
   return state.get('active');
@@ -67,6 +68,14 @@ export default (state, action) => {
     case GRAPH.ZOOM:
       tmp = state.setIn(['opened', getActive(state), 'zoom'], action.payload.scale);
       return tmp.updateIn(['opened', getActive(state), '$pan'], pan => pan.set('x', action.payload.panX).set('y', action.payload.panY));
+
+    case GRAPH.ZOOM_IN:
+      // TODO: [Low] Calculate center of the screen to zoom to middle
+      return state.updateIn(['opened', getActive(state), 'zoom'], zoom => zoom + Config.canvas.zoomStep);
+
+    case GRAPH.ZOOM_OUT:
+      return state.updateIn(['opened', getActive(state), 'zoom'], zoom => zoom - Config.canvas.zoomStep);
+
 
     default:
       return state;

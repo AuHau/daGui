@@ -9,7 +9,9 @@ const GRAPH = {
   ADD_LINK: 'GRAPH_ADD_LINK',
   REMOVE_LINK: 'GRAPH_REMOVE_LINK',
   PAN: 'GRAPH_PAN',
-  ZOOM: 'GRAPH_ZOOM'
+  ZOOM: 'GRAPH_ZOOM',
+  ZOOM_IN: 'GRAPH_ZOOM_IN',
+  ZOOM_OUT: 'GRAPH_ZOOM_OUT'
 };
 export default GRAPH;
 
@@ -86,6 +88,18 @@ export const zoom = (scale, panX, panY) => {
   return {
     type: GRAPH.ZOOM,
     payload: {scale, panX, panY}
+  }
+};
+
+export const zoomIn = () => {
+  return {
+    type: GRAPH.ZOOM_IN
+  }
+};
+
+export const zoomOut = () => {
+  return {
+    type: GRAPH.ZOOM_OUT
   }
 };
 

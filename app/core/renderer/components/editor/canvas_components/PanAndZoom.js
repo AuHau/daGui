@@ -46,6 +46,7 @@ export default class PanAndZoom extends CanvasComponentBase {
       return;
     }
 
+    this.ignoreOnZoom = true;
     this.panAndZoom.zoom(this.get('zoom'));
     this.panAndZoom.enablePan().pan({
       x: panX,
@@ -54,6 +55,11 @@ export default class PanAndZoom extends CanvasComponentBase {
   }
 
   onZoom(scale) {
+    if(this.ignoreOnZoom){
+      this.ignoreOnZoom = false;
+      return;
+    }
+
     this.currentScale = scale;
     this.ignoreAction();
     const pan = this.panAndZoom.getPan();

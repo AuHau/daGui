@@ -24,8 +24,8 @@ class Menu extends Component {
         <ul className={styles.left}>
           <li><a href="#"><i className="fa fa-undo"/></a></li>
           <li><a href="#"><i className="fa fa-repeat"/></a></li>
-          <li><a href="#"><i className="fa fa-search-plus"/></a></li>
-          <li><a href="#"><i className="fa fa-search-minus"/></a></li>
+          <li><a href="#" onClick={this.props.onZoomIn}><i className="fa fa-search-plus"/></a></li>
+          <li><a href="#" onClick={this.props.onZoomOut}><i className="fa fa-search-minus"/></a></li>
           {/*<li><a href="#" onClick={this.props.onContain}><i className="fa fa-arrows-alt"/></a></li>*/}
         </ul>
         <ul className={styles.left}>
@@ -57,6 +57,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     onContain: () => {
       dispatch(graphActions.pan('contain', 'contain'));
+    },
+    onZoomIn: () => {
+      dispatch(graphActions.zoomIn());
+    },
+    onZoomOut: () => {
+      dispatch(graphActions.zoomOut());
     }
   };
 };
