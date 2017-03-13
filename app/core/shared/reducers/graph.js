@@ -37,7 +37,10 @@ export default (state, action) => {
       return state.setIn(['opened', getActive(state), 'graph', 'cells', index, 'position'], newPosition);
 
     case GRAPH.ADD_NODE:
+      const zoom = state.getIn(['opened', getActive(state), 'zoom']);
       tmp = action.payload;
+      tmp.position.x = (tmp.position.x - state.getIn(['opened', getActive(state), '$pan', 'x']) + (tmp.size.width / 2)) / zoom;
+      tmp.position.y = (tmp.position.y - state.getIn(['opened', getActive(state), '$pan', 'y']) + (tmp.size.height / 2)) / zoom;
       return state.updateIn(['opened', getActive(state), 'graph', 'cells'], nodes => nodes.push(Immutable.fromJS(tmp)));
 
     case GRAPH.DELETE_NODE:

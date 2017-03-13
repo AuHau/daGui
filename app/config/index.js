@@ -10,9 +10,14 @@ adapters[SparkAdapter.getId()] = SparkAdapter;
 const languages = {};
 languages[Scala.getID()] = Scala;
 
+const canvas = {
+  zoomStep: 0.2
+};
+
 export default {
   adapters,
   languages,
+  canvas,
   isNodeHidden: (nodeType) =>{
     return SparkAdapter.getNodeTemplates()[nodeType].isNodeHidden();
   }

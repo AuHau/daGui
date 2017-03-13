@@ -1,5 +1,6 @@
 import svgPanZoom from 'svg-pan-zoom'
 import CanvasComponentBase from './CanvasComponentBase'
+import Config from '../../../../../config/';
 
 export default class PanAndZoom extends CanvasComponentBase {
   constructor(canvas) {
@@ -13,7 +14,7 @@ export default class PanAndZoom extends CanvasComponentBase {
       {
         viewportSelector: this.canvas.paper.el.childNodes[0].childNodes[0],
         fit: false,
-        zoomScaleSensitivity: 0.2,
+        zoomScaleSensitivity: Config.canvas.zoomStep,
         panEnabled: false,
         maxZoom: 1.4,
         dblClickZoomEnabled: false,
