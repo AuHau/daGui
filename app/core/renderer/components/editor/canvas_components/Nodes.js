@@ -43,10 +43,16 @@ export default class Nodes extends CanvasComponentBase{
   }
 
   onDeleteKey(e){
-    if(e.keyCode == 46 && this.get('detailNodeId') &&
+    if(e.keyCode == 46 && (this.get('detailNodeId') || this.canvas.selected.size > 0) &&
       !(e.target.matches('input') || e.target.matches('[contenteditable]') || e.target.matches('textarea'))){
 
-      this.call('onNodeDelete', this.get('detailNodeId'));
+      if(this.canvas.selected.size > 0){
+        for(let nid of this.canvas.selected){
+          this.call('onNodeDelete', nid); // TODO: [Medium] Batch node deletion
+        }
+      }else{
+        this.call('onNodeDelete', this.get('detailNodeId'));
+      }
     }
   }
 
