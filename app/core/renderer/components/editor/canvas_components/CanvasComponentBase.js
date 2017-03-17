@@ -29,6 +29,10 @@ export default class CanvasComponentBase{
     this.canvas.ignoreAction = true;
   }
 
+  dontReloadGraph(){
+    this.canvas.dontReloadGraph = true;
+  }
+
   freeze(){
     this.canvas.freezed = true;
   }

@@ -22,7 +22,13 @@ export default class Highlights extends CanvasComponentBase{
     }
 
     if(this.get('detailNodeId')){
-      this.highlightNode(this.get('detailNodeId'), styles.nodeDetail);
+      this.highlightNode(this.get('detailNodeId'));
+    }
+
+    if(this.canvas.selected.size > 0){
+      for(let nid of this.canvas.selected){
+        this.highlightNode(nid);
+      }
     }
   }
 
@@ -53,7 +59,7 @@ export default class Highlights extends CanvasComponentBase{
     });
   }
 
-  highlightNode(nid, className = styles.nodeDetail){
+  highlightNode(nid, className = styles.nodeSelected){
     const detailNode = this.graph.getCell(nid);
     if(!detailNode) return; // nid doesn't exists in graph ==> abort highlighting
 
@@ -68,7 +74,7 @@ export default class Highlights extends CanvasComponentBase{
     });
   }
 
-  removeHighlight(nid, className = styles.nodeDetail){
+  removeHighlight(nid, className = styles.nodeSelected){
     const detailNode = this.graph.getCell(nid);
     if(!detailNode) return; // nid doesn't exists in graph ==> abort highlighting
 

@@ -9,4 +9,18 @@
   height: calc(100% - #{$menu-height} - #{$footer-height} - #{$tabs-height});
 }
 
+.multiselect{
+  cursor: default;
+}
+
+.pan{
+  cursor: grab;
+  cursor: -webkit-grab;
+}
+
+.panning{
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
+}
+
 @import "../../../graph/DefaultShape.scss";

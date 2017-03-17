@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
 import styles from './Menu.scss';
+import CursorMode from 'shared/enums/CursorMode';
 import * as uiActions from 'shared/actions/ui';
 import * as graphActions from 'shared/actions/graph';
 
@@ -29,6 +30,8 @@ class Menu extends Component {
           {/*<li><a href="#" onClick={this.props.onContain}><i className="fa fa-arrows-alt"/></a></li>*/}
         </ul>
         <ul className={styles.left}>
+          <li className={this.props.cursorMode == CursorMode.MULTISELECT ? styles.active : ''}><a href="#" onClick={this.props.onMultiselectMode}><i className="fa fa-mouse-pointer"/></a></li>
+          <li className={this.props.cursorMode == CursorMode.PAN  ? styles.active : ''}><a href="#" onClick={this.props.onPanMode}><i className="fa fa-hand-pointer-o"/></a></li>
           <li><a href="#"><i className="fa fa-object-group"/></a></li>
         </ul>
 
@@ -43,7 +46,8 @@ class Menu extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    showCodeView: state.getIn('ui.showCodeView'.split('.'))
+    showCodeView: state.getIn('ui.showCodeView'.split('.')),
+    cursorMode: state.getIn(['ui', 'cursorMode'])
   };
 };
 
@@ -63,6 +67,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     onZoomOut: () => {
       dispatch(graphActions.zoomOut());
+    },
+    onMultiselectMode: () => {
+      dispatch(uiActions.setMultiselectMode());
+    },
+    onPanMode: () => {
+      dispatch(uiActions.setPanMode());
     }
   };
 };

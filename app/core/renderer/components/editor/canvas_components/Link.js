@@ -60,7 +60,7 @@ export default class Link extends CanvasComponentBase {
 
   removeLink(link) {
     this.unfreeze();
-    if (link.attributes.target.id) {
+    if (link.attributes.target && link.attributes.target.id) {
       const sourceElement = this.graph.getCell(link.attributes.source.id);
       const targetElement = this.graph.getCell(link.attributes.target.id);
       const sourcesChildren = this.graph.getConnectedLinks(sourceElement, {outbound: true});

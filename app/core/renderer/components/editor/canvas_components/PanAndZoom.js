@@ -1,6 +1,7 @@
 import svgPanZoom from 'svg-pan-zoom'
 import CanvasComponentBase from './CanvasComponentBase'
 import Config from '../../../../../config/';
+import CursorMode from 'shared/enums/CursorMode';
 
 export default class PanAndZoom extends CanvasComponentBase {
   constructor(canvas) {
@@ -73,30 +74,31 @@ export default class PanAndZoom extends CanvasComponentBase {
 
   mouseUp() {
     this.startingPointerPosition = null;
-    if (!this.isPanning) return;
+    if (!this.isSelecting) return;
 
     this.ignoreAction();
     const pan = this.panAndZoom.getPan();
     this.call('onPan', pan.x, pan.y);
     this.panAndZoom.disablePan();
-    this.isPanning = false;
+    this.isSelecting = false;
+    this.dontReloadGraph();
+    this.canvas.setState({cursorMode: CursorMode.PAN});
   }
 
   mouseBlankDown(e, x, y) {
-    if(!this.get('detailNodeId')){
-      this.isPanning = true;
-      this.panAndZoom.enablePan();
+    if(this.canvas.state.cursorMode != CursorMode.MULTISELECT) {
+      this.startingPointerPosition = {x, y};
+      this.dontReloadGraph();
+      this.canvas.setState({cursorMode: CursorMode.PANNING});
     }
-
-    this.startingPointerPosition = {x, y};
   }
 
   mouseMove(e){
-    if(!this.startingPointerPosition) return;
+    if(!this.startingPointerPosition || this.isSelecting) return;
 
     if(Math.abs(this.startingPointerPosition.x - e.clientX) > this.canvas.CLICK_TRESHOLD
       && Math.abs(this.startingPointerPosition.y - e.clientY) > this.canvas.CLICK_TRESHOLD) {
-      this.isPanning = true;
+      this.isSelecting = true;
       this.panAndZoom.enablePan();
     }
   }

@@ -2,9 +2,11 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import configureStore from '../shared/store/configureStore';
+import configureStore from 'shared/store/configureStore';
 import Immutable from 'immutable';
 import './app.global.scss';
+import CursorMode from 'shared/enums/CursorMode';
+
 
 // Containers
 import App from './containers/App';
@@ -32,6 +34,7 @@ const initState = Immutable.fromJS({
     canvasContainerSpec: {},
     detailNodeId: null,
     showSettingsWindow: false,
+    cursorMode: CursorMode.MULTISELECT,
     showCodeView: false
   }
 });

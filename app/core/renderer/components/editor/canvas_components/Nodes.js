@@ -10,7 +10,6 @@ export default class Nodes extends CanvasComponentBase{
     this.canvas.paper.on('cell:pointerdown blank:pointerdown', this.onPointerDown.bind(this));
     this.canvas.paper.on('cell:pointerup', this.onPointerUp.bind(this));
     document.addEventListener('keyup', this.onDeleteKey.bind(this));
-    this.canvas.paper.on('blank:pointerup', this.resetNodeDetail.bind(this));
   }
 
 
@@ -30,10 +29,8 @@ export default class Nodes extends CanvasComponentBase{
     if(Math.abs(this.startingPointerPosition.x - x) < this.canvas.CLICK_TRESHOLD
       && Math.abs(this.startingPointerPosition.y - y) < this.canvas.CLICK_TRESHOLD) {
       // Click
-      if(e.target && e.target.type == 'text'){ // Variable input
-        e.target.focus();
-      }else if(cellView.model.isElement()){
-        this.onNodeDetail(cellView);
+      if(e.target && e.target.type == 'text'){
+        e.target.focus(); // Variable input
       }
     }else{
       // Drag node
@@ -59,31 +56,4 @@ export default class Nodes extends CanvasComponentBase{
       this.call('onNodeMove', cellView.model.id, newPosition.x, newPosition.y);
     }
   }
-
-  onNodeDetail(cellView){
-    if(cellView === this.currentDetailCell
-      || cellView.model.attributes.type == 'link'){
-      return;
-    }
-
-    this.currentDetailCell = cellView;
-    this.call('onNodeDetail', cellView.model.id);
-  }
-
-  resetNodeDetail(e, x, y){
-    if(!this.startingPointerPosition) return;
-
-    // Was it panning/multiselect or click on canvas?
-    if(Math.abs(this.startingPointerPosition.x - e.clientX) < this.canvas.CLICK_TRESHOLD
-      && Math.abs(this.startingPointerPosition.y - e.clientY) < this.canvas.CLICK_TRESHOLD) {
-
-      if(this.currentDetailCell){
-        this.call('onNodeDetail', null);
-        this.currentDetailCell = null;
-      }
-
-      document.querySelectorAll('input').forEach(input => input.blur());
-    }
-  }
-
 }

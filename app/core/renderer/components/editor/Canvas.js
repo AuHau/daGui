@@ -6,6 +6,7 @@ import joint from 'jointjs';
 
 import styles from "./Canvas.scss";
 
+import CursorMode, {classTranslation as CursorClass} from 'shared/enums/CursorMode';
 import {changeNodeDetail, canvasResize} from 'shared/actions/ui';
 import * as graphActions from 'shared/actions/graph';
 
@@ -16,11 +17,16 @@ import Link from './canvas_components/Link';
 import Nodes from './canvas_components/Nodes';
 import Highlights from './canvas_components/Highlights';
 import Variables from './canvas_components/Variables';
+import Selecting from './canvas_components/Selecting';
 
 class Canvas extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      cursorMode: props.cursorMode
+    };
 
     this.CLICK_TRESHOLD = 2;
 
@@ -32,12 +38,14 @@ class Canvas extends Component {
     this.canvasComponents['nodes'] = new Nodes(this);
     this.canvasComponents['highlights'] = new Highlights(this);
     this.canvasComponents['variables'] = new Variables(this);
+    this.canvasComponents['selecting'] = new Selecting(this);
 
     this.graph = new joint.dia.Graph();
     this.currentDetailCell = null;
     this.startingPointerPosition = null;
     this.freezed = false;
     this.ignoreAction = false;
+    this.dontReloadGraph = false;
 
     // TODO: [Low] Find better place to place this
     joint.setTheme('modern');
@@ -89,10 +97,20 @@ class Canvas extends Component {
 
   componentDidUpdate(){
     // TODO: [Low] Optimalization - don't update when the action was created by graph's event or graph can be just modified
-    this.graph.fromJSON(this.props.graphJson.toJS());
+    if(!this.dontReloadGraph){
+      this.graph.fromJSON(this.props.graphJson.toJS());
+    }else{
+      this.dontReloadGraph = false;
+    }
 
     // Update Canvas components
     this.iterateComponents('afterUpdate');
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(this.props.cursorMode != nextProps.cursorMode){
+      this.setState({cursorMode: nextProps.cursorMode});
+    }
   }
 
   shouldComponentUpdate(){
@@ -105,7 +123,9 @@ class Canvas extends Component {
   }
 
   render() {
-    return <div ref="placeholder" className={styles.container}></div>;
+    let cursorClass = styles[CursorClass[this.state.cursorMode]];
+
+    return <div ref="placeholder" className={styles.container + ' ' + cursorClass}></div>;
   }
 
   onResize(){
@@ -124,6 +144,7 @@ const mapStateToProps = (state) => {
     graphJson: state.getIn(['files', 'opened', activeFile, 'graph']),
     detailNodeId: state.getIn('ui.detailNodeId'.split('.')),
     showCodeView: state.getIn('ui.showCodeView'.split('.')),
+    cursorMode: state.getIn('ui.cursorMode'.split('.')),
     $occupiedPorts: state.getIn(['files', 'opened', activeFile, '$occupiedPorts']),
     zoom: state.getIn(['files', 'opened', activeFile, 'zoom']),
     $pan: state.getIn(['files', 'opened', activeFile, '$pan'])

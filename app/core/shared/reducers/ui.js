@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import CursorMode from 'shared/enums/CursorMode';
 
 import UI from 'shared/actions/ui';
 
@@ -19,6 +20,12 @@ export default (state, action) => {
 
     case UI.SHOW_SETTINGS:
       return state.set('showSettingsWindow', true);
+
+    case UI.SET_MULTISELECT_MODE:
+      return state.set('cursorMode', CursorMode.MULTISELECT);
+
+    case UI.SET_PAN_MODE:
+      return state.set('cursorMode', CursorMode.PAN);
 
     case UI.TOGGLE_CODE_VIEW:
       return state.update('showCodeView', (value) => !value);
