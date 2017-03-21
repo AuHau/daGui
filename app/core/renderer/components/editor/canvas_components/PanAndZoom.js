@@ -34,6 +34,13 @@ export default class PanAndZoom extends CanvasComponentBase {
   }
 
   afterUpdate() {
+    if (this.isPanning && this.canvas.state.cursorMode == CursorMode.MULTISELECT){
+      this.mouseUp(true); // When the Space key is released, turn off panning
+      return;
+    }
+
+    if (this.isPanning) return;
+
     const panX = this.get('$pan').get('x');
     const panY = this.get('$pan').get('y');
 
@@ -72,17 +79,20 @@ export default class PanAndZoom extends CanvasComponentBase {
     this.canvasComponents.grid.setGrid(this.currentScale, newpan);
   }
 
-  mouseUp() {
+  mouseUp(dontChangeCursor) {
     this.startingPointerPosition = null;
-    if (!this.isSelecting) return;
+    if (!this.isPanning) return;
 
     this.ignoreAction();
     const pan = this.panAndZoom.getPan();
     this.call('onPan', pan.x, pan.y);
     this.panAndZoom.disablePan();
-    this.isSelecting = false;
-    this.dontReloadGraph();
-    this.canvas.setState({cursorMode: CursorMode.PAN});
+    this.isPanning = false;
+
+    if(!dontChangeCursor){
+      this.dontReloadGraph();
+      this.canvas.setState({cursorMode: CursorMode.PAN});
+    }
   }
 
   mouseBlankDown(e, x, y) {
@@ -94,11 +104,11 @@ export default class PanAndZoom extends CanvasComponentBase {
   }
 
   mouseMove(e){
-    if(!this.startingPointerPosition || this.isSelecting) return;
+    if(!this.startingPointerPosition || this.isPanning) return;
 
     if(Math.abs(this.startingPointerPosition.x - e.clientX) > this.canvas.CLICK_TRESHOLD
       && Math.abs(this.startingPointerPosition.y - e.clientY) > this.canvas.CLICK_TRESHOLD) {
-      this.isSelecting = true;
+      this.isPanning = true;
       this.panAndZoom.enablePan();
     }
   }

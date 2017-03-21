@@ -47,7 +47,8 @@ export default class Selecting extends CanvasComponentBase {
   }
 
   shiftKeyStart(e) {
-    if (e.keyCode == '16') {
+    if (e.keyCode == '16'
+      && !(e.target.matches('input') || e.target.matches('[contenteditable]') || e.target.matches('textarea'))) {
       this.shiftKey = true;
     }
   }
@@ -93,7 +94,9 @@ export default class Selecting extends CanvasComponentBase {
   }
 
   resetSelectionStart(e, x, y) {
-    this.startingPointerPosition = {x, y};
+    if (this.canvas.state.cursorMode == CursorMode.MULTISELECT) {
+      this.startingPointerPosition = {x, y};
+    }
   }
 
   resetSelectionEnd(e, x, y) {
@@ -155,7 +158,8 @@ export default class Selecting extends CanvasComponentBase {
             magnet: false
           },
           'rect': {
-            'fill-opacity': 0.3
+            'fill-opacity': 0.3,
+            style:{'pointer-events':'none'}
           }
         }
       });

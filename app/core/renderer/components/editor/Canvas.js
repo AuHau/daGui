@@ -91,8 +91,29 @@ class Canvas extends Component {
     setTimeout(this.onResize.bind(this), 10);
     window.addEventListener('resize', this.onResize.bind(this));
 
+    document.addEventListener('keydown', this.spaceKeyStart.bind(this));
+    document.addEventListener('keyup', this.spaceKeyEnd.bind(this));
+
     // Init of Canvas components
     this.iterateComponents('init');
+  }
+
+  spaceKeyStart(e){
+    if (e.keyCode == '32'
+        && !(e.target.matches('input') || e.target.matches('[contenteditable]') || e.target.matches('textarea'))) {
+      this.spaceKey = true;
+      this.dontReloadGraph = true;
+      this.setState({cursorMode: CursorMode.PAN});
+    }
+  }
+
+  spaceKeyEnd(e){
+    if (e.keyCode == '32'
+      && !(e.target.matches('input') || e.target.matches('[contenteditable]') || e.target.matches('textarea'))) {
+      this.spaceKey = false;
+      this.dontReloadGraph = true;
+      this.setState({cursorMode: this.props.cursorMode});
+    }
   }
 
   componentDidUpdate(){
