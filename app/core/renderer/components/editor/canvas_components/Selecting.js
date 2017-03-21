@@ -168,8 +168,8 @@ export default class Selecting extends CanvasComponentBase {
     }
 
     if (this.isSelecting) {
-      const newWidth = e.clientX - this.startingSelectionPosition.x - this.diff.x;
-      const newHeight = e.clientY - this.startingSelectionPosition.y - this.diff.y;
+      const newWidth = (e.clientX - this.startingSelectionPosition.x - this.diff.x) / this.get('zoom');
+      const newHeight = (e.clientY - this.startingSelectionPosition.y - this.diff.y) / this.get('zoom');
       this.selectRect.resize(newWidth, newHeight);
 
       const rect = {
