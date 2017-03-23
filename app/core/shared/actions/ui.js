@@ -6,6 +6,8 @@ const UI = {
   TOGGLE_CODE_VIEW: 'UI_CODE_VIEW_TOGGLE',
   SET_MULTISELECT_MODE: 'UI_SET_MULTISELECT_MODE',
   SET_PAN_MODE: 'UI_SET_PAN_MODE',
+  UNDO: 'UNDO',
+  REDO: 'REDO'
 };
 export default UI;
 
@@ -44,5 +46,17 @@ export const setMultiselectMode = () => {
 export const setPanMode = () => {
   return {
     type: UI.SET_PAN_MODE
+  }
+};
+
+export const undo = () => {
+  return {
+    type: UI.UNDO
+  }
+};
+
+export const redo = () => {
+  return {
+    type: UI.REDO
   }
 };

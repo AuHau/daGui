@@ -173,7 +173,7 @@ const mapStateToProps = (state) => {
   return {
     canvasContainerSpec: state.getIn(['ui', 'canvasContainerSpec']),
     language: state.getIn(['files', 'opened', activeFile, 'language']),
-    usedVariables: state.getIn(['files', 'opened', activeFile, 'usedVariables']).toJS(),
+    usedVariables: state.getIn(['files', 'opened', activeFile, 'history', 'present', 'usedVariables']).toJS(),
     adapter: state.getIn(['files', 'opened', activeFile, 'adapter'])
   };
 };

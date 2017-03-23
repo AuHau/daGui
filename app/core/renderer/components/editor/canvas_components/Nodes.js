@@ -9,14 +9,15 @@ export default class Nodes extends CanvasComponentBase{
     super.init();
     this.selected = this.canvas.selected;
 
-    this.canvas.paper.on('cell:pointerdown blank:pointerdown', this.onPointerDown.bind(this));
+    this.canvas.paper.on('cell:pointerdown', this.onPointerDown.bind(this));
     this.canvas.paper.on('cell:pointerup', this.onPointerUp.bind(this));
     this.canvas.paper.el.addEventListener('mousemove', this.onMultipleDrag.bind(this));
     document.addEventListener('keyup', this.onDeleteKey.bind(this));
   }
 
+  // TODO: [BUG/Medium] Sometimes only the clicked node is dragged and not whole selection (most probably has something in common with problem of clicking on the Nodes text)
   onMultipleDrag(e){
-    if(!this.startingPointerPosition || !this.startingElement) return;
+    if(!this.startingPointerPosition || !this.startingElement || this.cellsEmbedded) return;
 
     if(this.selected.size > 1 && this.selected.has(this.startingElement.id)
       && Math.abs(this.startingPointerPosition.x - e.clientX) < this.canvas.CLICK_TRESHOLD
@@ -26,17 +27,15 @@ export default class Nodes extends CanvasComponentBase{
         if(this.startingElement.id == selectedNid) continue;
         this.startingElement.embed(this.graph.getCell(selectedNid))
       }
+
+      this.cellsEmbedded = true;
     }
   }
 
   // TODO: [BUG/Medium] When dragging node Z value should be the highest in graph
-  onPointerDown(cellView, e, x, y){
-    if(!y){ // blank click
-      this.startingPointerPosition = {x: cellView.clientX, y: cellView.clientY};
-    }else{ // cell click
-      this.startingPointerPosition = {x: e.clientX, y: e.clientY};
-      this.freeze();
-    }
+  onPointerDown(cellView, e, x, y) {
+    this.startingPointerPosition = {x: e.clientX, y: e.clientY};
+    this.freeze();
     this.startingElement = cellView.model;
   }
 
@@ -52,9 +51,9 @@ export default class Nodes extends CanvasComponentBase{
     }else{
       // Drag node
       if(cellView.model.isElement()){
-        const embeddedCels = this.startingElement.getEmbeddedCells();
-        if(embeddedCels && embeddedCels.length > 0){
-          for(let cell of embeddedCels){  // TODO: [Medium] Batch node moving
+        const embeddedCells = this.startingElement.getEmbeddedCells();
+        if(embeddedCells && embeddedCells.length > 0){
+          for(let cell of embeddedCells){  // TODO: [Medium] Batch node moving
             this.startingElement.unembed(cell);
             this.onNodeMove(cell);
           }
@@ -65,6 +64,7 @@ export default class Nodes extends CanvasComponentBase{
       }
     }
 
+    this.cellsEmbedded = false;
     this.startingPointerPosition = null;
   }
 

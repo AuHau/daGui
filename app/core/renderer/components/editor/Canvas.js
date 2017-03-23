@@ -86,7 +86,7 @@ class Canvas extends Component {
         return !ports || !ports.has(magnetT.getAttribute('port'));
       }.bind(this)
     });
-    this.graph.fromJSON(this.props.graphJson.toJS());
+    this.graph.fromJSON(this.props.graphJson);
 
     setTimeout(this.onResize.bind(this), 10);
     window.addEventListener('resize', this.onResize.bind(this));
@@ -119,7 +119,7 @@ class Canvas extends Component {
   componentDidUpdate(){
     // TODO: [Low] Optimalization - don't update when the action was created by graph's event or graph can be just modified
     if(!this.dontReloadGraph){
-      this.graph.fromJSON(this.props.graphJson.toJS());
+      this.graph.fromJSON(this.props.graphJson);
     }else{
       this.dontReloadGraph = false;
     }
@@ -160,13 +160,13 @@ const mapStateToProps = (state) => {
   const activeFile = state.getIn(['files', 'active']);
   return {
     language: state.getIn(['files', 'opened', activeFile, 'language']),
-    usedVariables: state.getIn(['files', 'opened', activeFile, 'usedVariables']).toJS(),
+    usedVariables: state.getIn(['files', 'opened', activeFile, 'history', 'present', 'usedVariables']).toJS(),
     adapter: state.getIn(['files', 'opened', activeFile, 'adapter']),
-    graphJson: state.getIn(['files', 'opened', activeFile, 'graph']),
+    graphJson: {'cells': state.getIn(['files', 'opened', activeFile,  'history', 'present', 'cells']).toJS()},
     detailNodeId: state.getIn('ui.detailNodeId'.split('.')),
     showCodeView: state.getIn('ui.showCodeView'.split('.')),
     cursorMode: state.getIn('ui.cursorMode'.split('.')),
-    $occupiedPorts: state.getIn(['files', 'opened', activeFile, '$occupiedPorts']),
+    $occupiedPorts: state.getIn(['files', 'opened', activeFile, 'history', 'present', '$occupiedPorts']),
     zoom: state.getIn(['files', 'opened', activeFile, 'zoom']),
     $pan: state.getIn(['files', 'opened', activeFile, '$pan'])
   };

@@ -3,17 +3,16 @@ import FILE from 'shared/actions/file';
 
 import graphReducer from './graph';
 
-export default (state, action) => {
+export default (state, action, wholeState) => {
   if(action.type.startsWith('GRAPH_')){
-    return graphReducer(state, action);
+    return graphReducer(state, action, wholeState);
   }else{
-
     switch (action.type){
       case FILE.SWITCH_TAB:
-        return state.set('active', action.payload);
+        return wholeState.set('active', action.payload);
 
       default:
-        return state;
+        return wholeState;
     }
   }
 };

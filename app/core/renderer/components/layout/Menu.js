@@ -8,6 +8,25 @@ import * as uiActions from 'shared/actions/ui';
 import * as graphActions from 'shared/actions/graph';
 
 class Menu extends Component {
+
+  componentDidMount(){
+    document.addEventListener('keyup', this.keyboardShortcutsHandler.bind(this));
+  }
+
+  keyboardShortcutsHandler(e){
+    if (!e.ctrlKey) return;
+
+    switch (e.keyCode) {
+      case 90:
+        if (e.shiftKey) {
+          this.props.onRedo();
+        } else {
+          this.props.onUndo();
+        }
+        break;
+    }
+  }
+
   // TODO: [BUG] Contain does not work
   render() {
     return (
@@ -23,8 +42,8 @@ class Menu extends Component {
           <li><a href="#"><i className="fa fa-clipboard"/></a></li>
         </ul>
         <ul className={styles.left}>
-          <li><a href="#"><i className="fa fa-undo"/></a></li>
-          <li><a href="#"><i className="fa fa-repeat"/></a></li>
+          <li><a href="#" onClick={this.props.onUndo}><i className="fa fa-undo"/></a></li>
+          <li><a href="#" onClick={this.props.onRedo}><i className="fa fa-repeat"/></a></li>
           <li><a href="#" onClick={this.props.onZoomIn}><i className="fa fa-search-plus"/></a></li>
           <li><a href="#" onClick={this.props.onZoomOut}><i className="fa fa-search-minus"/></a></li>
           {/*<li><a href="#" onClick={this.props.onContain}><i className="fa fa-arrows-alt"/></a></li>*/}
@@ -73,6 +92,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     onPanMode: () => {
       dispatch(uiActions.setPanMode());
+    },
+    onUndo: () => {
+      dispatch(uiActions.undo())
+    },
+    onRedo: () => {
+      dispatch(uiActions.redo())
     }
   };
 };

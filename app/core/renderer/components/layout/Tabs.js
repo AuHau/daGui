@@ -12,7 +12,8 @@ export default class Tabs extends Component {
   }
 
   render() {
-    const renderedTabs = this.props.files.map((file, index) => <li key={index} onClick={this.onClick(index)} className={this.props.currentFileIndex == index ? 'active' : ''}><a href="#">{file.name}</a></li>);
+    let renderedTabs = [];
+    this.props.$files.forEach((file, index) => renderedTabs.push(<li key={index} onClick={this.onClick(index)} className={this.props.currentFileIndex == index ? 'active' : ''}><a href="#">{file.get('name')}</a></li>));
 
     // TODO: [Critical] Important! Handle overflowing of tabs because of long file names.
     return (
@@ -27,6 +28,6 @@ export default class Tabs extends Component {
 
 Tabs.propTypes = {
   currentFileIndex: React.PropTypes.number.isRequired,
-  files: React.PropTypes.array.isRequired,
+  $files: React.PropTypes.object.isRequired,
   onTabChange: React.PropTypes.func.isRequired,
 };

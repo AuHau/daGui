@@ -74,8 +74,8 @@ class App extends Component {
     const currentFile = nextProps.files.get(nextProps.currentFileIndex);
     const adapter = currentFile.get('adapter');
     const language = currentFile.get('language');
-    const graph = currentFile.get('graph').toJS();
-    const usedVariables = currentFile.get('usedVariables').toJS();
+    const graph = {cells: currentFile.getIn(['history', 'present', 'cells']).toJS()};
+    const usedVariables = currentFile.getIn(['history', 'present', 'usedVariables']).toJS();
 
     const {normalizedGraph, inputs} = normalizeGraph(graph, adapter.isTypeInput);
     const newHash = hashGraph(normalizedGraph);
@@ -151,19 +151,19 @@ class App extends Component {
 
 
   render() {
-    const currentFile = this.props.files.get(this.props.currentFileIndex);
-    const adapter = currentFile.get('adapter');
-    const language = currentFile.get('language');
+    const $currentFile = this.props.files.get(this.props.currentFileIndex);
+    const adapter = $currentFile.get('adapter');
+    const language = $currentFile.get('language');
 
     return (
       <div>
         <Menu />
         <NodesSidebar ref={(n) => {this.refSidebar = n}} adapter={adapter} />
-        <Tabs currentFileIndex={this.props.currentFileIndex} files={this.props.files.toJS()} onTabChange={this.changeTab}/>
+        <Tabs currentFileIndex={this.props.currentFileIndex} $files={this.props.files} onTabChange={this.changeTab}/>
         <Canvas onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} onSwitchHighlight={this.switchHighlight} highlights={this.state.highlights.get(HighlightDestination.CANVAS)}/>
         <ToggleDisplay show={this.props.nodeDetail !== null}><DetailSidebar node={(this.props.nodeDetail ? this.props.nodeDetail.toJS() : null)} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/></ToggleDisplay>
         <ToggleDisplay show={this.props.showCodeView}><CodeView onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} highlights={this.state.highlights.get(HighlightDestination.CODE_VIEW)} language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange}/></ToggleDisplay>
-        <Footer messages={this.graphErrors} framework={adapter.getName()} language={currentFile.get('language').getName()}/>
+        <Footer messages={this.graphErrors} framework={adapter.getName()} language={$currentFile.get('language').getName()}/>
       </div>
     );
   }
@@ -173,9 +173,9 @@ const mapStateToProps = (state) => {
   const activeFile = state.getIn(['files', 'active']);
 
   return {
-    currentFileIndex: state.getIn(['files', 'active']),
+    currentFileIndex: activeFile,
     files: state.getIn(['files', 'opened']),
-    nodeDetail: (nodeId ? state.getIn(['files', 'opened', activeFile, 'graph', 'cells']).find(node => node.get('id') == nodeId) : null),
+    nodeDetail: (nodeId ? state.getIn(['files', 'opened', activeFile, 'history', 'present', 'cells']).find(node => node.get('id') == nodeId) : null),
     showCodeView: state.getIn('ui.showCodeView'.split('.')),
   };
 };
