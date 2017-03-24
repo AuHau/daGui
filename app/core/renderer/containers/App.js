@@ -55,10 +55,14 @@ class App extends Component {
   }
 
   addHighlight(nid, type, destination){
+    if(type != HighlightType.ERROR && this.graphErrors && this.graphErrors.length > 0) return;
+
     this.setState({ highlights: this.state.highlights.set(destination, this.state.highlights.get(destination).push({nid, type})) })
   }
 
   removeHighlight(nid, type, destination){
+    if(type != HighlightType.ERROR && this.graphErrors && this.graphErrors.length > 0) return;
+
     this.setState({ highlights: this.state.highlights.set(destination, this.state.highlights.get(destination).filter(highlight => highlight.nid !== nid || highlight.type !== type )) })
   }
 
@@ -80,13 +84,18 @@ class App extends Component {
     const {normalizedGraph, inputs} = normalizeGraph(graph, adapter.isTypeInput);
     const newHash = hashGraph(normalizedGraph);
     const isGraphEmpty = !Object.keys(normalizedGraph).length;
-    if(isGraphEmpty || (this.graphHash == newHash && !(nextProps.showCodeView && this.codeBuilder.isEmpty()))){
-      if (isGraphEmpty && this.graphErrors.length){
-        this.resetHighlights();
-        this.graphErrors = [];
+    if(isGraphEmpty || this.graphHash == newHash){
+      if (isGraphEmpty){
+        this.codeBuilder.reset();
+
+        if(this.graphErrors.length){
+          this.resetHighlights();
+          this.graphErrors = [];
+        }
       }
 
-      this.codeBuilder.reset();
+      // if(!nextProps.showCodeView || !this.codeBuilder.isEmpty())
+
       return; // No graph's changes which are connected with code ===> don't re-generate the code OR there are no nodes...
     }
     this.graphHash = newHash;

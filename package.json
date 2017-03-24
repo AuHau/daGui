@@ -145,7 +145,7 @@
     "closest": "0.0.1",
     "electron-debug": "^1.0.1",
     "electron-redux": "^1.2.1",
-    "font-awesome": "^4.7.0",
+    "font-awesome": "^4.7.0", 
     "immutable": "^3.8.1",
     "jointjs": "^1.0.3",
     "js-md5": "^0.4.1",
@@ -161,7 +161,6 @@
     "redux-immutable": "^3.0.8",
     "redux-multi": "^0.1.12",
     "redux-thunk": "^2.1.0",
-    "redux-undo": "^1.0.0-beta9-8",
     "source-map-support": "^0.4.6",
     "svg-pan-zoom": "github:ariutta/svg-pan-zoom",
     "topsort": "0.0.2"

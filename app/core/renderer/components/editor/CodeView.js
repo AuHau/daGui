@@ -30,7 +30,7 @@ function before(obj, method, wrapper) {
   return obj[method];
 }
 
-
+// TODO: [BUG/High] - When modifying the variable, if the cursor is on the end of the variable box, then changes are not observed
 export default class CodeView extends Component {
 
   constructor(props){
