@@ -5,6 +5,7 @@ export default {
   name: 'Blank.py',
   adapter: SparkAdapter,
   language: Python,
+  $selected: [],
   $pan: {
     x: 0,
     y: 0

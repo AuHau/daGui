@@ -199,7 +199,9 @@ const mapDispatchToProps = (dispatch) => {
       ]),
       onNodeDetail: (nid) => dispatch(changeNodeDetail(nid)),
       onPan: (x,y) => dispatch(graphActions.pan(x,y)),
-      onZoom: (scale, x, y) => dispatch(graphActions.zoom(scale, x, y))
+      onZoom: (scale, x, y) => dispatch(graphActions.zoom(scale, x, y)),
+      onAddSelected: (nid) => dispatch(graphActions.addSelected(nid)),
+      onRemoveSelected: (nid) => dispatch(graphActions.removeSelected(nid))
     }
 };
 

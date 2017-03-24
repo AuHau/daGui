@@ -16,13 +16,19 @@ class Menu extends Component {
   keyboardShortcutsHandler(e){
     if (!e.ctrlKey) return;
 
-    switch (e.keyCode) {
-      case 90:
+    switch (e.key.toLowerCase()) {
+      case 'z':
         if (e.shiftKey) {
           this.props.onRedo();
         } else {
           this.props.onUndo();
         }
+        break;
+      case 'c':
+        this.props.onCopy();
+        break;
+      case 'v':
+        this.props.onPaste();
         break;
     }
   }
@@ -37,9 +43,9 @@ class Menu extends Component {
           <li><a href="#"><i className="fa fa-folder-open-o"/></a></li>
         </ul>
         <ul className={styles.left}>
-          <li><a href="#"><i className="fa fa-files-o"/></a></li>
+          <li><a href="#" onClick={this.props.onCopy}><i className="fa fa-files-o"/></a></li>
           <li><a href="#"><i className="fa fa-scissors"/></a></li>
-          <li><a href="#"><i className="fa fa-clipboard"/></a></li>
+          <li><a href="#" onClick={this.props.onPaste}><i className="fa fa-clipboard"/></a></li>
         </ul>
         <ul className={styles.left}>
           <li><a href="#" onClick={this.props.onUndo}><i className="fa fa-undo"/></a></li>
@@ -98,6 +104,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     onRedo: () => {
       dispatch(uiActions.redo())
+    },
+    onCopy: () => {
+      dispatch(graphActions.copy())
+    },
+    onPaste: () => {
+      dispatch(graphActions.paste())
     }
   };
 };

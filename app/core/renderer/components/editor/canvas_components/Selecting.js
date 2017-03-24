@@ -213,10 +213,16 @@ export default class Selecting extends CanvasComponentBase {
   addNode(nid) {
     this.selected.add(nid);
     this.canvasComponents.highlights.highlightNode(nid);
+
+    this.ignoreAction();
+    this.call('onAddSelected', nid);
   }
 
   removeNode(nid) {
     this.selected.delete(nid);
     this.canvasComponents.highlights.removeHighlight(nid);
+
+    this.ignoreAction();
+    this.call('onRemoveSelected', nid);
   }
 }

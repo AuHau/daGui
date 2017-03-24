@@ -8,10 +8,14 @@ const GRAPH = {
   REMOVE_VARIABLE: 'GRAPH_REMOVE_VARIABLE',
   ADD_LINK: 'GRAPH_ADD_LINK',
   REMOVE_LINK: 'GRAPH_REMOVE_LINK',
-  PAN: 'GRAPH_PAN',
-  ZOOM: 'GRAPH_ZOOM',
-  ZOOM_IN: 'GRAPH_ZOOM_IN',
-  ZOOM_OUT: 'GRAPH_ZOOM_OUT'
+  ADD_SELECTED: 'GRAPH_ADD_SELECTED_$',
+  REMOVE_SELECTED: 'GRAPH_REMOVE_SELECTED_$',
+  PAN: 'GRAPH_PAN_$',
+  ZOOM: 'GRAPH_ZOOM_$',
+  ZOOM_IN: 'GRAPH_ZOOM_IN_$',
+  ZOOM_OUT: 'GRAPH_ZOOM_OUT_$',
+  COPY: 'GRAPH_COPY_$',
+  PASTE: 'GRAPH_PASTE'
 };
 export default GRAPH;
 
@@ -102,6 +106,33 @@ export const zoomOut = () => {
     type: GRAPH.ZOOM_OUT
   }
 };
+
+export const addSelected = (nid) => {
+  return {
+    type: GRAPH.ADD_SELECTED,
+    payload: { nid }
+  }
+};
+
+export const removeSelected = (nid) => {
+  return {
+    type: GRAPH.REMOVE_SELECTED,
+    payload: { nid }
+  }
+};
+
+export const copy = () => {
+  return {
+    type: GRAPH.COPY
+  }
+};
+
+export const paste = () => {
+  return {
+    type: GRAPH.PASTE
+  }
+};
+
 
 /**
  * Remove node from graph

@@ -5,6 +5,7 @@ export default {
   "name": "UnionAndDependency.py",
   adapter: SparkAdapter,
   language: Python,
+  $selected: [],
   $pan: {
     x: 0,
     y: 0

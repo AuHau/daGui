@@ -9,7 +9,7 @@ import ui from './ui';
 
 const rootReducer = combineReducers({
   files: undoable(files, {
-    ignore: (action) => !action.type.startsWith('GRAPH_') || [GRAPH.ZOOM_IN, GRAPH.ZOOM, GRAPH.ZOOM_OUT, GRAPH. PAN].includes(action.type)
+    ignore: (action) => !action.type.startsWith('GRAPH_') || action.type.endsWith('_$')
   }),
   ui
 });

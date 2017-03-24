@@ -5,6 +5,7 @@ export default {
   name: 'Simple.py',
   adapter: SparkAdapter,
   language: Python,
+  $selected: [],
   $pan: {
     x: 0,
     y: 0
@@ -28,49 +29,6 @@ export default {
             "x": 190.5,
             "y": 132
           },
-          "ports": {
-            "items": [
-              {
-                "id": "out",
-                "group": "out"
-              }
-            ],
-            "groups": {
-              "in": {
-                "position": {
-                  "name": "left"
-                },
-                "attrs": {
-                  ".port-label": {
-                    "fill": "#000"
-                  },
-                  ".port-body": {
-                    "fill": "#16A085",
-                    "stroke": "#000",
-                    "r": 10,
-                    "magnet": "passive"
-                  }
-                }
-              },
-              "out": {
-                "position": {
-                  "name": "right"
-                },
-                "attrs": {
-                  ".port-label": {
-                    "fill": "#000"
-                  },
-                  ".port-body": {
-                    "fill": "#E74C3C",
-                    "stroke": "#000",
-                    "r": 10,
-                    "magnet": true
-                  }
-                }
-              }
-            }
-          },
-          "angle": 0,
           "dfGui": {
             "description": "Parallelize",
             "variableName": "input",
@@ -92,49 +50,6 @@ export default {
             "x": 412,
             "y": 132
           },
-          "ports": {
-            "items": [
-              {
-                "id": "in",
-                "group": "in"
-              }
-            ],
-            "groups": {
-              "in": {
-                "position": {
-                  "name": "left"
-                },
-                "attrs": {
-                  ".port-label": {
-                    "fill": "#000"
-                  },
-                  ".port-body": {
-                    "fill": "#16A085",
-                    "stroke": "#000",
-                    "r": 10,
-                    "magnet": "passive"
-                  }
-                }
-              },
-              "out": {
-                "position": {
-                  "name": "right"
-                },
-                "attrs": {
-                  ".port-label": {
-                    "fill": "#000"
-                  },
-                  ".port-body": {
-                    "fill": "#E74C3C",
-                    "stroke": "#000",
-                    "r": 10,
-                    "magnet": true
-                  }
-                }
-              }
-            }
-          },
-          "angle": 0,
           "dfGui": {
             "description": "Count",
             "variableName": null,
