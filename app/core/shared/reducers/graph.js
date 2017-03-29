@@ -11,6 +11,7 @@ const findIndex = (state, id) => {
   return state.get('cells').findIndex(node => node.get('id') == id);
 };
 
+
 export default (state, action, wholeState) => {
   let index, cells, tmp;
 
@@ -98,17 +99,27 @@ export default (state, action, wholeState) => {
 
     ////////////////////////////////////////////////////////////
     case GRAPH.COPY:
-      return wholeState.setIn(['opened', getActive(wholeState), '$copied'], wholeState.getIn(['opened', getActive(wholeState), '$selected']));
+      return wholeState.set('copied_from', getActive(wholeState)).set('$copied', wholeState.getIn(['opened', getActive(wholeState), '$selected']));
 
     ////////////////////////////////////////////////////////////
-    case GRAPH.PASTE: // TODO: [BUG/Medium] When pasting nodes which have link between then, also paste the link
+    case GRAPH.PASTE:
       const copiedCells = new Set();
-      wholeState.getIn(['opened', getActive(wholeState), '$copied']).forEach(nid => copiedCells.add(nid));
+      const idTranslation = {};
+      wholeState.get('$copied').forEach(nid => copiedCells.add(nid));
 
       const pastingCells = [];
-      state.get('cells').forEach(cell => {
-        if(copiedCells.has(cell.get('id')))
-          pastingCells.push(cell.update('position', position => position.set('x', position.get('x') + 20).set('y',  position.get('y') + 20)).set('id', jointjs.util.uuid()))
+      wholeState.getIn(['opened', wholeState.get('copied_from'), 'history', 'present', 'cells']).forEach(cell => {
+        if(copiedCells.has(cell.get('id'))){
+          let newId = jointjs.util.uuid();
+          idTranslation[cell.get('id')] = newId;
+          pastingCells.push(cell.update('position', position => position.set('x', position.get('x') + 20).set('y',  position.get('y') + 20)).set('id', newId));
+        }
+      });
+
+      wholeState.getIn(['opened', wholeState.get('copied_from'), 'history', 'present', 'cells']).forEach(cell => {
+        if(cell.get('type') == 'link' && copiedCells.has(cell.getIn(['source', 'id'])) && copiedCells.has(cell.getIn(['target', 'id']))){
+          pastingCells.push(cell.setIn(['source', 'id'], idTranslation[cell.getIn(['source', 'id'])]).setIn(['target', 'id'], idTranslation[cell.getIn(['target', 'id'])]).set('id', jointjs.util.uuid()))
+        }
       });
 
       tmp= state.update('cells', nodes => {
