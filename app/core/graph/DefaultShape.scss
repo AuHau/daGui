@@ -28,6 +28,7 @@
 .nodeSelected{
   stroke-width: $node-detail-stroke-width;
   stroke: $node-detail-color;
+  fill: $node-detail-fill;
 }
 
 .nodeHover{

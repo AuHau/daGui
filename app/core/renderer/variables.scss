@@ -21,6 +21,7 @@ $font-size-small: 11px;
 $font-size-normal: 14px;
 
 // Canvas
+$node-detail-fill: lighten($light-blue, 40%);
 $node-detail-color: $light-blue;
 $node-detail-stroke-width: 3;
 $node-hover-color: $yellow;
