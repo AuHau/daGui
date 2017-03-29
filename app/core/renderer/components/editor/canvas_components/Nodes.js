@@ -15,14 +15,10 @@ export default class Nodes extends CanvasComponentBase{
     document.addEventListener('keyup', this.onDeleteKey.bind(this));
   }
 
-  // TODO: [BUG/Medium] Sometimes only the clicked node is dragged and not whole selection (most probably has something in common with problem of clicking on the Nodes text)
   onMultipleDrag(e){
     if(!this.startingPointerPosition || !this.startingElement || this.cellsEmbedded) return;
 
-    if(this.selected.size > 1 && this.selected.has(this.startingElement.id)
-      && Math.abs(this.startingPointerPosition.x - e.clientX) < this.canvas.CLICK_TRESHOLD
-      && Math.abs(this.startingPointerPosition.y - e.clientY) < this.canvas.CLICK_TRESHOLD) {
-
+    if(this.selected.size > 1 && this.selected.has(this.startingElement.id)) {
       for(let selectedNid of this.selected){
         if(this.startingElement.id == selectedNid) continue;
         this.startingElement.embed(this.graph.getCell(selectedNid))

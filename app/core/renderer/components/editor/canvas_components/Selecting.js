@@ -120,6 +120,7 @@ export default class Selecting extends CanvasComponentBase {
     }
   }
 
+  // TODO: [Optimalization] Firing Redux addSelection action after the selection ended
   multiselectionEnd(cellView, e, x, y) {
     if (this.startingSelectionPosition) {
       this.startingSelectionPosition = null;
