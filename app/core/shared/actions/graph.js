@@ -15,6 +15,7 @@ const GRAPH = {
   ZOOM_IN: 'GRAPH_ZOOM_IN_$',
   ZOOM_OUT: 'GRAPH_ZOOM_OUT_$',
   COPY: 'GRAPH_COPY_$',
+  CUT: 'GRAPH_CUT_$',
   PASTE: 'GRAPH_PASTE'
 };
 export default GRAPH;
@@ -124,6 +125,12 @@ export const removeSelected = (nid) => {
 export const copy = () => {
   return {
     type: GRAPH.COPY
+  }
+};
+
+export const cut = () => {
+  return {
+    type: GRAPH.CUT
   }
 };
 

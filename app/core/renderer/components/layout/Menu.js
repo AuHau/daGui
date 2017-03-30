@@ -30,6 +30,9 @@ class Menu extends Component {
       case 'v':
         this.props.onPaste();
         break;
+      case 'x':
+        this.props.onCut();
+        break;
     }
   }
 
@@ -44,7 +47,7 @@ class Menu extends Component {
         </ul>
         <ul className={styles.left}>
           <li><a href="#" onClick={this.props.onCopy}><i className="fa fa-files-o"/></a></li>
-          <li><a href="#"><i className="fa fa-scissors"/></a></li>
+          <li><a href="#" onClick={this.props.onCut}><i className="fa fa-scissors"/></a></li>
           <li><a href="#" onClick={this.props.onPaste}><i className="fa fa-clipboard"/></a></li>
         </ul>
         <ul className={styles.left}>
@@ -107,6 +110,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onCopy: () => {
       dispatch(graphActions.copy())
+    },
+    onCut: () => {
+      dispatch(graphActions.cut())
     },
     onPaste: () => {
       dispatch(graphActions.paste())

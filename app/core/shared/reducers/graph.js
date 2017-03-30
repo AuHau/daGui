@@ -11,6 +11,24 @@ const findIndex = (state, id) => {
   return state.get('cells').findIndex(node => node.get('id') == id);
 };
 
+const newPresent = (wholeState, newPresent) => {
+  const past = wholeState.getIn(['opened', getActive(wholeState), 'history', 'past']);
+  const present = wholeState.getIn(['opened', getActive(wholeState), 'history', 'present']);
+
+  return wholeState.setIn(['opened', getActive(wholeState), 'history'],
+    Immutable.Map({
+      'past': past.push(present),
+      'present': newPresent,
+      'future': Immutable.List()
+    }));
+};
+
+const deleteNode = (state, nid) => {
+  const cells = state.get('cells');
+  let filtered = cells.filter(node => node.get('id') != nid && node.getIn(['source', 'id']) != nid && node.getIn(['target', 'id']) != nid );
+  return state.set('cells', filtered);
+};
+
 
 export default (state, action, wholeState) => {
   let index, cells, tmp;
@@ -52,9 +70,7 @@ export default (state, action, wholeState) => {
 
     ////////////////////////////////////////////////////////////
     case GRAPH.DELETE_NODE:
-      cells = state.get('cells');
-      let filtered = cells.filter(node => node.get('id') != action.payload && node.getIn(['source', 'id']) != action.payload && node.getIn(['target', 'id']) != action.payload );
-      return state.set('cells', filtered);
+      return deleteNode(state, action.payload);
 
     ////////////////////////////////////////////////////////////
     case GRAPH.UPDATE_VARIABLE:
@@ -102,7 +118,38 @@ export default (state, action, wholeState) => {
       return wholeState.set('copied_from', getActive(wholeState)).set('$copied', wholeState.getIn(['opened', getActive(wholeState), '$selected']));
 
     ////////////////////////////////////////////////////////////
+    case GRAPH.CUT:
+      const selected = wholeState.getIn(['opened', getActive(wholeState), '$selected']);
+      const cuttedNodes = wholeState.getIn(['opened', getActive(wholeState), 'history', 'present', 'cells'])
+                                    .filter(cell =>
+                                      selected.includes(cell.get('id'))
+                                      || (
+                                        selected.includes(cell.getIn(['source', 'id']))
+                                        && selected.includes(cell.getIn(['target', 'id']))
+                                      )
+                                    );
+
+      return newPresent(wholeState,
+          wholeState.getIn(['opened', getActive(wholeState), 'history', 'present'])
+                    .update('cells', cells =>
+                      cells.filter(cell =>
+                        !selected.includes(cell.get('id'))
+                        && !selected.includes(cell.getIn(['source', 'id']))
+                        && !selected.includes(cell.getIn(['target', 'id']))
+                      )
+                    )
+      ).set('$copied', cuttedNodes);
+
+    ////////////////////////////////////////////////////////////
     case GRAPH.PASTE:
+      if(wholeState.get('$copied').isEmpty())
+        return state;
+
+      // Copied contains full node's objects not just their IDs ==> Copy them into the cells
+      if(wholeState.get('$copied').first().get('id')){
+        return state.set('cells', state.get('cells').concat(wholeState.get('$copied')));
+      }
+
       const copiedCells = new Set();
       const idTranslation = {};
       wholeState.get('$copied').forEach(nid => copiedCells.add(nid));

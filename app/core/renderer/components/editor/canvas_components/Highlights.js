@@ -25,6 +25,7 @@ export default class Highlights extends CanvasComponentBase{
       this.highlightNode(this.get('detailNodeId'));
     }
 
+    // TODO: [BUG/Low] If the same NID is across tabs, then they will be highlighted, because the "selected" is not took from the state
     if(this.canvas.selected.size > 0){
       for(let nid of this.canvas.selected){
         this.highlightNode(nid);
