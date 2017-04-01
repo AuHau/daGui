@@ -12,7 +12,11 @@ export default class BaseLanguage {
     throw new TypeError("Method 'getAceName' has to be implemented!");
   }
 
-  static getLID(){
+  static getId(){
+    throw new TypeError("Method 'getLID' has to be implemented!");
+  }
+
+  static getCommentChar(){
     throw new TypeError("Method 'getLID' has to be implemented!");
   }
 

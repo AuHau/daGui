@@ -2,6 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import createLogger from 'redux-logger';
 import { batchedSubscribe } from 'redux-batched-subscribe';
 import reduxMulti from 'redux-multi'
+import thunk from 'redux-thunk';
 
 import rootReducer from '../reducers';
 import {
@@ -28,7 +29,7 @@ const logger = createLogger({
 //   compose;
 /* eslint-enable no-underscore-dangle */
 const enhancer = compose(
-  applyMiddleware(logger, reduxMulti),
+  applyMiddleware(logger, reduxMulti, thunk),
   window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : noop => noop,
   batchedSubscribe(notify => notify())
 );

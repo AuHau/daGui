@@ -46,6 +46,21 @@ export function hashGraph(normalizedGraph) {
   return md5(JSON.stringify(filteredGraph));
 }
 
+export function hashRawGraph(rawGraph){
+  return md5(JSON.stringify(rawGraph));
+}
+
+export function serializeGraph($file){
+  let output = '';
+
+  output += 'adapter:' + $file.get('adapter').getId() + ':' + $file.get('adapterTarget');
+  output += ';language:' + $file.get('language').getId() + ':' + $file.get('languageTarget');
+  output += ';' + JSON.stringify($file.getIn(['history', 'present', 'cells']).toJS()).replace('\n', '');
+  // TODO: [Optimalization] Filter out non-necessary data from cells (groups definitions, ports definitions etc).
+
+  return output;
+}
+
 export function countInPorts(element){
   let count = 0;
   for(let port of element.portData.ports){

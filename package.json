@@ -1,6 +1,6 @@
 {
-  "name": "dataflow-gui",
-  "productName": "DataFlow GUI",
+  "name": "daGui",
+  "productName": "daGui",
   "version": "0.0.1",
   "description": "Desktop application for constructing Big Data programs through building DAG",
   "main": "main.js",
@@ -23,7 +23,7 @@
     "package-all": "npm run build && build -mwl"
   },
   "build": {
-    "appId": "cz.auhau.dataflowGui",
+    "appId": "cz.auhau.daGui",
     "category": "public.app-category.tools",
     "dmg": {
       "contents": [
@@ -59,7 +59,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AuHau/dataflow-gui"
+    "url": "git+https://github.com/AuHau/daGui"
   },
   "author": {
     "name": "Adam Uhlíř",
@@ -68,7 +68,7 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/AuHau/dataflow-gui"
+    "url": "https://github.com/AuHau/daGui"
   },
   "keywords": [
     "dataflow",
@@ -76,7 +76,7 @@
     "big-data",
     "spark"
   ],
-  "homepage": "https://github.com/AuHau/dataflow-gui",
+  "homepage": "https://github.com/AuHau/daGui",
   "devDependencies": {
     "asar": "^0.12.3",
     "babel-core": "^6.18.0",
@@ -145,7 +145,7 @@
     "closest": "0.0.1",
     "electron-debug": "^1.0.1",
     "electron-redux": "^1.2.1",
-    "font-awesome": "^4.7.0", 
+    "font-awesome": "^4.7.0",
     "immutable": "^3.8.1",
     "jointjs": "^1.0.3",
     "js-md5": "^0.4.1",

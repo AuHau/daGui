@@ -6,8 +6,12 @@ export default class Python extends BaseLanguage {
     return 'Python';
   }
 
-  static getLID() {
-    return 2;
+  static getId() {
+    return 'py';
+  }
+
+  static getCommentChar(){
+    return '#';
   }
 
   static getAceName(){

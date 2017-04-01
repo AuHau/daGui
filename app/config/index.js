@@ -8,16 +8,22 @@ const adapters = {};
 adapters[SparkAdapter.getId()] = SparkAdapter;
 
 const languages = {};
-languages[Scala.getID()] = Scala;
+languages[Scala.getId()] = Scala;
 
 const canvas = {
   zoomStep: 0.2
+};
+
+const daguiTags = {
+  start: '@@@daGuiStart@@@',
+  end: '@@@daGuiEnd@@@'
 };
 
 export default {
   adapters,
   languages,
   canvas,
+  daguiTags,
   isNodeHidden: (nodeType) =>{
     return SparkAdapter.getNodeTemplates()[nodeType].isNodeHidden();
   }

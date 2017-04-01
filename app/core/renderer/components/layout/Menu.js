@@ -6,6 +6,7 @@ import styles from './Menu.scss';
 import CursorMode from 'shared/enums/CursorMode';
 import * as uiActions from 'shared/actions/ui';
 import * as graphActions from 'shared/actions/graph';
+import * as fileActions from 'shared/actions/file';
 
 class Menu extends Component {
 
@@ -33,6 +34,9 @@ class Menu extends Component {
       case 'x':
         this.props.onCut();
         break;
+      case 's':
+        this.props.onSave();
+        break;
     }
   }
 
@@ -42,7 +46,7 @@ class Menu extends Component {
       <div className={styles.container}>
         <ul className={styles.left}>
           <li><a href="#"><i className="fa fa-file-o"/></a></li>
-          <li><a href="#"><i className="fa fa-save"/></a></li>
+          <li><a href="#" onClick={this.props.onSave}><i className="fa fa-save"/></a></li>
           <li><a href="#"><i className="fa fa-folder-open-o"/></a></li>
         </ul>
         <ul className={styles.left}>
@@ -116,6 +120,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onPaste: () => {
       dispatch(graphActions.paste())
+    },
+    onSave: () => {
+      dispatch(fileActions.save())
     }
   };
 };

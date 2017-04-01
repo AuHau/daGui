@@ -10,6 +10,7 @@ const INDENTATION = '    '; // TODO: Load from user's settings
 export function processNode(output, node, prevNode, templates, graph, variableStack, afterOutBreak = false) {
   let generatedCode;
 
+  // In-break situation
   if(node.prevNodes.length > 1){
     node.prevNodes.find(node => node.id == prevNode.id)['variable'] = variableStack.pop();
 
@@ -17,6 +18,7 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
       return; // Not all in-break dependencies are satisfied => backtrack
     }
 
+    // TODO: [Q] The order of the prevNodes is important for example for leftJoin(), does it work?
     generatedCode = templates[node.type].generateCode(node.parameters, Python, node.prevNodes);
 
     output

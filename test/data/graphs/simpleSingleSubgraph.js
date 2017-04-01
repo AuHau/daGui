@@ -3,8 +3,12 @@ import Python from '../../../app/core/languages/Python';
 
 export default {
   name: 'Simple.py',
+  path: '/home/adam/thesis/Simple.py',
+  lastSavedHash: '',
   adapter: SparkAdapter,
   language: Python,
+  adapterTarget: '2.1',
+  languageTarget: '2.7',
   $selected: [],
   $pan: {
     x: 0,

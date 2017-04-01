@@ -3,8 +3,12 @@ import Python from '../../../app/core/languages/Python';
 
 export default {
   "name": "UnionAndDependency.py",
+  path: '/home/adam/thesis/UnionAndDependency.py',
+  lastSavedHash: '',
   adapter: SparkAdapter,
   language: Python,
+  adapterTarget: '2.1',
+  languageTarget: '',
   $selected: [],
   $pan: {
     x: 0,

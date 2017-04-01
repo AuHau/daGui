@@ -3,8 +3,12 @@ import Python from '../../../app/core/languages/Python';
 
 export default {
   "name": "ThreeGraphs.py",
+  path: '/home/adam/thesis/ThreeGraphs.py',
+  lastSavedHash: '',
   adapter: SparkAdapter,
   language: Python,
+  adapterTarget: '2.1',
+  languageTarget: '',
   $selected: [],
   $pan: {
     x: 0,

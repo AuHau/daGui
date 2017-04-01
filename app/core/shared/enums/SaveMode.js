@@ -1,0 +1,5 @@
+export default {
+  ONLY_CODE: 'ONLY_CODE',
+  ONLY_GRAPH_DATA: 'ONLY_GRAPH_DATA',
+  FULL_SAVE: 'FULL_SAVE'
+}

@@ -5,7 +5,12 @@ export default class Scala extends BaseLanguage {
     return 'Scala';
   }
 
-  static getID() {
+  static getId() {
     return 'scala';
   }
+
+  static getCommentChar(){
+    return '//';
+  }
+
 }

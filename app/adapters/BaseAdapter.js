@@ -4,6 +4,10 @@ export default class BaseAdapter {
     throw new TypeError("Method 'getName' has to be implemented!");
   }
 
+  static getId(){
+    throw new TypeError("Method 'getUniqId' has to be implemented!");
+  }
+
   static getSupportedLanguages(){
     throw new TypeError("Method 'getSupportedLanguages' has to be implemented!");
   }

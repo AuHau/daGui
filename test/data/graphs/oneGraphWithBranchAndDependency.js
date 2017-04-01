@@ -2,9 +2,13 @@ import SparkAdapter from '../../../app/adapters/spark';
 import Python from '../../../app/core/languages/Python';
 
 export default {
-  "name": "BranchDependency.py",
+  "name": "Untitled 2",
+  path: '',
+  lastSavedHash: '',
   adapter: SparkAdapter,
   language: Python,
+  adapterTarget: '2.1',
+  languageTarget: '',
   $selected: [],
   $pan: {
     x: 0,
