@@ -9,6 +9,7 @@ const FILE = {
   OPEN: 'OPEN',
   SAVE_DONE: 'SAVE_DONE',
   SWITCH_TAB: 'SWITCH_TAB',
+  SET_PATH: 'SET_PATH',
 };
 
 export default FILE;
@@ -28,7 +29,7 @@ export function save(){
 
     const {normalizedGraph, inputs} = normalizeGraph(graph, adapter.isTypeInput);
     const hash = hashRawGraph(normalizedGraph);
-    if (currentHash == hash) return; // Nothing to save ==> ignore
+    if (currentHash == hash) return Promise.resolve(); // Nothing to save ==> ignore
 
     // TODO: Optimalization - drop JointJS graph dependency (use only normalized graph)
     const jointGraph = new joint.dia.Graph();
@@ -45,8 +46,9 @@ export function save(){
         return Promise.resolve();
       }else{ // Yes
         if(!path){
-          path = platformConnector.saveDialog();
-          // TODO: Save new path
+          const [newPath, fileName] = platformConnector.saveDialog(language);
+          path = newPath;
+          dispatch(setPath(newPath, fileName));
         }
 
         const serializedGraph = serializeGraph($currentFile);
@@ -69,8 +71,9 @@ export function save(){
           return Promise.resolve();
         }else{ // Yes
           if(!path){
-            path = platformConnector.saveDialog();
-            // TODO: Save new path
+            const [newPath, fileName] = platformConnector.saveDialog(language);
+            path = newPath;
+            dispatch(setPath(newPath, fileName));
           }
 
           const serializedGraph = serializeGraph($currentFile);
@@ -84,14 +87,25 @@ export function save(){
     }
 
     if(!path){
-      path = platformConnector.saveDialog();
-      // TODO: Save new path
+      const [newPath, fileName] = platformConnector.saveDialog(language);
+      path = newPath;
+      dispatch(setPath(newPath, fileName));
     }
     const serializedGraph = serializeGraph($currentFile);
     platformConnector.save(path, codeBuilder.getCode(), serializedGraph, language.getCommentChar(), 'a');
     // TODO: Saving new savedHash
   }
 };
+
+export function setPath(path, fileName){
+    return {
+      type: FILE.SET_PATH,
+      payload: {
+        path,
+        fileName
+      }
+    }
+}
 
 export function switchTab(newFileIndex){
   return {

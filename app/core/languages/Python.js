@@ -18,6 +18,10 @@ export default class Python extends BaseLanguage {
     return 'python';
   }
 
+  static getFileExtension(){
+    return 'py';
+  }
+
   static nameNode(nodeTemplate, usedVariables){
     // TODO: [Medium] Implement SnakeCase generator to drop lodash depedendency
     const baseName = _.snakeCase(nodeTemplate.getName());
