@@ -14,16 +14,10 @@ const canvas = {
   zoomStep: 0.2
 };
 
-const daguiTags = {
-  start: '@@@daGuiStart@@@',
-  end: '@@@daGuiEnd@@@'
-};
-
 export default {
   adapters,
   languages,
   canvas,
-  daguiTags,
   isNodeHidden: (nodeType) =>{
     return SparkAdapter.getNodeTemplates()[nodeType].isNodeHidden();
   }

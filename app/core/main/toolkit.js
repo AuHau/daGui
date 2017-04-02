@@ -1,6 +1,6 @@
 import {writeFile} from 'fs';
 import md5 from 'js-md5';
-import config from "../../config/index";
+import config from "../../config/electron";
 
 export function save(path, code, graph, commentChar, saveMode) {
   return new Promise((resolve, reject) => {
