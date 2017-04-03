@@ -4,7 +4,7 @@ import Python from '../../../app/core/languages/Python';
 export default {
   "name": "UnionAndDependency.py",
   path: '/home/adam/thesis/UnionAndDependency.py',
-  lastSavedHash: '',
+  lastHistorySaved: 0,
   adapter: SparkAdapter,
   language: Python,
   adapterTarget: '2.1',
@@ -19,6 +19,7 @@ export default {
     past: [],
     future: [],
     present: {
+      historyId: 0,
       "usedVariables": {
         "union1": "e37529e5-8599-4f62-93c3-985b3602c80a",
         "input1": "52c418a4-1bd0-49ee-bf2f-435a8ca7d25a",

@@ -20,6 +20,13 @@ export default (state, action, wholeState) => {
           .setIn(['opened', getActive(wholeState), 'path'], action.payload.path)
           .setIn(['opened', getActive(wholeState), 'name'], action.payload.fileName);
 
+      case FILE.FREEZE_SAVED_HISTORY_ID:
+        return wholeState
+          .setIn(
+            ['opened', getActive(wholeState), 'lastHistorySaved'],
+            wholeState.getIn(['opened', getActive(wholeState), 'history', 'present', 'historyId'])
+          );
+
       default:
         return wholeState;
     }

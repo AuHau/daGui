@@ -47,10 +47,12 @@ export default function undoable(reducer, config) {
           return reducer({}, action, state);
         }else{
 
-          const newPresent = reducer(present, action, state);
+          let newPresent = reducer(present, action, state);
           if (present === newPresent) {
             return state
           }
+
+          newPresent = newPresent.set('historyId', newPresent.get('historyId') + 1);
 
           return state.setIn(['opened', getActive(state), 'history'],
             Immutable.Map({

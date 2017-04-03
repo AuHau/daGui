@@ -4,7 +4,7 @@ import Python from '../../../app/core/languages/Python';
 export default {
   name: 'Untitled',
   path: '',
-  lastSavedHash: '',
+  lastHistorySaved: 0,
   adapter: SparkAdapter,
   language: Python,
   adapterTarget: '2.1',
@@ -19,6 +19,7 @@ export default {
     past: [],
     future: [],
     present: {
+      historyId: 0,
       "usedVariables": {},
       $occupiedPorts: {},
       "cells": []

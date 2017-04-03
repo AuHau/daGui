@@ -4,7 +4,7 @@ import Python from '../../../app/core/languages/Python';
 export default {
   "name": "ThreeGraphs.py",
   path: '/home/adam/thesis/ThreeGraphs.py',
-  lastSavedHash: '',
+  lastHistorySaved: 0,
   adapter: SparkAdapter,
   language: Python,
   adapterTarget: '2.1',
@@ -19,6 +19,7 @@ export default {
     past: [],
     future: [],
     present: {
+      historyId: 0,
       "usedVariables": {
         "var2": "48bb3a41-a987-47f3-9a8e-f0e869c7602c",
         "var1": "222acdee-3545-4e44-86ab-b9a8e17b7b0e",

@@ -4,7 +4,7 @@ import Python from '../../../app/core/languages/Python';
 export default {
   name: 'Simple.py',
   path: '/home/adam/thesis/Simple.py',
-  lastSavedHash: '',
+  lastHistorySaved: 0,
   adapter: SparkAdapter,
   language: Python,
   adapterTarget: '2.1',
@@ -18,6 +18,7 @@ export default {
   "history": {
     past: [],
     present: {
+      historyId: 0,
       $occupiedPorts: {},
       "usedVariables": {
         "input": "c9615ee0-89ee-4b31-8168-fa374461d542"

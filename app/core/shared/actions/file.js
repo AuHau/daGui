@@ -9,6 +9,7 @@ const FILE = {
   SAVE_DONE: 'SAVE_DONE',
   SWITCH_TAB: 'SWITCH_TAB',
   SET_PATH: 'SET_PATH',
+  FREEZE_SAVED_HISTORY_ID: 'FREEZE_SAVED_HISTORY_ID'
 };
 
 export default FILE;
@@ -41,7 +42,7 @@ export function save(){
         //
         const serializedGraph = serializeGraph($currentFile);
         await platformConnector.save(path, "", serializedGraph, language.getCommentChar(), SaveMode.ONLY_GRAPH_DATA);
-        // TODO: Saving new savedHash
+        dispatch(freezeCurrentSavedHistoryId());
         return Promise.resolve();
       }
     }
@@ -53,7 +54,7 @@ export function save(){
     }
     const serializedGraph = serializeGraph($currentFile);
     platformConnector.save(path, codeBuilder.getCode(), serializedGraph, language.getCommentChar());
-    // TODO: Saving new savedHash
+    dispatch(freezeCurrentSavedHistoryId());
   }
 };
 
@@ -71,5 +72,11 @@ export function switchTab(newFileIndex){
   return {
     type: FILE.SWITCH_TAB,
     payload: newFileIndex
+  }
+};
+
+export function freezeCurrentSavedHistoryId(){
+  return {
+    type: FILE.FREEZE_SAVED_HISTORY_ID
   }
 };
