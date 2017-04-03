@@ -1,6 +1,70 @@
 import md5 from 'js-md5';
+import ErrorType from 'shared/enums/ErrorType';
+import ErrorLevel from 'shared/enums/ErrorLevel';
+import joint from 'jointjs';
 
-export const normalizeGraph = (graphObject, isInputFnc) => {
+export function generateCode(codeBuilder, $currentFile, currentHash=null, regenerateOnlyOnChange=false){
+  const language = $currentFile.get('language');
+  const adapter = $currentFile.get('adapter');
+  const graph = {cells: $currentFile.getIn(['history', 'present', 'cells']).toJS()};
+  const usedVariables = $currentFile.getIn(['history', 'present', 'usedVariables']).toJS();
+
+  const {normalizedGraph, inputs} = normalizeGraph(graph, adapter.isTypeInput);
+  const newHash = hashGraph(normalizedGraph);
+  const isGraphEmpty = !Object.keys(normalizedGraph).length;
+  if(isGraphEmpty || (currentHash && regenerateOnlyOnChange && currentHash == newHash)){
+    if (isGraphEmpty){
+      codeBuilder.reset();
+    }
+
+    return null; // No graph's changes which are connected with code ===> don't re-generate the code OR there are no nodes...
+  }
+  currentHash = newHash;
+
+  // TODO: Optimalization - drop JointJS graph dependency (use only normalized graph)
+  const jointGraph = new joint.dia.Graph();
+  jointGraph.fromJSON(graph);
+  const errors = adapter.validateGraph(jointGraph, normalizedGraph, inputs, language);
+
+  if(errors && errors.length){
+    return {
+      hash: currentHash,
+      success: false,
+      errors
+    };
+  }
+
+  // TODO: Limit when the actual generation of code happens? App.js => generate only when showCodeView (Maybe splitting validation&generation)
+
+  try {
+    adapter.generateCode(codeBuilder, normalizedGraph, inputs, usedVariables, language);
+  } catch (e) {
+    if (e.name == 'CircularDependency') {
+      return {
+        hash: currentHash,
+        success: false,
+        errors: [
+          {
+            id: null,
+            type: ErrorType.DEPENDENCIES_CYCLE,
+            description: e.message,
+            level: ErrorLevel.ERROR,
+            importance: 10
+          }
+        ]
+      }
+    } else {
+      throw e;
+    }
+  }
+
+  return {
+    hash: currentHash,
+    success: true
+  }
+}
+
+export function normalizeGraph(graphObject, isInputFnc){
   const normalizedGraph = {};
   const inputs = [];
 

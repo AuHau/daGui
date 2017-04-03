@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import joint from 'jointjs';
 import Immutable from 'immutable';
-import {hashGraph, normalizeGraph} from 'graph/graphToolkit.js';
+import {generateCode, hashGraph, normalizeGraph} from 'graph/graphToolkit.js';
 import CodeBuilder from 'graph/CodeBuilder';
 
 // Enums
@@ -76,74 +76,26 @@ class App extends Component {
 
   componentWillReceiveProps(nextProps){
     const currentFile = nextProps.files.get(nextProps.currentFileIndex);
-    const adapter = currentFile.get('adapter');
-    const language = currentFile.get('language');
-    const graph = {cells: currentFile.getIn(['history', 'present', 'cells']).toJS()};
-    const usedVariables = currentFile.getIn(['history', 'present', 'usedVariables']).toJS();
 
-    const {normalizedGraph, inputs} = normalizeGraph(graph, adapter.isTypeInput);
-    const newHash = hashGraph(normalizedGraph);
-    const isGraphEmpty = !Object.keys(normalizedGraph).length;
-    if(isGraphEmpty || this.graphHash == newHash){
-      if (isGraphEmpty){
-        this.codeBuilder.reset();
+    const result = generateCode(this.codeBuilder, currentFile, this.graphHash, true);
 
-        if(this.graphErrors.length){
-          this.resetHighlights();
-          this.graphErrors = [];
-        }
-      }
-
-      // if(!nextProps.showCodeView || !this.codeBuilder.isEmpty())
-
-      return; // No graph's changes which are connected with code ===> don't re-generate the code OR there are no nodes...
-    }
-    this.graphHash = newHash;
-
-    // TODO: Optimalization - drop JointJS graph dependency (use only normalized graph)
-    const jointGraph = new joint.dia.Graph();
-    jointGraph.fromJSON(graph);
-    let tmpErrors = adapter.validateGraph(jointGraph, normalizedGraph, inputs, language);
-
-    if (!tmpErrors.length) {
-      if(!nextProps.showCodeView)
-        return; // Generation will only happen when has to (eq. when CodeView is active)
-
-      try {
-        adapter.generateCode(this.codeBuilder, normalizedGraph, inputs, usedVariables, language);
-      } catch (e){
-        if(e.name == 'CircularDependency'){
-          tmpErrors = [
-            {
-              id: null,
-              type: ErrorType.DEPENDENCIES_CYCLE,
-              description: e.message,
-              level: ErrorLevel.ERROR,
-              importance: 10
-            }
-          ]
-        }else{
-          throw e;
-        }
-      }
-
-      // Previously there were errors, but now they are not ==> reset error highlighting
-      if(this.graphErrors.length && !tmpErrors.length){
-        this.resetHighlights();
-      }
-
-      if(tmpErrors && tmpErrors.length){
-        this.graphErrors = tmpErrors;
-        this.highlightErrors();
-      }else{
+    if(result == null){ // Hashes matches ==> No regeneration
+      if(this.graphErrors.length){
         this.resetHighlights();
         this.graphErrors = [];
       }
-    }else{
-      this.graphErrors = tmpErrors;
-      this.highlightErrors();
+
+      return;
     }
 
+    if(!result.success){
+      this.graphErrors = result.errors;
+      this.highlightErrors();
+    }else{
+      this.resetHighlights();
+      this.graphErrors = [];
+    }
+    this.graphHash = result.hash;
   }
 
   highlightErrors(){
