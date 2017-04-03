@@ -50,9 +50,9 @@ export function save(){
           path = newPath;
           dispatch(setPath(newPath, fileName));
         }
-
+        //
         const serializedGraph = serializeGraph($currentFile);
-        await platformConnector.save(path, "", serializedGraph, SaveMode.ONLY_GRAPH_DATA);
+        await platformConnector.save(path, "", serializedGraph, language.getCommentChar(), SaveMode.ONLY_GRAPH_DATA);
         // TODO: Saving new savedHash
         return Promise.resolve();
       }
@@ -77,7 +77,7 @@ export function save(){
           }
 
           const serializedGraph = serializeGraph($currentFile);
-          await platformConnector.save(path, "", serializedGraph, SaveMode.ONLY_GRAPH_DATA);
+          await platformConnector.save(path, "", serializedGraph, language.getCommentChar(), SaveMode.ONLY_GRAPH_DATA);
           // TODO: Saving new savedHash
           return Promise.resolve();
         }
@@ -92,7 +92,7 @@ export function save(){
       dispatch(setPath(newPath, fileName));
     }
     const serializedGraph = serializeGraph($currentFile);
-    platformConnector.save(path, codeBuilder.getCode(), serializedGraph, language.getCommentChar(), 'a');
+    platformConnector.save(path, codeBuilder.getCode(), serializedGraph, language.getCommentChar());
     // TODO: Saving new savedHash
   }
 };
