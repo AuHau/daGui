@@ -37,6 +37,9 @@ class Menu extends Component {
       case 's':
         this.props.onSave();
         break;
+      case 'o':
+        this.props.onOpen();
+        break;
     }
   }
 
@@ -47,7 +50,7 @@ class Menu extends Component {
         <ul className={styles.left}>
           <li><a href="#"><i className="fa fa-file-o"/></a></li>
           <li><a href="#" onClick={this.props.onSave}><i className="fa fa-save"/></a></li>
-          <li><a href="#"><i className="fa fa-folder-open-o"/></a></li>
+          <li><a href="#" onClick={this.props.onOpen}><i className="fa fa-folder-open-o"/></a></li>
         </ul>
         <ul className={styles.left}>
           <li><a href="#" onClick={this.props.onCopy}><i className="fa fa-files-o"/></a></li>
@@ -123,6 +126,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onSave: () => {
       dispatch(fileActions.save())
+    },
+    onOpen: () => {
+      dispatch(fileActions.open())
     }
   };
 };

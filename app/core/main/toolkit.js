@@ -5,6 +5,16 @@ import SaveMode from "../shared/enums/SaveMode";
 import path from 'path';
 import {dialog} from 'electron'
 
+export function open(path) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, 'utf8', (err, data) => {
+      if (err) return reject(err);
+
+      resolve(data);
+    });
+  });
+}
+
 export function save(path, code, graph, commentChar, saveMode) {
   return new Promise((resolve, reject) => {
     code += '\n';
@@ -14,21 +24,21 @@ export function save(path, code, graph, commentChar, saveMode) {
     daguiMetadata += commentChar + 'hash:' + codeHash + ';' + graph + '\n';
     daguiMetadata += commentChar + config.daguiTags.end;
 
-    if(saveMode == SaveMode.FULL_SAVE){
+    if (saveMode == SaveMode.FULL_SAVE) {
       fs.writeFile(path, code + daguiMetadata, (err) => {
         if (err) return reject(err);
         resolve();
       });
 
-    }else if(saveMode == SaveMode.ONLY_GRAPH_DATA){
-      fs.readFile(path, 'utf8', function (err,data) {
-        if (err){
-          if (err.code === 'ENOENT'){ // File does not exists ==> write immediately
+    } else if (saveMode == SaveMode.ONLY_GRAPH_DATA) {
+      fs.readFile(path, 'utf8', function (err, data) {
+        if (err) {
+          if (err.code === 'ENOENT') { // File does not exists ==> write immediately
             fs.writeFile(path, daguiMetadata, function (err) {
               if (err) return reject(err);
               resolve();
             });
-          }else{
+          } else {
             return reject(err);
           }
         }
@@ -36,9 +46,9 @@ export function save(path, code, graph, commentChar, saveMode) {
         const replaceRegex = new RegExp(commentChar + config.daguiTags.start + "[\\s\\S]*?" + commentChar + config.daguiTags.end, "gm");
 
         let result;
-        if(!replaceRegex.test(data)){
+        if (!replaceRegex.test(data)) {
           result = data + '\n' + daguiMetadata;
-        }else{
+        } else {
           result = data.replace(replaceRegex, daguiMetadata);
         }
 
@@ -47,15 +57,10 @@ export function save(path, code, graph, commentChar, saveMode) {
           resolve();
         });
       });
-    }else if(saveMode == SaveMode.ONLY_CODE){
+    } else if (saveMode == SaveMode.ONLY_CODE) {
       reject(new Error("SaveMode.ONLY_CODE is yet not implemented!"))
-    }else{
+    } else {
       reject(new Error("Unknown save mode '" + saveMode + "'!"))
     }
   });
-}
-
-export function showSaveDialog(options){
-    const savePath = dialog.showSaveDialog(options);
-    return [savePath, path.dirname(savePath), path.basename(savePath)]
 }

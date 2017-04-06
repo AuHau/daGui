@@ -3,12 +3,14 @@ import SparkAdapter from '../adapters/spark/';
 
 // Languages
 import Scala from '../core/languages/Scala';
+import Python from '../core/languages/Python';
 
 const adapters = {};
 adapters[SparkAdapter.getId()] = SparkAdapter;
 
 const languages = {};
 languages[Scala.getId()] = Scala;
+languages[Python.getId()] = Python;
 
 const canvas = {
   zoomStep: 0.2

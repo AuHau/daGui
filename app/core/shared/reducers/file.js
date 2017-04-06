@@ -1,5 +1,6 @@
 
 import FILE from 'shared/actions/file';
+import Immutable from 'immutable';
 
 import graphReducer from './graph';
 
@@ -26,9 +27,51 @@ export default (state, action, wholeState) => {
             ['opened', getActive(wholeState), 'lastHistorySaved'],
             wholeState.getIn(['opened', getActive(wholeState), 'history', 'present', 'historyId'])
           );
+      case FILE.LOAD:
+        return loadFile(wholeState, action);
 
       default:
         return wholeState;
     }
   }
 };
+
+function loadFile(state, action){
+  const data = action.payload;
+  data['lastHistorySaved'] = 0;
+  data['$selected'] = [];
+  data['$pan'] = {x: 0, y:0};
+  data['zoom'] = 1;
+  data['history'] = {
+    past: [],
+    future: [],
+    present: {
+      historyId: 0,
+      cells: JSON.parse(data.cells),
+    }
+  };
+
+  const usedVariables = {};
+  const $occupiedPorts = {};
+  for(let node of data.cells){
+    if(node.dfGui && node.dfGui.variableName){
+      usedVariables[node.id] = node.dfGui.variableName;
+    }
+
+    if(node.type == "link"){
+      if(!$occupiedPorts[node.target.id]) $occupiedPorts[node.target.id] = [];
+      $occupiedPorts[node.target.id].push(node.target.port)
+    }
+  }
+
+  data.history.present['usedVariables'] = usedVariables;
+  data.history.present['$occupiedPorts'] = $occupiedPorts;
+
+  delete data.cells;
+
+  const indexOfNewFile = state.get('opened').size;
+
+  return state
+    .update('opened', opened => opened.push(Immutable.fromJS(data)))
+    .set('active', indexOfNewFile)
+}

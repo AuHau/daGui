@@ -2,10 +2,11 @@ import * as platformConnector from 'renderer/platformConnector';
 import {generateCode, serializeGraph} from 'graph/graphToolkit.js';
 import CodeBuilder from 'graph/CodeBuilder';
 import SaveMode from "../enums/SaveMode";
+import config from "../../../config/index";
 
 const FILE = {
   NEW: 'NEW',
-  OPEN: 'OPEN',
+  LOAD: 'LOAD',
   SAVE_DONE: 'SAVE_DONE',
   SWITCH_TAB: 'SWITCH_TAB',
   SET_PATH: 'SET_PATH',
@@ -13,6 +14,33 @@ const FILE = {
 };
 
 export default FILE;
+
+export function open(){
+  return async (dispatch, getState) => {
+    const path = await platformConnector.openDialog();
+    if(!path){
+      return Promise.resolve();
+    }
+
+    const state = getState();
+    const indexOfTheFile = state.getIn(['files', 'opened']).findKey(file => file.get('path') == path);
+    if(indexOfTheFile !== undefined){
+      dispatch(switchTab(indexOfTheFile));
+      return;
+    }
+
+    const fileData = await platformConnector.open(path);
+    if(!fileData){
+      return Promise.resolve();
+    }
+
+    const [name, adapterId, adapterVersion, languageId, languageVersion, cells] = fileData;
+    const adapter = config.adapters[adapterId];
+    const language = config.languages[languageId];
+
+    dispatch(load(name, path, adapter, adapterVersion, language, languageVersion, cells));
+  }
+}
 
 export function save(){
   return async (dispatch, getState) => {
@@ -26,12 +54,10 @@ export function save(){
     const result = generateCode(codeBuilder, $currentFile);
 
     if(result && !result.success){
-      const reply = platformConnector.confirmDialog(
-        "The graph contains errors!",
-        "The graph contains errors and therefore the valid code can not be generated. Do you want to save just the graph representation while keep the old version of code in the file?"
-      );
-
-      if(reply == 1){ // No
+      if(!platformConnector.confirmDialog(
+          "The graph contains errors!",
+          "The graph contains errors and therefore the valid code can not be generated. Do you want to save just the graph representation while keep the old version of code in the file?"
+        )){ // No
         return Promise.resolve();
       }else{ // Yes
         if(!path){
@@ -53,10 +79,25 @@ export function save(){
       dispatch(setPath(newPath, fileName));
     }
     const serializedGraph = serializeGraph($currentFile);
-    platformConnector.save(path, codeBuilder.getCode(), serializedGraph, language.getCommentChar());
+    await platformConnector.save(path, codeBuilder.getCode(), serializedGraph, language.getCommentChar());
     dispatch(freezeCurrentSavedHistoryId());
   }
-};
+}
+
+export function load(name, path, adapter, adapterTarget, language, languageTarget, cells) {
+  return {
+    type: FILE.LOAD,
+    payload: {
+      name,
+      path,
+      adapter,
+      adapterTarget,
+      language,
+      languageTarget,
+      cells
+    }
+  }
+}
 
 export function setPath(path, fileName){
     return {
@@ -73,10 +114,10 @@ export function switchTab(newFileIndex){
     type: FILE.SWITCH_TAB,
     payload: newFileIndex
   }
-};
+}
 
 export function freezeCurrentSavedHistoryId(){
   return {
     type: FILE.FREEZE_SAVED_HISTORY_ID
   }
-};
+}
