@@ -17,4 +17,9 @@ export default class Scala extends BaseLanguage {
     return '.scala';
   }
 
+  static getSupportedVersions(){
+    return [
+      '2.11'
+    ]
+  }
 }

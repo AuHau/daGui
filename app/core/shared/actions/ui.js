@@ -6,6 +6,8 @@ const UI = {
   TOGGLE_CODE_VIEW: 'UI_CODE_VIEW_TOGGLE',
   SET_MULTISELECT_MODE: 'UI_SET_MULTISELECT_MODE',
   SET_PAN_MODE: 'UI_SET_PAN_MODE',
+  SHOW_OPEN_MODAL: 'UI_SHOW_OPEN_MODAL',
+  HIDE_OPEN_MODAL: 'UI_HIDE_OPEN_MODAL',
   UNDO: 'UNDO',
   REDO: 'REDO'
 };
@@ -46,6 +48,18 @@ export const setMultiselectMode = () => {
 export const setPanMode = () => {
   return {
     type: UI.SET_PAN_MODE
+  }
+};
+
+export const showOpenModal = () => {
+  return {
+    type: UI.SHOW_OPEN_MODAL
+  }
+};
+
+export const hideOpenModal = () => {
+  return {
+    type: UI.HIDE_OPEN_MODAL
   }
 };
 

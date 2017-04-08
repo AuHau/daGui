@@ -39,6 +39,8 @@ class Menu extends Component {
         break;
       case 'o':
         this.props.onOpen();
+      case 'n':
+        this.props.onNew();
         break;
     }
   }
@@ -48,7 +50,7 @@ class Menu extends Component {
     return (
       <div className={styles.container}>
         <ul className={styles.left}>
-          <li><a href="#"><i className="fa fa-file-o"/></a></li>
+          <li><a href="#" onClick={this.props.onNew}><i className="fa fa-file-o"/></a></li>
           <li><a href="#" onClick={this.props.onSave}><i className="fa fa-save"/></a></li>
           <li><a href="#" onClick={this.props.onOpen}><i className="fa fa-folder-open-o"/></a></li>
         </ul>
@@ -129,6 +131,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onOpen: () => {
       dispatch(fileActions.open())
+    },
+    onNew: () => {
+      dispatch(uiActions.showOpenModal())
     }
   };
 };

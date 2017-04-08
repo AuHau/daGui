@@ -1,0 +1,13 @@
+@import "Modals";
+
+.overlay{
+  @include overlay()
+}
+
+.modal{
+  @include modal(600px, 450px);
+
+  button[disabled]{
+	color: #8c8c8c;
+  }
+}

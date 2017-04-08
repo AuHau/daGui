@@ -19,8 +19,13 @@ export default class BaseLanguage {
   static getCommentChar(){
     throw new TypeError("Method 'getCommentChar' has to be implemented!");
   }
+
   static getFileExtension(){
     throw new TypeError("Method 'getFileExtension' has to be implemented!");
+  }
+
+  static getSupportedVersions(){
+    throw new TypeError("Method 'getSupportedVersions' has to be implemented!");
   }
 
   static nameNode(){

@@ -12,8 +12,10 @@ import ErrorLevel from 'shared/enums/ErrorLevel';
 import HighlightType, {classTranslation as highlightTypeClasses} from 'shared/enums/HighlightType';
 import HighlightDestination, {values as HighlightDestinations} from 'shared/enums/HighlightDestination';
 
+// Actions
 import {updateNode, updateVariable} from 'shared/actions/graph';
 import {switchTab} from 'shared/actions/file';
+import * as uiActions from "../../shared/actions/ui";
 
 // Components
 import ToggleDisplay from 'react-toggle-display';
@@ -24,6 +26,7 @@ import NodesSidebar from 'renderer/components/sidebar_node/NodesSidebar';
 import DetailSidebar from 'renderer/components/sidebar_detail/DetailSidebar';
 import Canvas from 'renderer/components/editor/Canvas';
 import CodeView from 'renderer/components/editor/CodeView';
+import Modals, {modalsList} from 'renderer/components/modals/Modals';
 
 class App extends Component {
   constructor(props){
@@ -125,11 +128,16 @@ class App extends Component {
         <ToggleDisplay show={this.props.nodeDetail !== null}><DetailSidebar node={(this.props.nodeDetail ? this.props.nodeDetail.toJS() : null)} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/></ToggleDisplay>
         <ToggleDisplay show={this.props.showCodeView}><CodeView onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} highlights={this.state.highlights.get(HighlightDestination.CODE_VIEW)} language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange}/></ToggleDisplay>
         <Footer messages={this.graphErrors} framework={adapter.getName()} language={$currentFile.get('language').getName()}/>
+        <Modals openedModals={this.props.modals} onClose={this.props.onModalClose} />
       </div>
     );
   }
 }
 const mapStateToProps = (state) => {
+  const modals = [];
+  if(state.getIn(['ui', 'displayOpenModal']))
+    modals.push(modalsList.OPEN);
+
   const nodeId = state.getIn(['ui', 'detailNodeId']);
   const activeFile = state.getIn(['files', 'active']);
 
@@ -138,6 +146,7 @@ const mapStateToProps = (state) => {
     files: state.getIn(['files', 'opened']),
     nodeDetail: (nodeId ? state.getIn(['files', 'opened', activeFile, 'history', 'present', 'cells']).find(node => node.get('id') == nodeId) : null),
     showCodeView: state.getIn('ui.showCodeView'.split('.')),
+    modals: modals
   };
 };
 
@@ -145,7 +154,13 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onNodeChange: (node) => dispatch(updateNode(node)),
     onVariableChange: (nid, newVariableName) => dispatch(updateVariable(nid, newVariableName)),
-    onTabChange: (newIndex) => dispatch(switchTab(newIndex))
+    onTabChange: (newIndex) => dispatch(switchTab(newIndex)),
+    onModalClose: (modal) => {
+      switch(modal){
+        case modalsList.OPEN:
+          dispatch(uiActions.hideOpenModal())
+      }
+    }
   };
 };
 

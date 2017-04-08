@@ -12,6 +12,14 @@ export default class BaseAdapter {
     throw new TypeError("Method 'getSupportedLanguages' has to be implemented!");
   }
 
+  static getSupportedLanguageVersions(){
+    throw new TypeError("Method 'getSupportedLanguageVersions' has to be implemented!");
+  }
+
+  static getSupportedVersions(){
+    throw new TypeError("Method 'getSupportedVersions' has to be implemented!");
+  }
+
   static getNodeTemplates(){
     throw new TypeError("Method 'getNodeTemplates' has to be implemented!");
   }

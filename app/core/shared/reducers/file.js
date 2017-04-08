@@ -13,6 +13,35 @@ export default (state, action, wholeState) => {
     return graphReducer(state, action, wholeState);
   }else{
     switch (action.type){
+      case FILE.NEW:
+        return wholeState.update('opened', files => files.push(
+          Immutable.fromJS({
+            name: action.payload.name,
+            path: '',
+            lastHistorySaved: 0,
+            adapter: action.payload.adapter,
+            language: action.payload.language,
+            adapterTarget: action.payload.adapterVersion,
+            languageTarget: action.payload.languageVersion,
+            $selected: [],
+            $pan: {
+              x: 0,
+              y: 0
+            },
+            zoom: 1,
+            "history": {
+              past: [],
+              future: [],
+              present: {
+                historyId: 0,
+                "usedVariables": {},
+                $occupiedPorts: {},
+                "cells": []
+              }
+            }
+          })
+        ));
+
       case FILE.SWITCH_TAB:
         return wholeState.set('active', action.payload);
 

@@ -30,6 +30,12 @@ export default (state, action) => {
     case UI.TOGGLE_CODE_VIEW:
       return state.update('showCodeView', (value) => !value);
 
+    case UI.SHOW_OPEN_MODAL:
+      return state.set('displayOpenModal', true);
+
+    case UI.HIDE_OPEN_MODAL:
+      return state.set('displayOpenModal', false);
+
     default:
       return state;
   }

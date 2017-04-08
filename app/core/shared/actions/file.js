@@ -99,6 +99,19 @@ export function load(name, path, adapter, adapterTarget, language, languageTarge
   }
 }
 
+export function newFile(name, adapter, adapterVersion, language, languageVersion){
+    return {
+      type: FILE.NEW,
+      payload: {
+        name,
+        adapter,
+        adapterVersion,
+        language,
+        languageVersion
+      }
+    }
+}
+
 export function setPath(path, fileName){
     return {
       type: FILE.SET_PATH,

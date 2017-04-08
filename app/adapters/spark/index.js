@@ -4,6 +4,7 @@ import pythonGenerator from './languages/pythonGenerator';
 
 // Languages
 import Python from '../../core/languages/Python';
+import Scala from '../../core/languages/Scala';
 
 // NodeTemplates
 import Filter from './templates/filter';
@@ -25,8 +26,27 @@ export default class SparkAdapter extends BaseAdapter{
 
   static getSupportedLanguages(){
     return [
-        Python
+      Python,
+      Scala
     ];
+  }
+
+  static getSupportedLanguageVersions(langId){
+    const versions = {
+      [Python.getId()]: Python.getSupportedVersions(),
+      [Scala.getId()]: [
+        '2.11'
+      ]
+    };
+
+    return versions[langId];
+  }
+
+  static getSupportedVersions(){
+    return [
+      '2.1.0',
+      '2.0.2',
+    ]
   }
 
   static getNodeTemplates(){
