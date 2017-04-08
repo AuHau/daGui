@@ -115,12 +115,21 @@ export function hashRawGraph(rawGraph){
 }
 
 export function serializeGraph($file){
-  let output = '';
+  // Filtering out unnecessary info
+  const graph = $file.getIn(['history', 'present', 'cells']).toJS();
+  for(let i = 0; i < graph.length; i++){
+    delete graph[i].ports;
 
+    if(graph[i].target)
+      delete graph[i].target.selector;
+    if(graph[i].source)
+      delete graph[i].source.selector;
+  }
+
+  let output = '';
   output += 'adapter:' + $file.get('adapter').getId() + ':' + $file.get('adapterTarget');
   output += ';language:' + $file.get('language').getId() + ':' + $file.get('languageTarget');
-  output += ';' + JSON.stringify($file.getIn(['history', 'present', 'cells']).toJS()).replace('\n', '');
-  // TODO: [Optimalization] Filter out non-necessary data from cells (groups definitions, ports definitions etc).
+  output += ';' + JSON.stringify(graph).replace('\n', '');
 
   return output;
 }
