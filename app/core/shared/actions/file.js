@@ -50,6 +50,7 @@ export function save(){
     const $currentFile = state.getIn(['files', 'opened', state.getIn(['files', 'active'])]);
     const language = $currentFile.get('language');
     let path = $currentFile.get('path');
+    let name = $currentFile.get('name');
 
     const result = generateCode(codeBuilder, $currentFile);
 
@@ -61,7 +62,7 @@ export function save(){
         return Promise.resolve();
       }else{ // Yes
         if(!path){
-          const [newPath, fileName] = platformConnector.saveDialog(language);
+          const [newPath, fileName] = platformConnector.saveDialog(language, name);
           path = newPath;
           dispatch(setPath(newPath, fileName));
         }
@@ -74,7 +75,7 @@ export function save(){
     }
 
     if(!path){
-      const [newPath, fileName] = platformConnector.saveDialog(language);
+      const [newPath, fileName] = platformConnector.saveDialog(language, name);
       path = newPath;
       dispatch(setPath(newPath, fileName));
     }

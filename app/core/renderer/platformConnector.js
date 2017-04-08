@@ -73,10 +73,15 @@ export function openDialog() {
   return path;
 }
 
-export function saveDialog(language) {
+export function saveDialog(language, name) {
+  let prefilledPath;
+  if(localStorage.getItem("platform.lastPath") && name){
+    prefilledPath = remote.require('path').join(localStorage.getItem("platform.lastPath"), name)
+  }
+
   const path = remote.dialog.showSaveDialog({
     title: "Save the graph",
-    defaultPath: localStorage.getItem("platform.lastPath"),
+    defaultPath: prefilledPath,
     filters: [{name: language.getName(), extensions: [language.getFileExtension()]}]
   });
 
