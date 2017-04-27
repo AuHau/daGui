@@ -13,8 +13,20 @@
 
 :global .nav-tabs > li > a{
   line-height: 0.8;
+  padding: 10px 28px 10px 15px;
 }
 
 :global .nav{
   padding-left: 5px;
+}
+
+.close{
+  position: absolute !important;
+  right: 8px;
+  top: 7px;
+  z-index: 2;
+  border: none !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+  cursor: pointer !important;
 }

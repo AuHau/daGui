@@ -5,7 +5,7 @@ import styles from './Tabs.scss';
 
 export default class Tabs extends Component {
 
-  onClick(index){
+  tabChange(index){
     return () => {
       this.props.onTabChange(index);
     }
@@ -13,7 +13,7 @@ export default class Tabs extends Component {
 
   render() {
     let renderedTabs = [];
-    this.props.$files.forEach((file, index) => renderedTabs.push(<li key={index} onClick={this.onClick(index)} className={this.props.currentFileIndex == index ? 'active' : ''}><a href="#">{file.get('name')} {file.get('lastHistorySaved') === file.getIn(['history', 'present', 'historyId'])? '': ' *'}</a></li>));
+    this.props.$files.forEach((file, index) => renderedTabs.push(<li key={index} className={this.props.currentFileIndex == index ? 'active' : ''}><a href="#"  onClick={this.tabChange(index)}>{file.get('name')} {file.get('lastHistorySaved') === file.getIn(['history', 'present', 'historyId'])? '': ' *'}</a> <a href="#" className={styles.close} onClick={() => this.props.onTabClose(index)}><i className="fa fa-times"/></a></li>));
 
     // TODO: [Critical] Important! Handle overflowing of tabs because of long file names.
     return (
@@ -30,4 +30,5 @@ Tabs.propTypes = {
   currentFileIndex: React.PropTypes.number.isRequired,
   $files: React.PropTypes.object.isRequired,
   onTabChange: React.PropTypes.func.isRequired,
+  onTabClose: React.PropTypes.func.isRequired,
 };

@@ -42,6 +42,18 @@ export default (state, action, wholeState) => {
           })
         ));
 
+      case FILE.CLOSE:
+        let newIndex = action.payload.index;
+        if(newIndex === 0){
+          newIndex++;
+        }else{
+          newIndex--;
+        }
+
+        return wholeState
+          .update('opened', files => files.delete(action.payload.index))
+          .set('active', newIndex);
+
       case FILE.SWITCH_TAB:
         return wholeState.set('active', action.payload);
 

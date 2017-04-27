@@ -14,7 +14,7 @@ import HighlightDestination, {values as HighlightDestinations} from 'shared/enum
 
 // Actions
 import {updateNode, updateVariable} from 'shared/actions/graph';
-import {switchTab} from 'shared/actions/file';
+import {switchTab, close} from 'shared/actions/file';
 import * as uiActions from "../../shared/actions/ui";
 
 // Components
@@ -49,11 +49,18 @@ class App extends Component {
     this.removeHighlight = this.removeHighlight.bind(this);
     this.switchHighlight = this.switchHighlight.bind(this);
     this.changeTab = this.changeTab.bind(this);
+    this.closeTab = this.closeTab.bind(this);
   }
 
   changeTab(newIndex){
     this.resetHighlights();
     this.props.onTabChange(newIndex);
+    this.graphHash = null;
+  }
+
+  closeTab(index){
+    this.resetHighlights();
+    this.props.onTabClose(index);
     this.graphHash = null;
   }
 
@@ -123,7 +130,7 @@ class App extends Component {
       <div>
         <Menu />
         <NodesSidebar ref={(n) => {this.refSidebar = n}} adapter={adapter} />
-        <Tabs currentFileIndex={this.props.currentFileIndex} $files={this.props.files} onTabChange={this.changeTab}/>
+        <Tabs currentFileIndex={this.props.currentFileIndex} $files={this.props.files} onTabClose={this.closeTab} onTabChange={this.changeTab}/>
         <Canvas onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} onSwitchHighlight={this.switchHighlight} highlights={this.state.highlights.get(HighlightDestination.CANVAS)}/>
         <ToggleDisplay show={this.props.nodeDetail !== null}><DetailSidebar node={(this.props.nodeDetail ? this.props.nodeDetail.toJS() : null)} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/></ToggleDisplay>
         <ToggleDisplay show={this.props.showCodeView}><CodeView onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} highlights={this.state.highlights.get(HighlightDestination.CODE_VIEW)} language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange}/></ToggleDisplay>
@@ -160,7 +167,8 @@ const mapDispatchToProps = (dispatch) => {
         case modalsList.OPEN:
           dispatch(uiActions.hideOpenModal())
       }
-    }
+    },
+    onTabClose: (index) => dispatch(close(index))
   };
 };
 

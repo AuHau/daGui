@@ -102,3 +102,7 @@ export function confirmDialog(title, message, type = "warning") {
     cancelId: 1
   }) == 0
 }
+
+export function messageDialog(options) {
+  return remote.dialog.showMessageBox(options)
+}

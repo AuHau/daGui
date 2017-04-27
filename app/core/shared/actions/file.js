@@ -7,6 +7,7 @@ import config from "../../../config/index";
 const FILE = {
   NEW: 'NEW',
   LOAD: 'LOAD',
+  CLOSE: 'CLOSE',
   SAVE_DONE: 'SAVE_DONE',
   SWITCH_TAB: 'SWITCH_TAB',
   SET_PATH: 'SET_PATH',
@@ -42,12 +43,16 @@ export function open(){
   }
 }
 
-export function save(){
+export function save(index){
   return async (dispatch, getState) => {
     const state = getState();
 
+    if(!index){
+      index = state.getIn(['files', 'active'])
+    }
+
     const codeBuilder = new CodeBuilder();
-    const $currentFile = state.getIn(['files', 'opened', state.getIn(['files', 'active'])]);
+    const $currentFile = state.getIn(['files', 'opened', index]);
     const language = $currentFile.get('language');
     let path = $currentFile.get('path');
     let name = $currentFile.get('name');
@@ -97,6 +102,36 @@ export function load(name, path, adapter, adapterTarget, language, languageTarge
       languageTarget,
       cells
     }
+  }
+}
+
+export function close(index){
+  return async (dispatch, getState) => {
+    const state = getState();
+    const file = state.getIn(['files', 'opened', index]);
+
+    if(file.get('lastHistorySaved') != file.getIn(['history', 'present', 'historyId'])){
+      const result = await platformConnector.messageDialog({
+        type: "warning",
+        title: "The file contains unsaved changes!",
+        message: "The file contains unsaved changes, sooo what do you want me to do?",
+        buttons: ["Save the file", "Discard the changes", "Nothing"],
+        cancelId: 2
+      });
+
+      if(result === 0){
+        await save(index)(dispatch, getState)
+      }else if(result === 2){
+        return Promise.resolve();
+      }
+    }
+
+    dispatch({
+      type: FILE.CLOSE,
+      payload: {
+        index
+      }
+    });
   }
 }
 
