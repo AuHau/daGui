@@ -5,7 +5,7 @@ import detectDependencies from '../../utils/detectDependencies';
 const IMPORT = 'from pyspark import SparkConf, SparkContext';
 const INIT = ['conf = SparkConf()', 'sc = SparkContext(\'local\', \'test\', conf=conf)']; // TODO: SparkContext and SparkConf based on Running configuration
 
-const INDENTATION = '    '; // TODO: Load from user's settings
+const INDENTATION = '    '; // TODO: [LOW] Load from user's settings
 
 export function processNode(output, node, prevNode, templates, graph, variableStack, afterOutBreak = false) {
   let generatedCode;
@@ -26,7 +26,7 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
       .startMarker()
       .add(node.variableName)
       .marker(node.id, CodeMarker.VARIABLE)
-      .add(' = ' + generatedCode)
+      .add(' = ' + generatedCode + (!node.nextNodes.length ? '' : ' \\'))
       .finishMarker(node.id)
       .breakLine();
 
@@ -41,14 +41,14 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
         .startMarker()
         .add(node.variableName)
         .marker(node.id, CodeMarker.VARIABLE)
-        .add(' = ' + variableStack.pop() + '.' + generatedCode)
+        .add(' = ' + variableStack.pop() + '.' + generatedCode + (!node.nextNodes.length ? '' : ' \\'))
         .finishMarker(node.id)
         .breakLine();
 
       variableStack.push(node.variableName);
     }else{
       output
-        .add((prevNode ? INDENTATION : ''), '.' + generatedCode)
+        .add((prevNode ? INDENTATION : ''), '.' + generatedCode + (!node.nextNodes.length ? '' : ' \\'))
         .marker(node.id)
         .breakLine();
     }
@@ -64,6 +64,7 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
       .breakLine();
   }
 
+  // End of branch => backtrack
   if(!node.nextNodes.length){
     variableStack.pop();
     return;
