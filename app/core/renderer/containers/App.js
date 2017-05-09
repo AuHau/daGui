@@ -28,6 +28,10 @@ import Canvas from 'renderer/components/editor/Canvas';
 import CodeView from 'renderer/components/editor/CodeView';
 import Modals, {modalsList} from 'renderer/components/modals/Modals';
 
+// TODO: [BUG/High] When dispatching multiple actions for multi-events (deleting multiple node), the undo/redo is not working correctly ==> need of batching the multiple events, so there is only entry in the history
+// TODO: [High] Import of system libraries (Math etc) when used. Most probably implement "hasLibrary" on platform adapter, which will query the platform for available libraries
+// TODO: [Low] Import of user's libraries. Enable user to import his custom libraries
+// TODO: []
 class App extends Component {
   constructor(props){
     super(props);

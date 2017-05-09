@@ -1,24 +1,81 @@
-@import "~bootstrap/dist/css/bootstrap.css";
+@import "~normalize.css/normalize.css";
 @import "~font-awesome/css/font-awesome.css";
+@import "variables";
 
-div, span{
+// Fonts
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Montserrat Regular'), local('Montserrat-Regular'), url(/app/resources/fonts/montserrat/Montserrat-Regular.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
+
+// General styles
+* {
+  box-sizing: border-box;
+}
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 10px;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+body {
+  font-family: $font-family;
+  font-size: $font-size-normal;
+  line-height: $line-height;
+  color: $font-color;
+  overflow: hidden;
+}
+
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+a{
+  color: $link-color;
+  text-decoration: none;
+
+  &:hover{
+	text-decoration: none;
+	color:$link-hover-color;
+  }
+
+  &:focus{
+	outline:none;
+  }
+}
+
+.fa {
+  font-size: 18px;
+}
+
+// Disabling selecting texts
+div, span {
   cursor: default;
   -webkit-user-select: none;
   user-select: none;
 }
 
-div[contenteditable]{
+div[contenteditable] {
   cursor: text;
 }
 
-[data-selectable]{
+[data-selectable] {
   cursor: auto;
   -webkit-user-select: auto;
   user-select: auto;
-}
-
-.fa{
-  font-size: 18px;
 }
 
 //////////////////////////////////////////////

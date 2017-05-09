@@ -1,7 +1,9 @@
 // Colors
-$very-light-grey: #fcfcfc;
-$light-grey: #f4f4f4;
-$dark-grey: #848484;
+$white: #FFFFFF;
+$very-light-grey: #ADADAD;
+$light-grey: #3C3C3C;
+$grey: #252526;
+$dark-grey: #1E1E1E;
 $very-dark-grey: #5c5c5c;
 $red: #b3300a;
 $dark-red: #850001;
@@ -17,10 +19,17 @@ $info: $light-blue;
 $ok: $green;
 
 // Fonts
+$font-family: Montserrat, sans-serif;
 $font-size-small: 11px;
 $font-size-normal: 14px;
+$font-color: $very-light-grey;
+$line-height: 1.428571429;
+
+$link-color: $very-light-grey;
+$link-hover-color: $white;
 
 // Canvas
+$canvas-background: $dark-grey;
 $node-detail-fill: lighten($light-blue, 40%);
 $node-detail-color: $light-blue;
 $node-detail-stroke-width: 3;
@@ -33,20 +42,25 @@ $node-error-stroke-width: 4;
 
 // Tabs
 $tabs-height: 42px;
+$tabs-background: $grey;
+$tabs-color: $very-light-grey;
+$tabs-active-background: $dark-grey;
+$tabs-active-color: $white;
+
 
 // Menu
 $menu-height: 30px;
-$menu-sidebar-bg-color: $light-grey;
+$menu-sidebar-background: $grey;
 $menu-sidebar-border-color: $dark-grey;
 
 // Footer
 $footer-height: 25px;
-$footer-bg-color: $light-grey;
+$footer-background: $dark-grey ;
 $footer-border-color: $dark-grey;
 
 // Detail Sidebar
 $detail-sidebar-width: 240px;
-$detail-sidebar-bg-color: $light-grey;
+$detail-sidebar-background: $grey;
 $detail-sidebar-border-color: $dark-grey;
 
 // Nodes Sidebar
@@ -54,8 +68,10 @@ $nodes-sidebar-width: 240px;
 $nodes-sidebar-node-height: 30px;
 $nodes-sidebar-node-width: 60px;
 $nodes-sidebar-margin: 8px;
-$nodes-sidebar-bg-color: $light-grey;
+$nodes-sidebar-background: $grey;
 $nodes-sidebar-border-color: $dark-grey;
+$nodes-sidebar-search-background: $light-grey;
+$nodes-sidebar-search-color: $white;
 
 // Code View
 $code-view-height: 400px;

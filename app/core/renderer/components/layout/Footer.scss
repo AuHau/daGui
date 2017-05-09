@@ -2,7 +2,7 @@
 
 .container{
   position: absolute;
-  bottom: 1px;
+  bottom: 0;
   right: 0;
   z-index: 20;
   width: calc(100% - #{$nodes-sidebar-width});;
@@ -10,7 +10,7 @@
   line-height: $footer-height;
   padding: 0 10px;
 
-  background-color: $footer-bg-color;
+  background-color: $footer-background;
   border-top: 1px solid $footer-border-color;
 }
 

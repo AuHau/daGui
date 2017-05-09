@@ -81,7 +81,7 @@
   top: -100%;
   z-index: 1;
   transition: top ease 300ms;
-  background-color: $footer-bg-color;
+  background-color: $footer-background;
 }
 
 .container:not(.ok) .count,

@@ -7,17 +7,41 @@
   z-index: 5;
   width: calc(100% - #{$nodes-sidebar-width});
   height: $tabs-height;
-
   padding-top: 5px;
+  background: $tabs-background;
 }
 
-:global .nav-tabs > li > a{
-  line-height: 0.8;
-  padding: 10px 28px 10px 15px;
+.tabs{
+  padding-left: 0;
+  margin: 0;
+  list-style: none;
+
+  & > li{
+	float: left;
+	position: relative;
+	display: block;
+
+	a{
+	  position: relative;
+	  display: block;
+	  margin-right: 2px;
+	  border: 1px solid transparent;
+	  border-radius: 2px 2px 0 0;
+	  color: $tabs-color;
+	  line-height: 0.8;
+	  padding: 10px 28px 10px 15px;
+
+	  &:hover{
+		@extend .active;
+	  }
+	}
+  }
 }
 
-:global .nav{
-  padding-left: 5px;
+.active{
+  color: $tabs-active-color;
+  cursor: default;
+  background-color: $tabs-active-background;
 }
 
 .close{

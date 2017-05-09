@@ -10,7 +10,7 @@
   padding: 5px 20px;
   overflow: hidden;
 
-  background-color: $menu-sidebar-bg-color;
+  background: $menu-sidebar-background;
   border-bottom: 2px solid $menu-sidebar-border-color;
 }
 
@@ -41,7 +41,7 @@
 	}
   }
 }
-.container a{
-  color: #000;
-}
+//.container a{
+//  color: #000;
+//}
 
