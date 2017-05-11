@@ -41,7 +41,8 @@ $node-error-color: $red;
 $node-error-stroke-width: 4;
 
 // Tabs
-$tabs-height: 42px;
+$tabs-height: 50px;
+$tabs-tab-height: 40px;
 $tabs-background: $grey;
 $tabs-color: $very-light-grey;
 $tabs-active-background: $dark-grey;
@@ -49,14 +50,14 @@ $tabs-active-color: $white;
 
 
 // Menu
-$menu-height: 30px;
-$menu-sidebar-background: $grey;
+$menu-height: 40px;
+$menu-sidebar-background: $dark-grey;
 $menu-sidebar-border-color: $dark-grey;
 
 // Footer
 $footer-height: 25px;
-$footer-background: $dark-grey ;
-$footer-border-color: $dark-grey;
+$footer-background: $grey ;
+$footer-border-color: $grey;
 
 // Detail Sidebar
 $detail-sidebar-width: 240px;
