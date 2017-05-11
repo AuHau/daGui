@@ -11,12 +11,12 @@ export default class Footer extends Component {
       <div className={styles.container}>
         <div className={styles.right}>
           <span>
-            <strong>Language: </strong>
-            {this.props.language}
+            Language:
+            <strong>{this.props.language}</strong>
           </span>
           <span>
-            <strong>Framework: </strong>
-            {this.props.framework}
+            Framework:
+            <strong>{this.props.framework}</strong>
           </span>
         </div>
         <div className={styles.left}>

@@ -15,7 +15,9 @@
   border-radius: 20px;
   line-height: 17px;
   position: relative;
-  top: 2px;
+  top: ($footer-height - 20px)/2 - 1;
+
+  color: $grey;
   font-size: $font-size-small;
 }
 
@@ -23,37 +25,37 @@
 
 .error {
   .count {
-	color: $error;
+	background-color: $error;
+	border-color: $error;
   }
 
   .count.active{
 	background-color: $error;
-	border-color: $error;
-	color: #fff;
+	border-color: transparent;
   }
 }
 
 .warning {
   .count {
-	color: $warning;
+	background-color: $warning;
+	border-color: $warning;
   }
 
   .count.active{
 	background-color: $warning;
-	border-color: $warning;
-	color: #fff;
+	border-color: transparent;
   }
 }
 
 .info {
   .count {
-	color: $info;
+	background-color: $info;
+	border-color: $info;
   }
 
   .count.active{
 	background-color: $info;
-	border-color: $info;
-	color: #fff;
+	border-color: transparent;
   }
 }
 
@@ -61,7 +63,8 @@
   cursor: default;
 
   .count {
-	color: $ok;
+	background-color: $ok;
+	border-color: $ok;
   }
 }
 
@@ -106,11 +109,11 @@
   display: none;
   position: absolute;
   left: 4px;
-  bottom: 30px;
+  bottom: $footer-height + 10px;
   width: 500px;
   height: 200px;
   overflow-y: auto;
-  background-color: #fff;
+  background-color: $grey;
   border: 1px solid $dark-grey;
 
   padding: 10px;
