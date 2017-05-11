@@ -7,22 +7,21 @@
   width: $nodes-sidebar-width;
   height: calc(100% - #{$menu-height});
 
+  padding: $detail-sidebar-padding;
   background-color: $nodes-sidebar-background;
   border-right: 1px solid $nodes-sidebar-border-color;
 }
 
 .search{
-  padding: 5px;
-  margin-bottom: 5px;
-  text-align: center;
-
-  input{
+  input[type=search]{
+	width: 100%;
 	color: $nodes-sidebar-search-color;
 	background: $nodes-sidebar-search-background;
-	border-radius: 13px;
-	padding: 2px 13px;
+	border-radius: 3px;
+	padding: 6px 10px 5px;
 	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-	border: 1px solid #4b4b4b;
+	border: none;
+	margin-bottom: 15px;
 
 	&:focus{
 	  outline: none;
@@ -33,7 +32,6 @@
 .nodeList{
   width: 100%;
   height: calc(100% - 68px);
-  padding: 0 10px;
   overflow-y: auto;
   overflow-x: hidden;
 }

@@ -1,11 +1,14 @@
+@import "../../variables";
 
 .container{
   cursor: default;
 
   .groupName{
-	padding-left: 8px;
-	margin-bottom: 4px;
-	border-bottom: 1px solid black;
+	padding-left: 15px;
+	padding-bottom: 5px;
+	margin-bottom: 10px;
+	margin-top: 25px;
+	border-bottom: 1px solid $light-grey;
   }
 
   [magnet=true]{
