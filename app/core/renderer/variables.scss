@@ -28,17 +28,21 @@ $line-height: 1.428571429;
 $link-color: $very-light-grey;
 $link-hover-color: $white;
 
-// Canvas
+// Graph colors
 $canvas-background: $dark-grey;
-$node-detail-fill: lighten($light-blue, 40%);
+$node-background: $light-grey;
+$node-color: $white;
+$port-in-color: $green;
+$port-out-color: $red;
+$node-detail-fill: $light-grey;
 $node-detail-color: $light-blue;
-$node-detail-stroke-width: 3;
+$node-detail-stroke-width: 1;
 $node-hover-color: $yellow;
-$node-hover-stroke-width: 2;
+$node-hover-stroke-width: 1;
 $node-active-color: $yellow;
-$node-active-stroke-width: 4;
+$node-active-stroke-width: 1;
 $node-error-color: $red;
-$node-error-stroke-width: 4;
+$node-error-stroke-width: 1;
 
 // Tabs
 $tabs-height: 50px;
@@ -47,7 +51,6 @@ $tabs-background: $grey;
 $tabs-color: $very-light-grey;
 $tabs-active-background: $dark-grey;
 $tabs-active-color: $white;
-
 
 // Menu
 $menu-height: 40px;

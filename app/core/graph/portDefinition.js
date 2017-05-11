@@ -1,3 +1,5 @@
+import cssVariables from '!!sass-variable-loader!renderer/variables.scss';
+
 export default {
   'in': {
     position: {
@@ -8,9 +10,8 @@ export default {
         fill: '#000'
       },
       '.port-body': {
-        fill: '#16A085',
-        stroke: '#000',
-        r: 10,
+        fill: cssVariables.portInColor,
+        r: 4,
         magnet: 'passive'
       }
     }
@@ -24,9 +25,8 @@ export default {
         fill: '#000'
       },
       '.port-body': {
-        fill: '#E74C3C',
-        stroke: '#000',
-        r: 10,
+        fill: cssVariables.portOutColor,
+        r: 4,
         magnet: true
       }
     }
