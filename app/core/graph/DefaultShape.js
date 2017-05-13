@@ -41,8 +41,8 @@ const MODEL = joint.shapes.basic.Generic.extend({
       foreignObject: {
         width: 30,
         height: 26,
-        x: 70,
-        y: -33
+        x: 40,
+        y: -37
       }
     },
     dfGui: {
@@ -62,11 +62,21 @@ joint.shapes['dfGui']['defaultShape'] = MODEL;
 export default MODEL;
 
 // Link definition
-export const link = joint.dia.Link.extend({
-    arrowheadMarkup: [
-  '<g class="marker-arrowhead-group marker-arrowhead-group-<%= end %>">',
-  '<circle class="marker-arrowhead" cx="20" cy="20" r="15"></circle>',
-  '</g>'
-].join('')
+export const defaultLink = joint.dia.Link.extend({
+  markup: [
+    '<path class="connection" stroke="orange" stroke-width="3" d="M 0 0 0 0"/>',
+    '<path class="marker-source" fill="black" stroke="black" d="M 0 0 0 0"/>',
+    '<path class="marker-target" fill="black" stroke="black" d="M 0 0 0 0"/>',
+    '<path class="connection-wrap" d="M 0 0 0 0"/>',
+    '<g class="labels"/>',
+    '<g class="marker-vertices"/>',
+    '<g class="marker-arrowheads"/>',
+    '<g class="link-tools"/>'
+  ].join(''),
+
+  arrowheadMarkup: [
+    '<g class="marker-arrowhead-group marker-arrowhead-group-<%= end %>">',
+    '</g>'
+  ].join('')
 });
 

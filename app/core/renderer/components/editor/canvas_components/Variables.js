@@ -4,7 +4,7 @@ import styles from "../Canvas.scss";
 const VARIABLE_NAME_MAX_WIDTH = 150;
 const VARIABLE_NAME_MIN_WIDTH = 30;
 
-const getTextWidth = (text, font = '14px helvetica') => {
+const getTextWidth = (text, font = '14px Montserrat, sans-serif') => {
   // re-use canvas object for better performance
   const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
   const context = canvas.getContext("2d");
@@ -61,7 +61,7 @@ export default class Variables extends CanvasComponentBase{
   }
 
   recalculateWidthOfVariableName(input){
-    const width = getTextWidth(input.value) + 13;
+    const width = getTextWidth(input.value) + 49;
 
     if(width < VARIABLE_NAME_MIN_WIDTH){
       input.parentNode.parentNode.setAttribute('width', VARIABLE_NAME_MIN_WIDTH);

@@ -6,6 +6,7 @@ import joint from 'jointjs';
 
 import styles from "./Canvas.scss";
 
+import {defaultLink} from 'graph/DefaultShape';
 import CursorMode, {classTranslation as CursorClass} from 'shared/enums/CursorMode';
 import {changeNodeDetail, canvasResize} from 'shared/actions/ui';
 import * as graphActions from 'shared/actions/graph';
@@ -62,6 +63,22 @@ class Canvas extends Component {
   componentDidMount() {
     const wrapperElem = findDOMNode(this.refs.placeholder);
 
+    const link = new defaultLink({
+      smooth: true
+    });
+    link.attr({
+      '.connection': {
+        'stroke': {
+          type: 'linearGradient',
+          stops: [
+            {offset: '0%', color: '#e74c3c'},
+            {offset: '100%', color: '#1ab899'}
+          ]
+        }
+      }
+    });
+
+
     this.paper = new joint.dia.Paper({
       el: wrapperElem,
       width: wrapperElem.offsetWidth,
@@ -73,10 +90,7 @@ class Canvas extends Component {
       linkPinning: false,
       markAvailable: true,
       snapLinks: { radius: 40 },
-      defaultLink: new joint.dia.Link({
-        attrs: { '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z' } },
-        smooth: true
-      }),
+      defaultLink: link,
       validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
         if (magnetS && magnetS.getAttribute('port-group') === 'in') return false;
         if (cellViewS === cellViewT) return false;

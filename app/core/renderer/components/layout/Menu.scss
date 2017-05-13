@@ -7,7 +7,7 @@
   width: 100%;
   height: $menu-height;
   line-height: $menu-height - 10px;
-  padding: 5px 20px;
+  padding: 5px 25px;
   overflow: hidden;
 
   background: $menu-sidebar-background;
@@ -16,8 +16,8 @@
 
 .container ul{
   padding: 0;
-  margin: 0 5px 0 0;
-  border-right: 1px solid black;
+  margin: 0 15px 0 0;
+  border-right: 1px solid $light-grey;
 
   &.right{
 	float: right;
@@ -31,10 +31,10 @@
 
 .container ul li{
   display: inline-block;
-  margin-right: 7px;
+  margin-right: 15px;
 
   &.active{
-	background-color: black;
+	background-color: $grey;
 
 	a{
 	  color: white;
