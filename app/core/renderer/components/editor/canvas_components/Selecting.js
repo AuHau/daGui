@@ -129,13 +129,24 @@ export default class Selecting extends CanvasComponentBase {
       this.isSelecting = false;
       this.selectRect.remove();
       this.unfreeze();
+      if(this.canvas.state.cursorMode != this.exitCursorMode){
+        this.canvas.setState({cursorMode: this.exitCursorMode});
+      }
     }
   }
 
   multiselectionStart(e, x, y) {
-    if (this.canvas.state.cursorMode == CursorMode.MULTISELECT) {
+    // which == 2 : Middle button; which == 1 : Primar button
+    if ((this.canvas.state.cursorMode == CursorMode.MULTISELECT && e.which == 1)
+      || (this.canvas.state.cursorMode == CursorMode.PAN && e.which == 2) ) {
+
       this.startingSelectionPosition = {x, y};
       this.diff = {x: e.clientX - x, y: e.clientY - y};
+
+      if(this.canvas.state.cursorMode != CursorMode.MULTISELECT){
+        this.canvas.setState({cursorMode: CursorMode.MULTISELECT});
+      }
+      this.exitCursorMode = (e.which == 2 ? CursorMode.PAN : CursorMode.MULTISELECT);
     }
   }
 

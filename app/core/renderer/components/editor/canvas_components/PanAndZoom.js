@@ -89,17 +89,21 @@ export default class PanAndZoom extends CanvasComponentBase {
     this.panAndZoom.disablePan();
     this.isPanning = false;
 
-    if(!dontChangeCursor){
+    if(dontChangeCursor !== true){
       this.dontReloadGraph();
-      this.canvas.setState({cursorMode: CursorMode.PAN});
+      this.canvas.setState({cursorMode: this.exitCursorMode});
     }
   }
 
   mouseBlankDown(e, x, y) {
-    if(this.canvas.state.cursorMode != CursorMode.MULTISELECT) {
+    // On Middle mouse button trigger anyway (which == 2)
+    if((this.canvas.state.cursorMode != CursorMode.MULTISELECT && e.which == 1)
+      || (this.canvas.state.cursorMode == CursorMode.MULTISELECT && e.which == 2) ) {
+
       this.startingPointerPosition = {x, y};
       this.dontReloadGraph();
       this.canvas.setState({cursorMode: CursorMode.PANNING});
+      this.exitCursorMode = (e.which == 2 ? CursorMode.MULTISELECT : CursorMode.PAN)
     }
   }
 
