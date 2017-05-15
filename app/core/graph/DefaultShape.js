@@ -72,7 +72,7 @@ const MODEL = joint.shapes.basic.Generic.extend({
         width: 30,
         height: 26,
         ref: 'rect',
-        "ref-dx": 10,
+        "ref-dx": -25,
         y: -37
       }
     },

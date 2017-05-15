@@ -2,13 +2,13 @@
 
 .variableNameWrapper{
   visibility: hidden;
-  opacity: 0.4;
+  opacity: 0.7;
 
   input{
 	width: 100%;
 	color: #5a5a5a;
 	background-color: $canvas-background;
-	border: none;
+	border: 1px solid transparent;
 	padding: 5px 20px;
 
 	&:focus{
