@@ -188,29 +188,24 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-      addLinkAndVariable: (linkObject, nid, variableName) => {
-        dispatch([
-          graphActions.updateVariable(nid, variableName),
-          graphActions.updateNode(linkObject)
-        ]);
-      },
       onUpdateVariable: (nid, newVariableName) => dispatch(graphActions.updateVariable(nid, newVariableName)),
+      onUpdateVariables: (nodes) => dispatch(graphActions.updateVariables(nodes)),
       onRemoveVariable: (nid) => dispatch(graphActions.removeVariable(nid)),
       onCanvasResize: (dimensions) => dispatch(canvasResize(dimensions)),
+      onNodesMove: (nodes) => dispatch(graphActions.moveNodes(nodes)),
       onNodeMove: (nid, x, y) => dispatch(graphActions.moveNode(nid, x, y)),
       onNodeUpdate: (elementObject) => dispatch(graphActions.updateNode(elementObject)),
       onNodeDelete: (id) => {
-        dispatch([
+        dispatch([ // Batching these actions is OK as changeNodeDetail does not manipulate with history (there is only one history-manipulation action)
           changeNodeDetail(null),
           graphActions.deleteNode(id)
         ]);
       },
+      onNodesDelete: (nodes) => {dispatch(graphActions.deleteNodes(nodes))},
+      onLinkAddAndUpdateVariables: (variables, linkObject, targetNid, targetPort) => dispatch(graphActions.onLinkAddAndUpdateVariables(variables, linkObject, targetNid, targetPort)),
       onLinkAdd: (linkObject, targetNid, targetPort) => dispatch(graphActions.addLink(linkObject, targetNid, targetPort)),
       onLinkDelete: (lid, targetNid, targetPort) => dispatch(graphActions.removeLink(lid, targetNid, targetPort)),
-      onLinkDeleteAndVariable: (nid, lid, targetNid, targetPort) => dispatch([
-        graphActions.removeVariable(nid),
-        graphActions.removeLink(lid, targetNid, targetPort)
-      ]),
+      onLinkDeleteAndVariables: (nid, lid, targetNid, targetPort) => dispatch(graphActions.removeLinkAndVariables(Array(nid), lid, targetNid, targetPort)),
       onNodeDetail: (nid) => dispatch(changeNodeDetail(nid)),
       onPan: (x,y) => dispatch(graphActions.pan(x,y)),
       onZoom: (scale, x, y) => dispatch(graphActions.zoom(scale, x, y)),

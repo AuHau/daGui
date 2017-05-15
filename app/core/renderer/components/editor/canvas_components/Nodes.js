@@ -49,11 +49,26 @@ export default class Nodes extends CanvasComponentBase{
       if(cellView.model.isElement()){
         const embeddedCells = this.startingElement.getEmbeddedCells();
         if(embeddedCells && embeddedCells.length > 0){
-          for(let cell of embeddedCells){  // TODO: [Medium] Batch node moving
+          const nodesArray = [];
+          for(let cell of embeddedCells){
+            if(cell.attributes.type == 'link') continue;
+            nodesArray.push({
+              nid: cell.id,
+              x: cell.attributes.position.x,
+              y: cell.attributes.position.y
+            });
+
             this.startingElement.unembed(cell);
-            this.onNodeMove(cell);
           }
-          this.onNodeMove(this.startingElement);
+
+          nodesArray.push({
+            nid: this.startingElement.id,
+            x: this.startingElement.attributes.position.x,
+            y: this.startingElement.attributes.position.y
+          });
+
+          this.ignoreAction();
+          this.call('onNodesMove', nodesArray);
         }else{
           this.onNodeMove(cellView.model);
         }
@@ -69,9 +84,7 @@ export default class Nodes extends CanvasComponentBase{
       !(e.target.matches('input') || e.target.matches('[contenteditable]') || e.target.matches('textarea'))){
 
       if(this.canvas.selected.size > 0){
-        for(let nid of this.canvas.selected){
-          this.call('onNodeDelete', nid); // TODO: [Medium] Batch node deletion
-        }
+        this.call('onNodesDelete', this.canvas.selected);
       }else{
         this.call('onNodeDelete', this.get('detailNodeId'));
       }
@@ -80,9 +93,8 @@ export default class Nodes extends CanvasComponentBase{
 
   onNodeMove(cell){
     if(cell.attributes.type != 'link'){
-      const newPosition = cell.attributes.position;
       this.ignoreAction();
-      this.call('onNodeMove', cell.id, newPosition.x, newPosition.y);
+      this.call('onNodeMove', cell.id, cell.attributes.position.x, cell.attributes.position.y);
     }
   }
 }

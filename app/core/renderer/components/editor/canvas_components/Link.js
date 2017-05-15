@@ -46,16 +46,19 @@ export default class Link extends CanvasComponentBase {
     // Source node has multiple children ==> add an variables to them
     if (sourcesChildren.length > 1) {
       let childrenElement;
+      const batchUpdate = [];
       for (let children of sourcesChildren) {
         childrenElement = this.graph.getCell(children.attributes.target.id);
         if (!childrenElement.attributes.dfGui.variableName) {
           const variableName = this.get('language').nameNode(this.get('adapter').getNodeTemplates()[childrenElement.attributes.type], this.get('usedVariables'));
-          this.call('onUpdateVariable', childrenElement.id, variableName); // TODO: [Low] Batch adding the variable and adding link
+          batchUpdate.push({nid: childrenElement.id, newVariableName: variableName});
         }
       }
-    }
 
-    this.call('onLinkAdd', cellView.model.toJSON(), cellView.model.attributes.target.id, cellView.model.attributes.target.port);
+      this.call('onLinkAddAndUpdateVariables', batchUpdate, cellView.model.toJSON(), cellView.model.attributes.target.id, cellView.model.attributes.target.port);
+    }else{
+      this.call('onLinkAdd', cellView.model.toJSON(), cellView.model.attributes.target.id, cellView.model.attributes.target.port);
+    }
   }
 
   removeLink(link) {
@@ -66,11 +69,9 @@ export default class Link extends CanvasComponentBase {
       const sourcesChildren = this.graph.getConnectedLinks(sourceElement, {outbound: true});
 
       if (sourcesChildren.length == 1) { // Delete variable only when going from 2 links to 1 link
-        this.call('onRemoveVariable', sourcesChildren[0].attributes.target.id);
-        this.call('onRemoveVariable', targetElement.id); // TODO: [Low] Batch deleting variables
-        this.call('onLinkDelete', link.id, link.attributes.target.id, link.attributes.target.port);
+        this.call('onLinkDeleteAndVariables', [sourcesChildren[0].attributes.target.id, targetElement.id], link.id, link.attributes.target.id, link.attributes.target.port);
       } else if (targetElement.attributes.dfGui.variableName && countInPorts(targetElement) == 1) {
-        this.call('onLinkDeleteAndVariable', targetElement.id, link.id, link.attributes.target.id, link.attributes.target.port);
+        this.call('onLinkDeleteAndVariables', [targetElement.id], link.id, link.attributes.target.id, link.attributes.target.port);
       } else {
         this.call('onLinkDelete', link.id, link.attributes.target.id, link.attributes.target.port);
       }

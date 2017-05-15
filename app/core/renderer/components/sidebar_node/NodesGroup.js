@@ -8,7 +8,7 @@ import {countInPorts} from 'graph/graphToolkit';
 import cssVariables from '!!sass-variable-loader!renderer/variables.scss';
 import styles from './NodesGroup.scss';
 
-import {addNode, updateVariable} from 'shared/actions/graph';
+import {addNode, addNodeAndUpdateVariables} from 'shared/actions/graph';
 
 const nodeWidth = parseInt(cssVariables.nodesSidebarNodeWidth);
 const nodeHeight = parseInt(cssVariables.nodesSidebarNodeHeight);
@@ -180,10 +180,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addNodeAndVariable: (nodeObject, variableName) => dispatch([
-      addNode(nodeObject),
-      updateVariable(nodeObject.id, variableName)
-    ]),
+    addNodeAndVariable: (nodeObject, variableName) => dispatch(
+      addNodeAndUpdateVariables([{nid: nodeObject.id, newVariableName: variableName}], nodeObject)
+    ),
     addNode: (node) => {
       dispatch(addNode(node));
     }

@@ -1,13 +1,19 @@
 
 const GRAPH = {
   ADD_NODE: 'GRAPH_ADD_NODE',
+  ADD_NODE_AND_UPDATE_VARIABLES: 'GRAPH_ADD_NODE_AND_UPDATE_VARIABLES',
   MOVE_NODE: 'GRAPH_MOVE_NODE',
+  MOVE_NODES: 'GRAPH_MOVE_NODES',
   UPDATE_NODE: 'GRAPH_UPDATE_NODE',
   DELETE_NODE: 'GRAPH_DELETE_NODE',
+  DELETE_NODES: 'GRAPH_DELETE_NODES',
   UPDATE_VARIABLE: 'GRAPH_UPDATE_VARIABLE',
+  UPDATE_VARIABLES: 'GRAPH_UPDATE_VARIABLES',
   REMOVE_VARIABLE: 'GRAPH_REMOVE_VARIABLE',
   ADD_LINK: 'GRAPH_ADD_LINK',
+  ADD_LINK_AND_UPDATE_VARIABLES: 'GRAPH_ADD_LINK_AND_UPDATE_VARIABLES',
   REMOVE_LINK: 'GRAPH_REMOVE_LINK',
+  REMOVE_LINK_AND_VARIABLES: 'GRAPH_REMOVE_LINK_AND_VARIABLES',
   ADD_SELECTED: 'GRAPH_ADD_SELECTED_$',
   REMOVE_SELECTED: 'GRAPH_REMOVE_SELECTED_$',
   PAN: 'GRAPH_PAN_$',
@@ -24,6 +30,16 @@ export const addNode = (nodeObject) => {
   return {
     type: GRAPH.ADD_NODE,
     payload: nodeObject
+  }
+};
+
+export const addNodeAndUpdateVariables = (variables, nodeObject) => {
+  return {
+    type: GRAPH.ADD_NODE_AND_UPDATE_VARIABLES,
+    payload: {
+      nodeObject,
+      variables
+    }
   }
 };
 
@@ -45,10 +61,43 @@ export const addLink = (linkObject, targetNid, targetPort) => {
   }
 };
 
+export const onLinkAddAndUpdateVariables = (variables, linkObject, targetNid, targetPort) => {
+  return {
+    type: GRAPH.ADD_LINK_AND_UPDATE_VARIABLES,
+    payload: {
+      variables,
+      linkObject,
+      targetNid,
+      targetPort
+    }
+  }
+};
+
 export const removeLink = (linkId, targetNid, targetPort) => {
   return {
     type: GRAPH.REMOVE_LINK,
     payload: {
+      linkId,
+      targetNid,
+      targetPort
+    }
+  }
+};
+
+/**
+ * Batch action for removing multiple variables and link.
+ *
+ * @param {array} variables
+ * @param {string} linkId
+ * @param {string} targetNid
+ * @param {string} targetPort
+ * @returns {{type: string, payload: {variables: array, linkId: string, targetNid: string, targetPort: string}}}
+ */
+export const removeLinkAndVariables = (variables, linkId, targetNid, targetPort) => {
+  return {
+    type: GRAPH.REMOVE_LINK_AND_VARIABLES,
+    payload: {
+      variables,
       linkId,
       targetNid,
       targetPort
@@ -63,6 +112,19 @@ export const updateVariable = (nid, newVariableName) => {
   }
 };
 
+/**
+ * Batch action for updating variables on multiple nodes
+ *
+ * @param {Object[]} nodes List of objects {nid, newVariableName}
+ * @returns {{type: string, payload: *}}
+ */
+export const updateVariables = (nodes) => {
+  return {
+    type: GRAPH.UPDATE_VARIABLES,
+    payload: nodes
+  }
+};
+
 export const removeVariable = (nid) => {
   return {
     type: GRAPH.REMOVE_VARIABLE,
@@ -73,9 +135,24 @@ export const removeVariable = (nid) => {
 export const moveNode = (nid, x, y) => {
   return {
     type: GRAPH.MOVE_NODE,
-    nid,
-    x,
-    y
+    payload: {
+      nid,
+      x,
+      y
+    }
+  }
+};
+
+/**
+ * Batch action which move multiple nodes
+ * @param {Object[]} nodes - List of objects {nid, x, y}
+ */
+export const moveNodes = (nodes) => {
+  return {
+    type: GRAPH.MOVE_NODES,
+    payload: {
+      nodes
+    }
   }
 };
 
@@ -143,12 +220,23 @@ export const paste = () => {
 
 /**
  * Remove node from graph
- * @param id
+ * @param nid
  * @returns {{type: string, payload: *: *}}
  */
-export const deleteNode = (id) => {
+export const deleteNode = (nid) => {
   return {
     type: GRAPH.DELETE_NODE,
-    payload: id
+    payload: {
+      nid
+    }
+  }
+};
+
+export const deleteNodes = (nodes) => {
+  return {
+    type: GRAPH.DELETE_NODES,
+    payload: {
+      nodes
+    }
   }
 };
