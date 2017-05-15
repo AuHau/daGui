@@ -10,7 +10,6 @@
   height: $code-view-height;
   overflow: hidden;
 
-  background-color: $code-view-bg-color;
   border-top: 1px solid $code-view-border-color;
 }
 
@@ -56,10 +55,10 @@
 }
 .node:hover, .nodeHover{
   position:absolute;
-  border: 1px solid $yellow;
-  background-color: rgba($yellow, 0.4);
+  border: $code-view-node-hover-border;
+  background-color: $code-view-node-hover-background;
 }
 .nodeActive{
   position:absolute;
-  border: 1px solid $yellow;
+  border: $code-view-node-active-border;
 }

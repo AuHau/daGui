@@ -9,7 +9,7 @@ $red: #e74c3c;
 $dark-red: #850001;
 $blue: #344bb3;
 $light-blue: #4e83c9;
-$yellow: #decf22;
+$yellow: #a2a21d;
 $green: #1ab899;
 
 // Context colors
@@ -82,8 +82,11 @@ $nodes-sidebar-search-color: $white;
 
 // Code View
 $code-view-height: 400px;
-$code-view-bg-color: $very-light-grey;
 $code-view-border-color: $dark-grey;
+$code-view-node-hover-border: 1px solid $yellow;
+$code-view-node-hover-background: rgba($yellow, 0.4);
+$code-view-node-active-border: 1px solid $yellow;
+
 
 // Code Input
 $code-input-border: 1px solid $dark-grey;

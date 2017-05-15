@@ -49,10 +49,6 @@ a{
   }
 }
 
-.fa {
-  font-size: 18px;
-}
-
 // Disabling selecting texts
 div, span {
   cursor: default;
@@ -78,7 +74,7 @@ div[contenteditable] {
 
 // Ports
 .available-magnet {
-  fill: yellow;
+  fill: #a3a300;
 }
 
 .joint-link.joint-theme-modern .connection-wrap{

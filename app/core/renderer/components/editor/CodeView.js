@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import CodeMarker, {values as CodeMarkerValues} from 'shared/enums/CodeMarker';
 
 import ace from 'brace';
-import 'brace/theme/chrome';
+import 'brace/theme/clouds_midnight';
 const event = ace.acequire('ace/lib/event');
 const Range = ace.acequire('ace/range').Range;
 
@@ -86,7 +86,7 @@ export default class CodeView extends Component {
     const session = this.editor.getSession();
     session.setMode('ace/mode/' + aceMode);
     this.editor.$blockScrolling = Infinity;
-    this.editor.setTheme('ace/theme/chrome');
+    this.editor.setTheme('ace/theme/clouds_midnight');
     this.editor.setValue(this.props.codeBuilder.getCode());
     this.editor.clearSelection();
     this.hookMarkers(this.props.codeBuilder.getMarkers());
