@@ -48,6 +48,23 @@
 	float: left;
   }
 }
+
+.tooltip{
+  background: $menu-tooltip-background !important;
+  color: $menu-tooltip-color !important;
+  padding: 3px 20px !important;
+  font-weight: bold;
+  text-align: center;
+  line-height: 18px;
+
+  :global {
+	.shortcut {
+	  font-size: $font-size-small;
+	  font-weight: normal;
+	}
+  }
+}
+
 //.container a{
 //  color: #000;
 //}
