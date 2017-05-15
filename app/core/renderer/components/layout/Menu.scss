@@ -19,26 +19,33 @@
   margin: 0 15px 0 0;
   border-right: 1px solid $light-grey;
 
+  li {
+	display: inline-block;
+	margin-right: 15px;
+	line-height: 37px;
+
+	&.active {
+	  background-color: $grey;
+
+	  a {
+		color: white;
+	  }
+	}
+
+  }
+
   &.right{
 	float: right;
 	border-right: none;
+	margin: 0 0 0 15px;
+
+	li{
+	  margin: 0 0 0 15px;
+	}
   }
 
   &.left{
 	float: left;
-  }
-}
-
-.container ul li{
-  display: inline-block;
-  margin-right: 15px;
-
-  &.active{
-	background-color: $grey;
-
-	a{
-	  color: white;
-	}
   }
 }
 //.container a{
