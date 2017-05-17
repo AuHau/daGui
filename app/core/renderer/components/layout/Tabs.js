@@ -13,7 +13,7 @@ export default class Tabs extends Component {
 
   render() {
     let renderedTabs = [];
-    this.props.$files.forEach((file, index) => renderedTabs.push(<li key={index} className={this.props.currentFileIndex == index ? styles.active : ''}><a href="#"  onClick={this.tabChange(index)}>{file.get('name')} {file.get('lastHistorySaved') === file.getIn(['history', 'present', 'historyId'])? '': ' *'}</a> <a href="#" className={styles.close} onClick={() => this.props.onTabClose(index)}><i className="icon-x"/></a></li>));
+    this.props.$files.forEach((file, index) => renderedTabs.push(<li key={index} className={this.props.currentFileIndex == index ? styles.active : ''}><a href="#"  onClick={this.tabChange(index)} title={file.get('path')}>{file.get('name')} {file.get('lastHistorySaved') === file.getIn(['history', 'present', 'historyId'])? '': ' *'}</a> <a href="#" className={styles.close} onClick={() => this.props.onTabClose(index)}><i className="icon-x"/></a></li>));
 
     // TODO: [Critical] Important! Handle overflowing of tabs because of long file names.
     return (
