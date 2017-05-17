@@ -10,6 +10,17 @@ const getActive = (state) => {
 
 export default function undoable(reducer, config) {
   return function (state, action) {
+
+    // Init of store
+    if(state == undefined){
+      return reducer(undefined, action, undefined)
+    }
+
+    // No files are opened
+    if(getActive(state) < 0){
+      return reducer({}, action, state);
+    }
+
     const graphHistory = state.getIn(['opened', getActive(state), 'history']);
     const past = graphHistory.get('past');
     const present = graphHistory.get('present');

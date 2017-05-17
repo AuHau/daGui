@@ -1,11 +1,27 @@
 import Immutable from 'immutable';
 import CursorMode from 'shared/enums/CursorMode';
+import {REHYDRATE} from 'redux-persist/constants'
 
 import UI from 'shared/actions/ui';
 
+const defaultState = {
+  canvasContainerSpec: {},
+  detailNodeId: null,
+  showSettingsWindow: false,
+  cursorMode: CursorMode.MULTISELECT,
+  showCodeView: false
+};
+
 export default (state, action) => {
 
+  if(state == undefined){
+    return Immutable.fromJS(defaultState);
+  }
+
   switch (action.type){
+    case REHYDRATE:
+      return action.payload.ui;
+
     case UI.CANVAS_RESIZE:
       const rect = action.payload;
       return state.set('canvasContainerSpec', Immutable.Map({

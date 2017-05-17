@@ -18,10 +18,15 @@
 	color: $nodes-sidebar-search-color;
 	background: $nodes-sidebar-search-background;
 	border-radius: 3px;
-	padding: 6px 10px 5px;
+	padding: 6px 10px 5px 20px;
 	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 	border: none;
 	margin-bottom: 15px;
+
+	&:before{
+	  font-family: 'icomoon';
+	  content: "\e90b";
+	}
 
 	&:focus{
 	  outline: none;

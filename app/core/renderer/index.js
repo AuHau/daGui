@@ -19,27 +19,7 @@ import oneGraphWithBranchAndDependency from '../../../test/data/graphs/oneGraphW
 import threeSimpleDependantGraphs from '../../../test/data/graphs/threeSimpleDependantGraphs'
 import oneGraphWithUnionAndDependencies from '../../../test/data/graphs/oneGraphWithUnionAndDependencies'
 
-const initState = Immutable.fromJS({
-  files: {
-    active: 2, // Index of active file
-    opened: [
-      blank,
-      simpleSingleSubgraph,
-      oneGraphWithBranchAndDependency,
-      threeSimpleDependantGraphs,
-      oneGraphWithUnionAndDependencies
-    ]
-  },
-  ui: {
-    canvasContainerSpec: {},
-    detailNodeId: null,
-    showSettingsWindow: false,
-    cursorMode: CursorMode.MULTISELECT,
-    showCodeView: false
-  }
-});
-
-const store = configureStore(initState);
+const store = configureStore();
 
 render(
   <Provider store={store}>

@@ -1,15 +1,12 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import createLogger from 'redux-logger';
 import { batchedSubscribe } from 'redux-batched-subscribe';
+import {persistStore, autoRehydrate} from 'redux-persist-immutable'
 import reduxMulti from 'redux-multi'
 import thunk from 'redux-thunk';
 
 import rootReducer from '../reducers';
-import {
-  forwardToRenderer,
-  triggerAlias,
-  replayActionMain,
-} from 'electron-redux';
+import functionSerialize from 'shared/utils/functionSerialize';
 
 const actionCreators = {};
 
@@ -31,7 +28,8 @@ const logger = createLogger({
 const enhancer = compose(
   applyMiddleware(logger, reduxMulti, thunk),
   window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : noop => noop,
-  batchedSubscribe(notify => notify())
+  batchedSubscribe(notify => notify()),
+  autoRehydrate()
 );
 
 export default function configureStore(initialState: Object) {
@@ -42,6 +40,8 @@ export default function configureStore(initialState: Object) {
       store.replaceReducer(require('../reducers')) // eslint-disable-line global-require
     );
   }
+
+  persistStore(store, {transforms: [functionSerialize]});
 
   return store;
 }

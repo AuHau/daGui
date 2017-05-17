@@ -1,6 +1,7 @@
 
 import FILE from 'shared/actions/file';
 import Immutable from 'immutable';
+import {REHYDRATE} from 'redux-persist/constants'
 
 import graphReducer from './graph';
 
@@ -8,72 +9,86 @@ const getActive = (state) => {
   return state.get('active');
 };
 
+const defaultState = {
+  active: -1, // Index of active file
+  opened: [
+  ]
+};
+
 export default (state, action, wholeState) => {
+
+  if (state == undefined){
+    return Immutable.fromJS(defaultState);
+  }
+
   if(action.type.startsWith('GRAPH_')){
     return graphReducer(state, action, wholeState);
-  }else{
-    switch (action.type){
-      case FILE.NEW:
-        return wholeState.update('opened', files => files.push(
-          Immutable.fromJS({
-            name: action.payload.name,
-            path: '',
-            lastHistorySaved: 0,
-            adapter: action.payload.adapter,
-            language: action.payload.language,
-            adapterTarget: action.payload.adapterVersion,
-            languageTarget: action.payload.languageVersion,
-            $selected: [],
-            $pan: {
-              x: 0,
-              y: 0
-            },
-            zoom: 1,
-            "history": {
-              past: [],
-              future: [],
-              present: {
-                historyId: 0,
-                "usedVariables": {},
-                $occupiedPorts: {},
-                "cells": []
-              }
+  }
+
+  switch (action.type) {
+    case REHYDRATE:
+      return action.payload.files;
+
+    case FILE.NEW:
+      return wholeState.update('opened', files => files.push(
+        Immutable.fromJS({
+          name: action.payload.name,
+          path: '',
+          lastHistorySaved: 0,
+          adapter: action.payload.adapter,
+          language: action.payload.language,
+          adapterTarget: action.payload.adapterVersion,
+          languageTarget: action.payload.languageVersion,
+          $selected: [],
+          $pan: {
+            x: 0,
+            y: 0
+          },
+          zoom: 1,
+          "history": {
+            past: [],
+            future: [],
+            present: {
+              historyId: 0,
+              "usedVariables": {},
+              $occupiedPorts: {},
+              "cells": []
             }
-          })
-        ));
+          }
+        })
+      ));
 
-      case FILE.CLOSE:
-        let newIndex = action.payload.index;
-        if(newIndex === 0){
-          newIndex++;
-        }else{
-          newIndex--;
-        }
+    case FILE.CLOSE:
+      let newIndex = action.payload.index;
+      if (newIndex === 0) {
+        newIndex++;
+      } else {
+        newIndex--;
+      }
 
-        return wholeState
-          .update('opened', files => files.delete(action.payload.index))
-          .set('active', newIndex);
+      return wholeState
+        .update('opened', files => files.delete(action.payload.index))
+        .set('active', newIndex);
 
-      case FILE.SWITCH_TAB:
-        return wholeState.set('active', action.payload);
+    case FILE.SWITCH_TAB:
+      return wholeState.set('active', action.payload);
 
-      case FILE.SET_PATH:
-        return wholeState
-          .setIn(['opened', getActive(wholeState), 'path'], action.payload.path)
-          .setIn(['opened', getActive(wholeState), 'name'], action.payload.fileName);
+    case FILE.SET_PATH:
+      return wholeState
+        .setIn(['opened', getActive(wholeState), 'path'], action.payload.path)
+        .setIn(['opened', getActive(wholeState), 'name'], action.payload.fileName);
 
-      case FILE.FREEZE_SAVED_HISTORY_ID:
-        return wholeState
-          .setIn(
-            ['opened', getActive(wholeState), 'lastHistorySaved'],
-            wholeState.getIn(['opened', getActive(wholeState), 'history', 'present', 'historyId'])
-          );
-      case FILE.LOAD:
-        return loadFile(wholeState, action);
+    case FILE.FREEZE_SAVED_HISTORY_ID:
+      return wholeState
+        .setIn(
+          ['opened', getActive(wholeState), 'lastHistorySaved'],
+          wholeState.getIn(['opened', getActive(wholeState), 'history', 'present', 'historyId'])
+        );
+    case FILE.LOAD:
+      return loadFile(wholeState, action);
 
-      default:
-        return wholeState;
-    }
+    default:
+      return wholeState;
   }
 };
 
