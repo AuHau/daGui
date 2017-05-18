@@ -79,7 +79,7 @@ export default class CodeView extends Component {
   }
 
   componentDidMount(){
-    const aceMode = this.props.language.getAceName();
+    const aceMode = (this.props.language ? this.props.language.getAceName() : 'java');
     require('brace/mode/' + aceMode);
 
     this.editor = ace.edit('aceCodeEditor');
@@ -142,6 +142,12 @@ export default class CodeView extends Component {
       this.hookMarkers(nextProps.codeBuilder.getMarkers());
       this.editor.clearSelection();
       this.shouldUpdateWithNextChange = true;
+    }
+
+    if ((!this.props.language && nextProps.language) || (this.props.language && nextProps.language && this.props.language.getId() != nextProps.language.getId())){
+      const aceMode = nextProps.language.getAceName();
+      require('brace/mode/' + aceMode);
+      this.editor.getSession().setMode('ace/mode/' + aceMode);
     }
 
     this.highlights(nextProps.highlights);
@@ -265,7 +271,7 @@ CodeView.propTypes = {
   onAddHighlight: React.PropTypes.func.isRequired,
   onRemoveHighlight: React.PropTypes.func.isRequired,
   codeBuilder: React.PropTypes.object.isRequired,
-  language: React.PropTypes.func.isRequired,
+  language: React.PropTypes.func,
   errors: React.PropTypes.array,
   highlights: React.PropTypes.oneOfType([React.PropTypes.array, React.PropTypes.object])
 };

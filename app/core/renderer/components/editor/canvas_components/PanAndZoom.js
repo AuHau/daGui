@@ -28,9 +28,10 @@ export default class PanAndZoom extends CanvasComponentBase {
     this.canvas.paper.on('cell:pointerup blank:pointerup', this.mouseUp.bind(this));
     this.canvas.paper.el.addEventListener('mousemove', this.mouseMove.bind(this));
 
-    this.panAndZoom.zoom(this.get('zoom'));
-    this.panAndZoom.enablePan().pan({x: this.get('$pan').get('x'), y: this.get('$pan').get('y')}).disablePan();
-
+    if(this.get('zoom')){
+      this.panAndZoom.zoom(this.get('zoom'));
+      this.panAndZoom.enablePan().pan({x: this.get('$pan').get('x'), y: this.get('$pan').get('y')}).disablePan();
+    }
   }
 
   afterUpdate() {

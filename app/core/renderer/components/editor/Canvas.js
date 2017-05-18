@@ -47,6 +47,7 @@ class Canvas extends Component {
     this.freezed = false;
     this.ignoreAction = false;
     this.dontReloadGraph = false;
+    this.interactivity = true;
 
     // TODO: [Low] Find better place to place this
     joint.setTheme('modern');
@@ -100,7 +101,13 @@ class Canvas extends Component {
         return !ports || !ports.has(magnetT.getAttribute('port'));
       }.bind(this)
     });
-    this.graph.fromJSON(this.props.graphJson);
+
+    if (this.props.graphJson){
+      this.graph.fromJSON(this.props.graphJson);
+    }else{
+      this.interactivity = false;
+      this.paper.setInteractivity(false);
+    }
 
     setTimeout(this.onResize.bind(this), 10);
     window.addEventListener('resize', this.onResize.bind(this));
@@ -131,6 +138,18 @@ class Canvas extends Component {
   }
 
   componentDidUpdate(){
+    // No file to display ==> suspend the interactivity
+    if(!this.props.graphJson){
+      this.graph.fromJSON({cells: []});
+      this.interactivity = false;
+      this.paper.setInteractivity(false);
+      return
+    }else{
+      if(!this.interactivity){
+        this.paper.setInteractivity(true);
+      }
+    }
+
     // TODO: [Low] Optimalization - don't update when the action was created by graph's event or graph can be just modified
     if(!this.dontReloadGraph){
       this.graph.fromJSON(this.props.graphJson);
@@ -172,6 +191,15 @@ class Canvas extends Component {
 
 const mapStateToProps = (state) => {
   const activeFile = state.getIn(['files', 'active']);
+
+  if(activeFile < 0){
+    return {
+      detailNodeId: state.getIn('ui.detailNodeId'.split('.')),
+      showCodeView: state.getIn('ui.showCodeView'.split('.')),
+      cursorMode: state.getIn('ui.cursorMode'.split('.')),
+    };
+  }
+
   return {
     language: state.getIn(['files', 'opened', activeFile, 'language']),
     usedVariables: state.getIn(['files', 'opened', activeFile, 'history', 'present', 'usedVariables']).toJS(),

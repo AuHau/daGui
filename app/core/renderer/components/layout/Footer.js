@@ -7,18 +7,25 @@ import styles from './Footer.scss';
 
 export default class Footer extends Component {
   render() {
-    return (
-      <div className={styles.container}>
+    let fileInfo;
+    if(this.props.framework && this.props.language){
+      fileInfo = (
         <div className={styles.right}>
           <span>
             Language:
             <strong>{this.props.language}</strong>
           </span>
-          <span>
+        <span>
             Framework:
             <strong>{this.props.framework}</strong>
           </span>
-        </div>
+      </div>
+      );
+    }
+
+    return (
+      <div className={styles.container}>
+        {fileInfo}
         <div className={styles.left}>
           <ErrorsView messages={this.props.messages}/>
         </div>
@@ -28,7 +35,7 @@ export default class Footer extends Component {
 }
 
 Footer.propTypes = {
-  framework: React.PropTypes.string.isRequired,
-  language: React.PropTypes.string.isRequired,
+  framework: React.PropTypes.string,
+  language: React.PropTypes.string,
   messages: React.PropTypes.array
 };

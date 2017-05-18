@@ -26,14 +26,24 @@ export default class NodesSidebar extends Component {
 
   componentDidMount(){
     const input = ReactDOM.findDOMNode(this.refs.searchInput);
+
     input.addEventListener('input', this.onSearch.bind(this));
   }
 
   render() {
-    const groups = this.props.adapter.getGroupedNodeTemplates();
-    const renderedGroups = groups.map((group, index) => <NodesGroup key={index} displayHiddenNodes={this.state.showHiddenNodes} name={group.name} nodeTemplates={group.templates} searchedText={this.state.searchedText} />);
+    // Only when file is opened
+    let renderedGroups;
+    if(this.props.adapter) {
 
-    // TODO: [Medium] Collapse groups
+      const groups = this.props.adapter.getGroupedNodeTemplates();
+      renderedGroups = groups.map((group, index) => <NodesGroup key={index}
+                                                                      displayHiddenNodes={this.state.showHiddenNodes}
+                                                                      name={group.name} nodeTemplates={group.templates}
+                                                                      searchedText={this.state.searchedText}/>);
+    }
+
+    // TODO: [Medium] Filter type of nodes (i.e. only for RDD, only for DF, all, etc.)
+    // TODO: [Low] Collapse groups
     return (
       <div className={styles.container}>
         <div className={styles.search}>
@@ -56,5 +66,5 @@ export default class NodesSidebar extends Component {
 }
 
 NodesSidebar.propTypes = {
-  adapter: React.PropTypes.func.isRequired
+  adapter: React.PropTypes.func
 };

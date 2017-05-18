@@ -1,0 +1,33 @@
+@import "../../variables";
+
+.container{
+  composes: container from "./Canvas.scss";
+  background-color: transparent;
+  z-index: 6;
+  text-align: center;
+}
+
+.wrapper{
+  width: 600px;
+  height: 220px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -300px;
+  margin-top: -110px;
+  color: $grey;
+
+  i{
+	font-size: 90px;
+	line-height: 90px;
+  }
+}
+
+.big{
+  font-size: 50px;
+}
+
+.small{
+  font-size: 18px;
+}
+

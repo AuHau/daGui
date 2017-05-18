@@ -27,6 +27,7 @@ import DetailSidebar from 'renderer/components/sidebar_detail/DetailSidebar';
 import Canvas from 'renderer/components/editor/Canvas';
 import CodeView from 'renderer/components/editor/CodeView';
 import Modals, {modalsList} from 'renderer/components/modals/Modals';
+import NoFilesOpened from 'renderer/components/editor/NoFilesOpened';
 
 // TODO: [BUG/High] When dispatching multiple actions for multi-events (deleting multiple node), the undo/redo is not working correctly ==> need of batching the multiple events, so there is only entry in the history
 // TODO: [High] Import of system libraries (Math etc) when used. Most probably implement "hasLibrary" on platform adapter, which will query the platform for available libraries
@@ -89,6 +90,9 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps){
+    // When no file is opened don't validate the graph
+    if(nextProps.currentFileIndex < 0) return;
+
     const currentFile = nextProps.files.get(nextProps.currentFileIndex);
 
     const result = generateCode(this.codeBuilder, currentFile, this.graphHash, true);
@@ -123,12 +127,15 @@ class App extends Component {
     this.setState({highlights: errHighlights.asImmutable()});
   }
 
-
-
   render() {
-    const $currentFile = this.props.files.get(this.props.currentFileIndex);
-    const adapter = $currentFile.get('adapter');
-    const language = $currentFile.get('language');
+    let $currentFile, adapter, adapterName, language, languageName;
+    if(this.props.currentFileIndex >= 0){
+      $currentFile = this.props.files.get(this.props.currentFileIndex);
+      adapter = $currentFile.get('adapter');
+      adapterName = adapter.getName();
+      language = $currentFile.get('language');
+      languageName = language.getName();
+    }
 
     return (
       <div>
@@ -136,9 +143,10 @@ class App extends Component {
         <NodesSidebar ref={(n) => {this.refSidebar = n}} adapter={adapter} />
         <Tabs currentFileIndex={this.props.currentFileIndex} $files={this.props.files} onTabClose={this.closeTab} onTabChange={this.changeTab}/>
         <Canvas onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} onSwitchHighlight={this.switchHighlight} highlights={this.state.highlights.get(HighlightDestination.CANVAS)}/>
+        <ToggleDisplay show={this.props.currentFileIndex < 0}><NoFilesOpened/></ToggleDisplay>
         <ToggleDisplay show={this.props.nodeDetail !== null}><DetailSidebar node={(this.props.nodeDetail ? this.props.nodeDetail.toJS() : null)} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/></ToggleDisplay>
         <ToggleDisplay show={this.props.showCodeView}><CodeView onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} highlights={this.state.highlights.get(HighlightDestination.CODE_VIEW)} language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange}/></ToggleDisplay>
-        <Footer messages={this.graphErrors} framework={adapter.getName()} language={$currentFile.get('language').getName()}/>
+        <Footer messages={this.graphErrors} framework={adapterName} language={languageName}/>
         <Modals openedModals={this.props.modals} onClose={this.props.onModalClose} />
       </div>
     );
@@ -155,7 +163,7 @@ const mapStateToProps = (state) => {
   return {
     currentFileIndex: activeFile,
     files: state.getIn(['files', 'opened']),
-    nodeDetail: (nodeId ? state.getIn(['files', 'opened', activeFile, 'history', 'present', 'cells']).find(node => node.get('id') == nodeId) : null),
+    nodeDetail: (nodeId && activeFile >= 0 ? state.getIn(['files', 'opened', activeFile, 'history', 'present', 'cells']).find(node => node.get('id') == nodeId) : null),
     showCodeView: state.getIn('ui.showCodeView'.split('.')),
     modals: modals
   };

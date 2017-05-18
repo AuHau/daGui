@@ -60,7 +60,9 @@ export default (state, action, wholeState) => {
 
     case FILE.CLOSE:
       let newIndex = action.payload.index;
-      if (newIndex === 0) {
+      if (wholeState.get('opened').size == 1){
+        newIndex = -1;
+      }else if (newIndex === 0) {
         newIndex++;
       } else {
         newIndex--;

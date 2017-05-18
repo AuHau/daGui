@@ -96,7 +96,7 @@ export default class DetailSidebar extends Component {
 
 DetailSidebar.propTypes = {
   node: React.PropTypes.object,
-  adapter: React.PropTypes.func.isRequired,
-  language: React.PropTypes.func.isRequired,
+  adapter: React.PropTypes.func,
+  language: React.PropTypes.func,
   onNodeChange: React.PropTypes.func.isRequired
 };
