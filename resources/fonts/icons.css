@@ -25,6 +25,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-emote-sad:before {
+  content: "\e911";
+}
 .icon-code:before {
   content: "\e900";
 }
@@ -76,4 +79,3 @@
 .icon-zoom-out:before {
   content: "\e910";
 }
-

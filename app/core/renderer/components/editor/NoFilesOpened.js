@@ -9,7 +9,7 @@ export default class NoFilesOpened extends Component {
       <div className={styles.container}>
         <div className={styles.wrapper}>
 
-          <i className="icon-x"/>
+          <i className="icon-emote-sad"/>
           <div className={styles.big}>No opened files</div>
           <div className={styles.small}>Be my guest and create a new file or open already existing one! <br/><strong>It is for free!</strong></div>
 
