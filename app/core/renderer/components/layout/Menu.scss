@@ -8,7 +8,8 @@
   height: $menu-height;
   line-height: $menu-height - 10px;
   padding: 5px 25px;
-  overflow: hidden;
+  overflow: visible;
+  z-index: 10;
 
   background: $menu-sidebar-background;
   border-bottom: 2px solid $menu-sidebar-border-color;
@@ -63,6 +64,56 @@
 	  font-weight: normal;
 	}
   }
+}
+
+$select-height: 24px;
+$select-color: $very-light-grey;
+.select{
+  width: 200px;
+  line-height: $select-height;
+  height: $select-height;
+
+  :global{
+	.Select-control{
+	  height: $select-height;
+	  background-color: $light-grey;
+	  color: $select-color;
+	  border: none;
+	}
+
+	.Select-placeholder{
+	  line-height: $select-height;
+	}
+
+	.Select-input{
+	  height: $select-height;
+	}
+
+	.Select-value{
+	  line-height: $select-height !important;
+	}
+
+	.Select-value-label{
+	  color: $select-color !important;
+	}
+
+	.Select-menu-outer{
+	  background-color: $light-grey;
+	  color: $select-color;
+	  border: none;
+	}
+
+	.Select-option{
+	  background-color: $light-grey;
+	  color: $white;
+
+	   
+	}
+  }
+}
+
+.configure-option{
+
 }
 
 //.container a{

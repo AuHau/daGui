@@ -54,6 +54,11 @@ export default validate(merge(baseConfig, {
         ]
       },
 
+      {
+        test: /\.css$/,
+        loaders: [ 'style-loader', 'css-loader' ]
+      },
+
       { test: /\.woff(\?.*)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
       { test: /\.woff2(\?.*)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
       { test: /\.ttf(\?.*)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },

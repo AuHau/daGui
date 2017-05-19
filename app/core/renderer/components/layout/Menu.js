@@ -1,6 +1,8 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
 
 import styles from './Menu.scss';
 import CursorMode from 'shared/enums/CursorMode';
@@ -11,6 +13,13 @@ import * as fileActions from 'shared/actions/file';
 import Tooltip from 'react-tooltip';
 
 class Menu extends Component {
+
+  constructor(props){
+    super(props);
+
+    this.executionSetChange = this.executionSetChange.bind(this);
+    this.state = {currentExecutionConf: 1}
+  }
 
   getCallback(callback, fireAlways){
     return () => {
@@ -49,14 +58,27 @@ class Menu extends Component {
         break;
       case 'o':
         this.getCallback('onOpen')();
+        break;
       case 'n':
         this.getCallback('onNew')();
         break;
     }
   }
 
+  executionSetChange(val){
+    if(val !=  'conf'){
+      this.setState({currentExecutionConf: val});
+    }
+  }
+
   // TODO: [BUG] Contain does not work
   render() {
+    const options = [
+      { value: '1', label: 'One' },
+      { value: '2', label: 'Two' },
+      { value: 'conf', label: 'Configuration', classNames: styles.configureOption}
+    ];
+
     return (
       <div className={styles.container}>
         <ul className={styles.left}>
@@ -91,11 +113,14 @@ class Menu extends Component {
         <ul className={styles.right}>
           <li><a href="#" data-tip="Launch the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-play"/></a></li>
           <li>
-            <select>
-              <option value="1">Local execution</option>
-              <option value="2">YARN execution</option>
-              <option value="2">Bah</option>
-            </select>
+            <Select
+              value={this.state.currentExecutionConf}
+              options={options}
+              clearable={false}
+              searchable={false}
+              className={styles.select}
+              onChange={this.executionSetChange}
+            />
           </li>
         </ul>
         <Tooltip place="bottom" type="dark" effect="solid" delayShow={850} className={styles.tooltip} offset={{'top': -13, 'left': -10}} html={true}/>
