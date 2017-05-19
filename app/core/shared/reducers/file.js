@@ -34,7 +34,7 @@ export default (state, action, wholeState) => {
         Immutable.fromJS({
           name: action.payload.name,
           path: '',
-          lastHistorySaved: 0,
+          lastHistorySaved: -1,
           adapter: action.payload.adapter,
           language: action.payload.language,
           adapterTarget: action.payload.adapterVersion,
@@ -56,7 +56,7 @@ export default (state, action, wholeState) => {
             }
           }
         })
-      ));
+      )).set('active', wholeState.get('opened').size);
 
     case FILE.CLOSE:
       let newIndex = action.payload.index;
@@ -98,6 +98,7 @@ export default (state, action, wholeState) => {
   }
 };
 
+// TODO: [BUG/Middle] After loading the Canvas should be centered to contain the whole graph (linked with "contain" function)
 function loadFile(state, action){
   const data = action.payload;
   data['lastHistorySaved'] = 0;
