@@ -16,12 +16,12 @@ const GRAPH = {
   REMOVE_LINK_AND_VARIABLES: 'GRAPH_REMOVE_LINK_AND_VARIABLES',
   ADD_SELECTED: 'GRAPH_ADD_SELECTED_$',
   REMOVE_SELECTED: 'GRAPH_REMOVE_SELECTED_$',
-  PAN: 'GRAPH_PAN_$',
-  ZOOM: 'GRAPH_ZOOM_$',
-  ZOOM_IN: 'GRAPH_ZOOM_IN_$',
-  ZOOM_OUT: 'GRAPH_ZOOM_OUT_$',
-  COPY: 'GRAPH_COPY_$',
-  CUT: 'GRAPH_CUT_$',
+  PAN$: 'GRAPH_PAN_$',
+  ZOOM$: 'GRAPH_ZOOM_$',
+  ZOOM_IN$: 'GRAPH_ZOOM_IN_$',
+  ZOOM_OUT$: 'GRAPH_ZOOM_OUT_$',
+  COPY$: 'GRAPH_COPY_$',
+  CUT$: 'GRAPH_CUT_$',
   PASTE: 'GRAPH_PASTE'
 };
 export default GRAPH;
@@ -158,7 +158,7 @@ export const moveNodes = (nodes) => {
 
 export const pan = (x, y) => {
   return {
-    type: GRAPH.PAN,
+    type: GRAPH.PAN$,
     payload: {
       x,
       y
@@ -168,20 +168,20 @@ export const pan = (x, y) => {
 
 export const zoom = (scale, panX, panY) => {
   return {
-    type: GRAPH.ZOOM,
+    type: GRAPH.ZOOM$,
     payload: {scale, panX, panY}
   }
 };
 
 export const zoomIn = () => {
   return {
-    type: GRAPH.ZOOM_IN
+    type: GRAPH.ZOOM_IN$
   }
 };
 
 export const zoomOut = () => {
   return {
-    type: GRAPH.ZOOM_OUT
+    type: GRAPH.ZOOM_OUT$
   }
 };
 
@@ -201,13 +201,13 @@ export const removeSelected = (nid) => {
 
 export const copy = () => {
   return {
-    type: GRAPH.COPY
+    type: GRAPH.COPY$
   }
 };
 
 export const cut = () => {
   return {
-    type: GRAPH.CUT
+    type: GRAPH.CUT$
   }
 };
 

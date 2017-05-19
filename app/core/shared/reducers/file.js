@@ -17,7 +17,7 @@ const defaultState = {
 
 export default (state, action, wholeState) => {
 
-  if (state == undefined){
+  if (state === undefined){
     return Immutable.fromJS(defaultState);
   }
 
@@ -76,11 +76,15 @@ export default (state, action, wholeState) => {
       return wholeState.set('active', action.payload);
 
     case FILE.SET_PATH:
+      if(getActive(wholeState) < 0) return wholeState;
+
       return wholeState
         .setIn(['opened', getActive(wholeState), 'path'], action.payload.path)
         .setIn(['opened', getActive(wholeState), 'name'], action.payload.fileName);
 
     case FILE.FREEZE_SAVED_HISTORY_ID:
+      if(getActive(wholeState) < 0) return wholeState;
+
       return wholeState
         .setIn(
           ['opened', getActive(wholeState), 'lastHistorySaved'],

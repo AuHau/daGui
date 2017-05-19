@@ -21,8 +21,8 @@ const menuHeight = parseInt(cssVariables.menuHeight);
 function before(obj, method, wrapper) {
   const orig = obj[method];
   obj[method] = function() {
-    const args = Array.prototype.slice.call(arguments);
-    return wrapper.call(this, function(){
+    const args = Array.prototype.slice.getCallback(arguments);
+    return wrapper.getCallback(this, function(){
       return orig.apply(obj, args);
     }, args);
   };

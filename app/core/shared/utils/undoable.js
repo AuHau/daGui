@@ -18,7 +18,7 @@ export default function undoable(reducer, config) {
 
     // No files are opened
     if(getActive(state) < 0){
-      return reducer({}, action, state);
+      return reducer(null, action, state);
     }
 
     const graphHistory = state.getIn(['opened', getActive(state), 'history']);

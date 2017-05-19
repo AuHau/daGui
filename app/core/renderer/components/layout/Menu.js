@@ -12,6 +12,14 @@ import Tooltip from 'react-tooltip';
 
 class Menu extends Component {
 
+  getCallback(callback, fireAlways){
+    return () => {
+      if(fireAlways || this.props.currentFileIndex >= 0){
+        this.props[callback]();
+      }
+    }
+  };
+
   componentDidMount(){
     document.addEventListener('keyup', this.keyboardShortcutsHandler.bind(this));
   }
@@ -22,27 +30,27 @@ class Menu extends Component {
     switch (e.key.toLowerCase()) {
       case 'z':
         if (e.shiftKey) {
-          this.props.onRedo();
+          this.getCallback('onRedo')();
         } else {
-          this.props.onUndo();
+          this.getCallback('onUndo')();
         }
         break;
       case 'c':
-        this.props.onCopy();
+        this.getCallback('onCopy')();
         break;
       case 'v':
-        this.props.onPaste();
+        this.getCallback('onPaste')();
         break;
       case 'x':
-        this.props.onCut();
+        this.getCallback('onCut')();
         break;
       case 's':
-        this.props.onSave();
+        this.getCallback('onSave')();
         break;
       case 'o':
-        this.props.onOpen();
+        this.getCallback('onOpen')();
       case 'n':
-        this.props.onNew();
+        this.getCallback('onNew')();
         break;
     }
   }
@@ -52,32 +60,43 @@ class Menu extends Component {
     return (
       <div className={styles.container}>
         <ul className={styles.left}>
-          <li><a href="#" onClick={this.props.onNew} data-tip="New file<br><span class='shortcut'>(Ctrl+N)</span>"><i className="icon-file"/></a></li>
-          <li><a href="#" onClick={this.props.onOpen} data-tip="Open file<br><span class='shortcut'>(Ctrl+O)</span>"><i className="icon-open"/></a></li>
-          <li><a href="#" onClick={this.props.onSave} data-tip="Save file<br><span class='shortcut'>(Ctrl+S)</span>"><i className="icon-save"/></a></li>
+          <li><a href="#" onClick={this.getCallback('onNew', true)} data-tip="New file<br><span class='shortcut'>(Ctrl+N)</span>"><i className="icon-file"/></a></li>
+          <li><a href="#" onClick={this.getCallback('onOpen', true)} data-tip="Open file<br><span class='shortcut'>(Ctrl+O)</span>"><i className="icon-open"/></a></li>
+          <li><a href="#" onClick={this.getCallback('onSave')} data-tip="Save file<br><span class='shortcut'>(Ctrl+S)</span>"><i className="icon-save"/></a></li>
           <li><a href="#" data-tip="Save image of the graph<br><span class='shortcut'>(Ctrl+G)</span>"><i className="icon-screenshot"/></a></li>
         </ul>
         <ul className={styles.left}>
-          <li><a href="#" onClick={this.props.onCopy} data-tip="Copy node(s)<br><span class='shortcut'>(Ctrl+C)</span>"><i className="icon-copy"/></a></li>
-          <li><a href="#" onClick={this.props.onCut} data-tip="Cut node(s)<br><span class='shortcut'>(Ctrl+X)</span>"><i className="icon-take-out"/></a></li>
-          <li><a href="#" onClick={this.props.onPaste} data-tip="Paste node(s)<br><span class='shortcut'>(Ctrl+V)</span>"><i className="icon-paste"/></a></li>
+          <li><a href="#" onClick={this.getCallback('onCopy')} data-tip="Copy node(s)<br><span class='shortcut'>(Ctrl+C)</span>"><i className="icon-copy"/></a></li>
+          <li><a href="#" onClick={this.getCallback('onCut')} data-tip="Cut node(s)<br><span class='shortcut'>(Ctrl+X)</span>"><i className="icon-take-out"/></a></li>
+          <li><a href="#" onClick={this.getCallback('onPaste')} data-tip="Paste node(s)<br><span class='shortcut'>(Ctrl+V)</span>"><i className="icon-paste"/></a></li>
         </ul>
         <ul className={styles.left}>
-          <li><a href="#" onClick={this.props.onUndo} data-tip="Undo<br><span class='shortcut'>(Ctrl+Z)</span>"><i className="icon-left"/></a></li>
-          <li><a href="#" onClick={this.props.onRedo} data-tip="Redo<br><span class='shortcut'>(Ctrl+Shift+Z)</span>"><i className="icon-right"/></a></li>
-          <li><a href="#" onClick={this.props.onZoomIn} data-tip="Zoom in<br><span class='shortcut'>(Ctrl+Mouse Wheel)</span>"><i className="icon-zoom-in"/></a></li>
-          <li><a href="#" onClick={this.props.onZoomOut} data-tip="Zoom out<br><span class='shortcut'>(Ctrl+Mouse Wheel)</span>"><i className="icon-zoom-out"/></a></li>
-          {/*<li><a href="#" onClick={this.props.onContain}><i className="fa fa-arrows-alt"/></a></li>*/}
+          <li><a href="#" onClick={this.getCallback('onUndo')} data-tip="Undo<br><span class='shortcut'>(Ctrl+Z)</span>"><i className="icon-left"/></a></li>
+          <li><a href="#" onClick={this.getCallback('onRedo')} data-tip="Redo<br><span class='shortcut'>(Ctrl+Shift+Z)</span>"><i className="icon-right"/></a></li>
+          <li><a href="#" onClick={this.getCallback('onZoomIn')} data-tip="Zoom in<br><span class='shortcut'>(Ctrl+Mouse Wheel)</span>"><i className="icon-zoom-in"/></a></li>
+          <li><a href="#" onClick={this.getCallback('onZoomOut')} data-tip="Zoom out<br><span class='shortcut'>(Ctrl+Mouse Wheel)</span>"><i className="icon-zoom-out"/></a></li>
+          {/*<li><a href="#" onClick={this.getCallback('onContain')}><i className="fa fa-arrows-alt"/></a></li>*/}
         </ul>
         <ul className={styles.left}>
-          <li className={this.props.cursorMode == CursorMode.MULTISELECT ? styles.active : ''}><a href="#" onClick={this.props.onMultiselectMode} data-tip="Selection mode"><i className="icon-hand"/></a></li>
-          <li className={this.props.cursorMode == CursorMode.PAN  ? styles.active : ''}><a href="#" onClick={this.props.onPanMode} data-tip="Panning mode"><i className="icon-cursor"/></a></li>
+          <li className={this.props.cursorMode == CursorMode.MULTISELECT ? styles.active : ''}><a href="#" onClick={this.getCallback('onMultiselectMode', true)} data-tip="Selection mode"><i className="icon-hand"/></a></li>
+          <li className={this.props.cursorMode == CursorMode.PAN  ? styles.active : ''}><a href="#" onClick={this.getCallback('onPanMode', true)} data-tip="Panning mode"><i className="icon-cursor"/></a></li>
           <li><a href="#" data-tip="Group nodes"><i className="fa fa-object-group"/></a></li>
         </ul>
 
         <ul className={styles.right}>
-          <li className={this.props.showCodeView ? styles.active : ''}><a href="#" onClick={this.props.onCodeViewToggle}  data-tip="Display/hide code view"><i className="icon-code"/></a></li>
+          <li className={this.props.showCodeView ? styles.active : ''}><a href="#" onClick={this.getCallback('onCodeViewToggle')}  data-tip="Display/hide code view"><i className="icon-code"/></a></li>
           <li><a href="#" data-tip="Settings"><i className="icon-settings"/></a></li>
+        </ul>
+
+        <ul className={styles.right}>
+          <li><a href="#" data-tip="Launch the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-play"/></a></li>
+          <li>
+            <select>
+              <option value="1">Local execution</option>
+              <option value="2">YARN execution</option>
+              <option value="2">Bah</option>
+            </select>
+          </li>
         </ul>
         <Tooltip place="bottom" type="dark" effect="solid" delayShow={850} className={styles.tooltip} offset={{'top': -13, 'left': -10}} html={true}/>
       </div>
@@ -87,6 +106,7 @@ class Menu extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    currentFileIndex: state.getIn('files.active'.split('.')),
     showCodeView: state.getIn('ui.showCodeView'.split('.')),
     cursorMode: state.getIn(['ui', 'cursorMode'])
   };

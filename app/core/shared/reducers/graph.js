@@ -51,16 +51,16 @@ export default (state, action, wholeState) => {
     case GRAPH.REMOVE_VARIABLE:
       return removeVariableReducer(state, action.payload, wholeState);
 
-    case GRAPH.PAN:
+    case GRAPH.PAN$:
       return panReducer$(state, action.payload, wholeState);
 
-    case GRAPH.ZOOM:
+    case GRAPH.ZOOM$:
       return zoomReducer$(state, action.payload, wholeState);
 
-    case GRAPH.ZOOM_IN:
+    case GRAPH.ZOOM_IN$:
       return zoomInReducer$(state, null, wholeState);
 
-    case GRAPH.ZOOM_OUT:
+    case GRAPH.ZOOM_OUT$:
       return zoomOutReducer$(state, null, wholeState);
 
     case GRAPH.ADD_SELECTED:
@@ -69,10 +69,10 @@ export default (state, action, wholeState) => {
     case GRAPH.REMOVE_SELECTED:
       return removeSelectedReducer$(state, action.payload, wholeState);
 
-    case GRAPH.COPY:
+    case GRAPH.COPY$:
       return copyReducer$(state, null, wholeState);
 
-    case GRAPH.CUT:
+    case GRAPH.CUT$:
       return cutReducer$(state, null, wholeState);
 
     case GRAPH.PASTE:
@@ -139,12 +139,16 @@ export default (state, action, wholeState) => {
 };
 
 function addLinkReducer(state, payload, wholeState){
+  if(state === null) return wholeState; // No opened files ==> terminate
+
   let tmp = state.update('cells', nodes => nodes.push(Immutable.fromJS(payload.linkObject)));
   tmp = tmp.update('$occupiedPorts', nodes => nodes.update(payload.targetNid, ports => (ports ? ports.add(payload.targetPort) : Immutable.Set([payload.targetPort])) ));
   return tmp;
 }
 
 function removeLinkReducer(state, payload, wholeState){
+  if(state === null) return wholeState; // No opened files ==> terminate
+
   const cells = state.get('cells');
   let tmp = cells.filter(node => node.get('id') != payload.linkId && node.getIn(['source', 'id']) != payload.linkId && node.getIn(['target', 'id']) != payload.linkId );
   tmp = state.set('cells', tmp);
@@ -153,17 +157,23 @@ function removeLinkReducer(state, payload, wholeState){
 }
 
 function updateNodeReducer(state, payload, wholeState){
+  if(state === null) return wholeState; // No opened files ==> terminate
+
   const index = findIndex(state, payload.id);
   return state.setIn(['cells', index], Immutable.fromJS(payload));
 }
 
 function moveNodeReducer(state, payload, wholeState){
+  if(state === null) return wholeState; // No opened files ==> terminate
+
   const newPosition = Immutable.Map({x: payload.x, y: payload.y});
   const index = findIndex(state, payload.nid);
   return state.setIn(['cells', index, 'position'], newPosition);
 }
 
 function addNodeReducer(state, payload, wholeState){
+  if(state === null) return wholeState; // No opened files ==> terminate
+
   const zoom = wholeState.getIn(['opened', getActive(wholeState), 'zoom']);
   const tmp = payload;
   tmp.position.x = (tmp.position.x - wholeState.getIn(['opened', getActive(wholeState), '$pan', 'x']) + (tmp.size.width / 2)) / zoom;
@@ -172,6 +182,8 @@ function addNodeReducer(state, payload, wholeState){
 }
 
 function deleteNodeReducer(state, payload, wholeState){
+  if(state === null) return wholeState; // No opened files ==> terminate
+
   const cells = state.get('cells');
   const nid = payload.nid;
   let filtered = cells.filter(node => node.get('id') != nid && node.getIn(['source', 'id']) != nid && node.getIn(['target', 'id']) != nid );
@@ -179,6 +191,8 @@ function deleteNodeReducer(state, payload, wholeState){
 }
 
 function updateVariableReducer(state, payload, wholeState){
+  if(state === null) return wholeState; // No opened files ==> terminate
+
   const index = findIndex(state, payload.nid);
   const oldVariableName = state.getIn(['cells', index, 'dfGui', 'variableName']);
   return state.setIn(['cells', index, 'dfGui', 'variableName'], payload.newVariableName)
@@ -188,6 +202,8 @@ function updateVariableReducer(state, payload, wholeState){
 }
 
 function removeVariableReducer(state, payload, wholeState){
+  if(state === null) return wholeState; // No opened files ==> terminate
+
   const index = findIndex(state, payload.nid);
   const variableName = state.getIn(['cells', index, 'dfGui', 'variableName']);
   return state.deleteIn(['cells', index, 'dfGui', 'variableName'])
@@ -195,36 +211,52 @@ function removeVariableReducer(state, payload, wholeState){
 }
 
 function panReducer$(state, payload, wholeState){
+  if(getActive(wholeState) < 0) return wholeState; // No opened files ==> terminate
+
   return wholeState.updateIn(['opened', getActive(wholeState), '$pan'], pan => pan.set('x', payload.x).set('y', payload.y));
 }
 
 function zoomReducer$(state, payload, wholeState){
+  if(getActive(wholeState) < 0) return wholeState; // No opened files ==> terminate
+
   const tmp = wholeState.setIn(['opened', getActive(wholeState), 'zoom'], payload.scale);
   return tmp.updateIn(['opened', getActive(wholeState), '$pan'], pan => pan.set('x', payload.panX).set('y', payload.panY));
 }
 
 function zoomInReducer$(state, payload, wholeState){
+  if(getActive(wholeState) < 0) return wholeState; // No opened files ==> terminate
+
   // TODO: [Low] Calculate center of the screen to zoom to middle
   return wholeState.updateIn(['opened', getActive(wholeState), 'zoom'], zoom => zoom + Config.canvas.zoomStep);
 }
 
 function zoomOutReducer$(state, payload, wholeState){
+  if(getActive(wholeState) < 0) return wholeState; // No opened files ==> terminate
+
   return wholeState.updateIn(['opened', getActive(wholeState), 'zoom'], zoom => zoom - Config.canvas.zoomStep);
 }
 
 function addSelectedReducer$(state, payload, wholeState){
+  if(getActive(wholeState) < 0) return wholeState; // No opened files ==> terminate
+
   return wholeState.updateIn(['opened', getActive(wholeState), '$selected'], selected => selected.push(payload.nid));
 }
 
 function removeSelectedReducer$(state, payload, wholeState){
+  if(getActive(wholeState) < 0) return wholeState; // No opened files ==> terminate
+
   return wholeState.updateIn(['opened', getActive(wholeState), '$selected'], selected => selected.filter(nid => nid != payload.nid));
 }
 
 function copyReducer$(state, payload, wholeState){
+  if(getActive(wholeState) < 0) return wholeState; // No opened files ==> terminate
+
   return wholeState.set('copied_from', getActive(wholeState)).set('$copied', wholeState.getIn(['opened', getActive(wholeState), '$selected']));
 }
 
 function cutReducer$(state, payload, wholeState){
+  if(getActive(wholeState) < 0) return wholeState; // No opened files ==> terminate
+
   const selected = wholeState.getIn(['opened', getActive(wholeState), '$selected']);
   const cuttedNodes = wholeState.getIn(['opened', getActive(wholeState), 'history', 'present', 'cells'])
     .filter(cell =>
@@ -248,6 +280,8 @@ function cutReducer$(state, payload, wholeState){
 }
 
 function pasteReducer(state, payload, wholeState){
+  if(state === null) return wholeState; // No opened files ==> terminate
+
   if(wholeState.get('$copied').isEmpty())
     return state;
 
