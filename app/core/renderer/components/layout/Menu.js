@@ -68,6 +68,10 @@ class Menu extends Component {
   executionSetChange(val){
     if(val !=  'conf'){
       this.setState({currentExecutionConf: val});
+    }else{
+      const tmp = this.state.currentExecutionConf;
+      this.setState({currentExecutionConf: val});
+      this.setState({currentExecutionConf: tmp});
     }
   }
 
@@ -111,7 +115,7 @@ class Menu extends Component {
         </ul>
 
         <ul className={styles.right}>
-          <li><a href="#" data-tip="Launch the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-play"/></a></li>
+          <li className={styles.launchIcon}><a href="#" data-tip="Launch the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-play"/></a></li>
           <li>
             <Select
               value={this.state.currentExecutionConf}

@@ -16,14 +16,14 @@
 }
 
 .container ul{
-  padding: 0;
+  padding: 3px 0 0;
   margin: 0 15px 0 0;
   border-right: 1px solid $light-grey;
 
   li {
 	display: inline-block;
 	margin-right: 15px;
-	line-height: 37px;
+	line-height: 30px;
 
 	&.active {
 	  background-color: $grey;
@@ -66,6 +66,10 @@
   }
 }
 
+.selectLi{
+  padding-top: 3px;
+}
+
 $select-height: 24px;
 $select-color: $very-light-grey;
 .select{
@@ -78,7 +82,11 @@ $select-color: $very-light-grey;
 	  height: $select-height;
 	  background-color: $light-grey;
 	  color: $select-color;
-	  border: none;
+	  border: none !important;
+	}
+
+	.is-focused:not(.is-open) > .Select-control{
+	  box-shadow:none;
 	}
 
 	.Select-placeholder{
@@ -105,15 +113,27 @@ $select-color: $very-light-grey;
 
 	.Select-option{
 	  background-color: $light-grey;
-	  color: $white;
+	  color: $select-color;
 
-	   
+	  &:hover{
+		background-color: darken($light-grey, 3%);
+	  }
+
+	  &:last-child{
+		border-top: 2px dashed $dark-grey;
+		background-color: $grey;
+	  }
+	}
+
+	.Select-option.is-selected{
+	  background-color: darken($light-grey, 3%);
 	}
   }
 }
 
-.configure-option{
-
+.launchIcon{
+  position: relative;
+  top: -6px;
 }
 
 //.container a{
