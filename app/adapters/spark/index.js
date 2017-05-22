@@ -14,6 +14,9 @@ import MapPartitions from './templates/mapPartitions';
 import Parallelize from './templates/parallelize';
 import Union from './templates/union';
 
+// Components
+import ExecutionConfigurationForm from './components/ExecutionConfigurationForm';
+
 export default class SparkAdapter extends BaseAdapter{
 
   static getId(){
@@ -105,5 +108,12 @@ export default class SparkAdapter extends BaseAdapter{
       default:
         throw new Error("Not supported language!");
     }
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+  // Components
+
+  static getExecutionConfigurationForm(){
+    return ExecutionConfigurationForm;
   }
 }

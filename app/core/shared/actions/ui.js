@@ -6,8 +6,10 @@ const UI = {
   TOGGLE_CODE_VIEW: 'UI_CODE_VIEW_TOGGLE',
   SET_MULTISELECT_MODE: 'UI_SET_MULTISELECT_MODE',
   SET_PAN_MODE: 'UI_SET_PAN_MODE',
-  SHOW_OPEN_MODAL: 'UI_SHOW_OPEN_MODAL',
-  HIDE_OPEN_MODAL: 'UI_HIDE_OPEN_MODAL',
+  SHOW_NEW_FILE_MODAL: 'UI_SHOW_NEW_FILE_MODAL',
+  HIDE_NEW_FILE_MODAL: 'UI_HIDE_OPEN_MODAL',
+  SHOW_EXEC_CONFS_MODAL: 'UI_SHOW_EXEC_CONFS_MODAL',
+  HIDE_EXEC_CONFS_MODAL: 'UI_HIDE_EXEC_CONFS_MODAL',
   UNDO: 'UNDO',
   REDO: 'REDO'
 };
@@ -51,15 +53,27 @@ export const setPanMode = () => {
   }
 };
 
-export const showOpenModal = () => {
+export const showNewFileModal = () => {
   return {
-    type: UI.SHOW_OPEN_MODAL
+    type: UI.SHOW_NEW_FILE_MODAL
   }
 };
 
-export const hideOpenModal = () => {
+export const hideNewFileModal = () => {
   return {
-    type: UI.HIDE_OPEN_MODAL
+    type: UI.HIDE_NEW_FILE_MODAL
+  }
+};
+
+export const showExecConfsModal = () => {
+  return {
+    type: UI.SHOW_EXEC_CONFS_MODAL
+  }
+};
+
+export const hideExecConfsModal = () => {
+  return {
+    type: UI.HIDE_EXEC_CONFS_MODAL
   }
 };
 

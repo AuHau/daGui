@@ -13,6 +13,10 @@ export default class Scala extends BaseLanguage {
     return '//';
   }
 
+  static getAceName(){
+    return 'scala';
+  }
+
   static getFileExtension(){
     return '.scala';
   }

@@ -1,0 +1,62 @@
+@import "../../../variables";
+
+.container{
+  width: 100%;
+  height: 100%;
+}
+
+.actionBar{
+  height: 20px;
+  line-height: 20px;
+
+  a{
+	margin-right: 10px;
+	font-size: 18px;
+  }
+}
+
+.add{
+  color: $green;
+
+  &:hover{
+	color: lighten($green, 8%);
+  }
+}
+
+.delete:not(.disabled){
+  color: $red;
+
+  &:hover{
+	color: lighten($red, 8%);
+  }
+}
+
+.disabled{
+  pointer-events: none;
+}
+
+.listing{
+  height: calc(100% - 25px);
+  margin-top: 3px;
+  border: 1px solid $light-grey;
+  padding: 0;
+  list-style: none;
+  background-color: $grey;
+
+  li{
+	width: 100%;
+	padding: 0;
+	margin: 0;
+
+	a{
+	  display: inline-block;
+	  width: 100%;
+	  padding: 4px 10px;
+	}
+  }
+}
+
+.active{
+  background-color: $light-grey;
+  font-weight: bold;
+}

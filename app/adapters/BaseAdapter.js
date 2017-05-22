@@ -39,4 +39,11 @@ export default class BaseAdapter {
   static generateCode(graph){
     throw new TypeError("Method 'generateCode' has to be implemented!");
   }
+
+  //////////////////////////////////////////////////////////////////////////////////
+  // Components
+
+  static getExecutionConfigurationForm(){
+    throw new TypeError("Method 'getExecutionConfigurationForm' has to be implemented!");
+  }
 }

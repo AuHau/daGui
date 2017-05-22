@@ -66,12 +66,11 @@ class Menu extends Component {
   }
 
   executionSetChange(val){
+    val = val.value;
     if(val !=  'conf'){
       this.setState({currentExecutionConf: val});
     }else{
-      const tmp = this.state.currentExecutionConf;
-      this.setState({currentExecutionConf: val});
-      this.setState({currentExecutionConf: tmp});
+      this.props.onOpenExecConfs();
     }
   }
 
@@ -134,8 +133,10 @@ class Menu extends Component {
 }
 
 const mapStateToProps = (state) => {
+  const currentFileIndex = state.getIn('files.active'.split('.'));
   return {
-    currentFileIndex: state.getIn('files.active'.split('.')),
+    currentFileIndex: currentFileIndex,
+    adapter: state.getIn(['files', 'opened', currentFileIndex, 'adapter']),
     showCodeView: state.getIn('ui.showCodeView'.split('.')),
     cursorMode: state.getIn(['ui', 'cursorMode'])
   };
@@ -186,7 +187,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(fileActions.open())
     },
     onNew: () => {
-      dispatch(uiActions.showOpenModal())
+      dispatch(uiActions.showNewFileModal())
+    },
+    onOpenExecConfs: () => {
+      dispatch(uiActions.showExecConfsModal())
     }
   };
 };

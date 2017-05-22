@@ -46,11 +46,17 @@ export default (state, action) => {
     case UI.TOGGLE_CODE_VIEW:
       return state.update('showCodeView', (value) => !value);
 
-    case UI.SHOW_OPEN_MODAL:
-      return state.set('displayOpenModal', true);
+    case UI.SHOW_NEW_FILE_MODAL:
+      return state.set('displayNewFileModal', true);
 
-    case UI.HIDE_OPEN_MODAL:
-      return state.set('displayOpenModal', false);
+    case UI.HIDE_NEW_FILE_MODAL:
+      return state.set('displayNewFileModal', false);
+
+    case UI.SHOW_EXEC_CONFS_MODAL:
+      return state.set('displayExecConfsModal', true);
+
+    case UI.HIDE_EXEC_CONFS_MODAL:
+      return state.set('displayExecConfsModal', false);
 
     default:
       return state;

@@ -1,0 +1,61 @@
+@import "Modals";
+@import "../../variables";
+
+.overlay{
+  @include overlay()
+}
+
+$header-height: 29px;
+$menu-width: 200px;
+
+.modal{
+  @include modal(600px, 450px);
+  background-color: $dark-grey;
+
+  button[disabled]{
+	color: #8c8c8c;
+  }
+
+  header{
+	position: absolute;
+	width: 100%;
+	height: $header-height;
+	line-height: $header-height;
+	left: 0;
+	top: 0;
+
+	text-align: center;
+	font-weight: bold;
+	background-color: $grey;
+	border-bottom: 1px solid $light-grey;
+  }
+}
+
+.menu{
+  position: absolute;
+  width: $menu-width;
+  height: calc(100% - #{$header-height});
+  left: 0;
+  top: $header-height;
+  padding: 5px 15px 15px;
+  border-right: 1px solid $light-grey;
+}
+
+.form{
+  position: absolute;
+  width: calc(100% - #{$menu-width});
+  height: calc(100% - #{$header-height});
+  left: $menu-width;
+  top: $header-height;
+  padding: 15px;
+}
+
+.close{
+  position: absolute;
+  right: 10px;
+  top: 6px;
+
+  i{
+	font-size: 14px;
+  }
+}

@@ -5,10 +5,10 @@ import config from "../../../../config/index";
 import { connect } from 'react-redux';
 
 
-import styles from './OpenModal.scss';
+import styles from './NewFileModal.scss';
 import {newFile} from "../../../shared/actions/file";
 
-class OpenModal extends Component {
+class NewFileModal extends Component {
 
   constructor(props){
     super(props);
@@ -19,6 +19,10 @@ class OpenModal extends Component {
     this.onSelectedAdapter = this.onSelectedAdapter.bind(this);
     this.onSelectedLanguage = this.onSelectedLanguage.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps){
+    return nextProps.isOpened || (!nextProps.isOpened && this.props.isOpened);
   }
 
   submit(e){
@@ -105,7 +109,7 @@ class OpenModal extends Component {
         onRequestClose={this.close}
         overlayClassName={styles.overlay}
         className={styles.modal}
-        contentLabel="Open Modal"
+        contentLabel="New File Modal"
       >
         <h1>New file</h1>
         <form onSubmit={this.submit}>
@@ -139,9 +143,9 @@ const mapDispatchToProps = (dispatch) => {
   }
 };
 
-export default connect(() => {return {}}, mapDispatchToProps)(OpenModal);
+export default connect(() => {return {}}, mapDispatchToProps)(NewFileModal);
 
-OpenModal.propTypes = {
+NewFileModal.propTypes = {
   isOpened: React.PropTypes.bool.isRequired,
   onClose: React.PropTypes.func.isRequired
 };

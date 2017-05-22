@@ -154,8 +154,11 @@ class App extends Component {
 }
 const mapStateToProps = (state) => {
   const modals = [];
-  if(state.getIn(['ui', 'displayOpenModal']))
-    modals.push(modalsList.OPEN);
+  if(state.getIn(['ui', 'displayNewFileModal']))
+    modals.push(modalsList.NEW_FILE);
+
+  if(state.getIn(['ui', 'displayExecConfsModal']))
+    modals.push(modalsList.EXEC_CONFS);
 
   const nodeId = state.getIn(['ui', 'detailNodeId']);
   const activeFile = state.getIn(['files', 'active']);
@@ -176,8 +179,12 @@ const mapDispatchToProps = (dispatch) => {
     onTabChange: (newIndex) => dispatch(switchTab(newIndex)),
     onModalClose: (modal) => {
       switch(modal){
-        case modalsList.OPEN:
-          dispatch(uiActions.hideOpenModal())
+        case modalsList.NEW_FILE:
+          dispatch(uiActions.hideNewFileModal());
+          break;
+        case modalsList.EXEC_CONFS:
+          dispatch(uiActions.hideExecConfsModal());
+          break;
       }
     },
     onTabClose: (index) => dispatch(close(index))
