@@ -40,7 +40,6 @@ export default class Input extends Component {
     };
 
     if(this.props.onChange) properties.onChange = this.props.onChange;
-    if(this.props.value) properties.value = this.props.value;
     if(this.props.name) properties.name = this.props.name;
     if(this.props.placeholder) properties.placeholder = this.props.placeholder;
 
@@ -48,7 +47,7 @@ export default class Input extends Component {
       <div className={styles.container + (this.props.error ? ' error ' + styles.error : '') + (this.props.className ? ' ' + this.props.className : '')}>
         {label}
         <div className="input-wrapper">
-          <input type={this.props.type} {...properties} />
+          <input value={this.props.value} type={this.props.type} {...properties} />
         </div>
         {error}
       </div>
@@ -58,6 +57,7 @@ export default class Input extends Component {
 
 Input.defaultProps = {
   type: "text",
+  value: "",
   required: false,
   disabled: false
 };
