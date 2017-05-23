@@ -1,0 +1,67 @@
+@import "../../variables";
+
+.container {
+
+  :global {
+	.help-icon {
+	  font-size: $input-help-icon-size;
+	  color: $input-help-icon-color;
+	  margin-left: 8px;
+	}
+
+	.help-tooltip {
+	  background: $input-help-tooltip-background !important;
+	  color: $input-help-tooltip-color !important;
+	  padding: 3px 20px !important;
+	  text-align: center;
+	  line-height: 18px;
+	}
+
+	.label-wrapper{
+	  line-height: $input-help-icon-size;
+	  margin-bottom: 5px;
+	}
+
+	.input-wrapper{
+		input{
+		  width: 100%;
+		  color: $input-color;
+		  background-color: $input-background-color;
+		  border-radius: $input-border-radius;
+		  padding: 6px 10px 5px 10px;
+		  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+		  border: $input-border;
+		  margin-bottom: 15px;
+		  outline: none;
+
+		  &:hover{
+			background-color: darken($input-background-color, 2%);
+		  }
+
+		  &:focus{
+			outline: none;
+			border: $input-focus-border;
+			background-color: darken($input-background-color, 2%);
+		  }
+		}
+	}
+
+	.error-wrapper{
+	  color: $input-error-color;
+	}
+  }
+}
+
+.error{
+  :global{
+	.label-wrapper label{
+	  color: $input-error-color;
+	}
+
+	.input-wrapper input{
+	  border-color: $input-error-color;
+	}
+  }
+}
+
+

@@ -28,6 +28,19 @@ $line-height: 1.428571429;
 $link-color: $very-light-grey;
 $link-hover-color: $white;
 
+// Input
+$input-color: $very-light-grey;
+$input-background-color: $light-grey;
+$input-border: 1px solid $light-grey;
+$input-border-radius: 3px;
+$input-help-icon-size: 18px;
+$input-help-icon-color: $light-blue;
+$input-help-tooltip-background: $light-grey;
+$input-help-tooltip-color: $white;
+
+$input-focus-border: 1px solid lighten($light-grey, 8%);
+$input-error-color: $red;
+
 // Graph colors
 $canvas-background: $dark-grey;
 $node-background: $light-grey;
@@ -78,7 +91,7 @@ $nodes-sidebar-margin: 8px;
 $nodes-sidebar-background: $grey;
 $nodes-sidebar-border-color: $dark-grey;
 $nodes-sidebar-search-background: $light-grey;
-$nodes-sidebar-search-color: $white;
+$nodes-sidebar-search-color: $very-light-grey;
 
 // Code View
 $code-view-height: 400px;
