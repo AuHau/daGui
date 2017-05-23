@@ -80,3 +80,18 @@ div[contenteditable] {
 .joint-link.joint-theme-modern .connection-wrap{
   stroke-width: 8;
 }
+
+/////////////////////////////////////////////
+// Custom scrollbar styling
+
+@import "~react-scrollbar/dist/css/scrollArea.css";
+
+.scrollarea .scrollbar-container{
+  &:hover{
+	background: $scrollbar-background !important;
+  }
+
+  .scrollbar{
+	background: $scrollbar-color !important;
+  }
+}

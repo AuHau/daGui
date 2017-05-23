@@ -8,7 +8,6 @@ import ConfigurationsMenu from './exec_confs/ConfigurationsMenu';
 import styles from './ExecutionConfigurations.scss';
 
 const CONFS_STORAGE_PREFIX = "exec_confs:";
-const UNTITLED_REGEX = new RegExp(/^Untitled [0-9]+$/);
 
 class ExecutionConfigurations extends Component {
 
@@ -20,53 +19,68 @@ class ExecutionConfigurations extends Component {
     this.updateConf = this.updateConf.bind(this);
     this.selectConf = this.selectConf.bind(this);
     this.createConf = this.createConf.bind(this);
+    this.isNameValid = this.isNameValid.bind(this);
   }
 
-  componentWillReceiveProps(){
-    this.getConfs();
+  componentWillReceiveProps(nextProps){
+    this.getConfs(nextProps.adapter);
     this.setState({active: null});
   }
 
-  getConfs(){
-    if(!this.props.adapter) {
+  getConfs(adapter){
+    if(!adapter) {
       return this.setState({confs: {}});
     }
 
-    this.setState({confs: JSON.parse(localStorage.getItem(CONFS_STORAGE_PREFIX + this.props.adapter.getId())) || {}});
+    this.setState({confs: JSON.parse(localStorage.getItem(CONFS_STORAGE_PREFIX + adapter.getId())) || {}});
   }
 
   deleteConf(name){
     if(this.state.confs.hasOwnProperty(name)){
       delete this.state.confs[name];
+      this.saveConfs(this.state.confs);
       this.setState({confs: this.state.confs, active: null});
     }
   }
 
   updateConf(name, data){
-    this.setState({confs: {[name]: data, ...this.state.confs}});
-    this.saveConfs();
+    let newConfs;
+    if(name != data.name){
+      delete this.state.confs[name];
+      newConfs = {...this.state.confs, [data.name]: data};
+      this.setState({active: data.name, confs: newConfs});
+    }else{
+      newConfs = {...this.state.confs, [name]: data};
+      this.setState({confs: newConfs});
+    }
+    this.saveConfs(newConfs);
   }
 
   createConf(){
     const names = Object.keys(this.state.confs);
     let count = 1;
-    let title = "Untitled " + count;
-    while(names.includes(title)){
+    let name = "Untitled " + count;
+    while(names.includes(name)){
       count++;
-      title = "Untitled " + count;
+      name = "Untitled " + count;
     }
 
-    this.updateConf(title, {});
+    this.updateConf(name, {name: name});
   }
 
   selectConf(name){
     this.setState({active: name});
   }
 
-  saveConfs(){
-    localStorage.setItem(CONFS_STORAGE_PREFIX + this.props.adapter.getId(), JSON.stringify(this.state.confs));
+  isNameValid(name){
+    return !(Object.keys(this.state.confs).includes(name) || name.length == 0);
   }
 
+  saveConfs(confs){
+    localStorage.setItem(CONFS_STORAGE_PREFIX + this.props.adapter.getId(), JSON.stringify(confs));
+  }
+
+  // TODO: [Low] Support adapter's versioning for Execution Configurations (Configurations will have assigned for which Adapter's versions are compatible with).
   render() {
     // When there is no opened file
     if(!this.props.adapter){
@@ -84,13 +98,13 @@ class ExecutionConfigurations extends Component {
         contentLabel="Execution Configurations Modal"
       >
         <header>
-          Execution Configurations
+          Execution Configurations for {this.props.adapter.getName()}
         </header>
         <div className={styles.menu}>
           <ConfigurationsMenu active={this.state.active} configurations={this.state.confs} onDelete={this.deleteConf} onCreate={this.createConf} onSelection={this.selectConf} />
         </div>
         <div className={styles.form}>
-          <AdaptersForm onClose={this.props.onClose} onUpdate={(data) => this.updateConf(this.state.active, data)} />
+          <AdaptersForm configuration={this.state.active ? this.state.confs[this.state.active] : null} isNameValid={this.isNameValid} onClose={this.props.onClose} onUpdate={(data) => this.updateConf(this.state.active, data)} />
         </div>
         <a href="#" className={styles.close} onClick={this.props.onClose}><i className="icon-x"/></a>
 

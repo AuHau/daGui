@@ -28,6 +28,10 @@ $line-height: 1.428571429;
 $link-color: $very-light-grey;
 $link-hover-color: $white;
 
+// Scrollbar
+$scrollbar-color: $very-light-grey;
+$scrollbar-background: $light-grey;
+
 // Input
 $input-color: $very-light-grey;
 $input-background-color: $light-grey;
@@ -49,6 +53,7 @@ $button-background-color: $grey;
 $button-color: $very-light-grey;
 
 $button-active-background-color: darken($grey, 2%);
+$button-disabled-background-color: #565656;
 
 // Graph colors
 $canvas-background: $dark-grey;

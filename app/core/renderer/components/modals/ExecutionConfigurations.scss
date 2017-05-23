@@ -48,6 +48,7 @@ $menu-width: 200px;
   left: $menu-width;
   top: $header-height;
   padding: 15px;
+  overflow: auto;
 }
 
 .close{
