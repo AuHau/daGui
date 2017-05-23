@@ -27,7 +27,8 @@ export default (state, action, wholeState) => {
 
   switch (action.type) {
     case REHYDRATE:
-      return action.payload.files;
+      // On Rehydrate return the persisted state, in case of empty persisted state don't make any changes
+      return (action.payload.files ? action.payload.files : wholeState);
 
     case FILE.NEW:
       return wholeState.update('opened', files => files.push(
