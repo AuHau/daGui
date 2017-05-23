@@ -1,0 +1,19 @@
+@import "../../variables";
+
+.container{
+  :global{
+	button{
+	  padding: $button-padding;
+	  border: $button-border;
+	  border-radius: $button-border-radius;
+	  background-color: $button-background-color;
+	  color: $button-color;
+	  outline: none;
+	  cursor: pointer;
+
+	  &:active{
+		background-color: $button-active-background-color;
+	  }
+	}
+  }
+}

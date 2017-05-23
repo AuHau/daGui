@@ -41,6 +41,15 @@ $input-help-tooltip-color: $white;
 $input-focus-border: 1px solid lighten($light-grey, 8%);
 $input-error-color: $red;
 
+// Button
+$button-padding: 3px 12px;
+$button-border: 1px solid $light-grey;
+$button-border-radius: 3px;
+$button-background-color: $grey;
+$button-color: $very-light-grey;
+
+$button-active-background-color: darken($grey, 2%);
+
 // Graph colors
 $canvas-background: $dark-grey;
 $node-background: $light-grey;
@@ -57,7 +66,7 @@ $node-active-stroke-width: 1;
 $node-error-color: $red;
 $node-error-stroke-width: 1;
 
-// TabsW
+// Tabs
 $tabs-height: 50px;
 $tabs-tab-height: 40px;
 $tabs-background: $grey;
