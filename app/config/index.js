@@ -16,13 +16,23 @@ const canvas = {
   zoomStep: 0.2
 };
 
+const version = "0.5";
+
+const localForageConfig = {
+  name        : 'daGui',
+  version     : version,
+};
+
+
 export default {
+  version,
   adapters,
   languages,
   canvas,
+  localForageConfig,
   isNodeHidden: (nodeType) =>{
     return SparkAdapter.getNodeTemplates()[nodeType].isNodeHidden();
-  }
+  },
 }
 
 let initilizied = false;

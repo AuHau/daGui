@@ -7,10 +7,12 @@ import validate from 'webpack-validator';
 
 export default validate({
   module: {
+    noParse: /node_modules\/localforage\/dist\/localforage.js/,
+
     loaders: [{
       test: /\.jsx?$/,
       loaders: ['babel-loader'],
-      exclude: /node_modules/
+      exclude: /node_modules/,
     }, {
       test: /\.json$/,
       loader: 'json-loader'

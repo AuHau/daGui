@@ -1,13 +1,12 @@
 // @flow
 import React, {Component} from 'react';
 import ReactModal from 'react-modal';
-import config from "../../../../config/index";
 import { connect } from 'react-redux';
+import ExecutionConfigurationsWell from 'renderer/wells/ExecutionConfigurationsWell';
+
 import ConfigurationsMenu from './exec_confs/ConfigurationsMenu';
 
 import styles from './ExecutionConfigurations.scss';
-
-const CONFS_STORAGE_PREFIX = "exec_confs:";
 
 class ExecutionConfigurations extends Component {
 
@@ -27,12 +26,13 @@ class ExecutionConfigurations extends Component {
     this.setState({active: null});
   }
 
-  getConfs(adapter){
+  async getConfs(adapter){
     if(!adapter) {
       return this.setState({confs: {}});
     }
 
-    this.setState({confs: JSON.parse(localStorage.getItem(CONFS_STORAGE_PREFIX + adapter.getId())) || {}});
+    const confs = await ExecutionConfigurationsWell.getConfigurations(adapter.getId());
+    this.setState({confs: confs});
   }
 
   deleteConf(name){
@@ -76,8 +76,8 @@ class ExecutionConfigurations extends Component {
     return !(Object.keys(this.state.confs).includes(name) || name.length == 0);
   }
 
-  saveConfs(confs){
-    localStorage.setItem(CONFS_STORAGE_PREFIX + this.props.adapter.getId(), JSON.stringify(confs));
+  async saveConfs(confs){
+    return ExecutionConfigurationsWell.setConfigurations(this.props.adapter.getId(), confs);
   }
 
   // TODO: [Low] Support adapter's versioning for Execution Configurations (Configurations will have assigned for which Adapter's versions are compatible with).

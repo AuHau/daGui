@@ -17,7 +17,8 @@ class Menu extends Component {
   constructor(props){
     super(props);
 
-    this.executionSetChange = this.executionSetChange.bind(this);
+    this.executionConfChange = this.executionConfChange.bind(this);
+    this.keyboardShortcutsHandler = this.keyboardShortcutsHandler.bind(this);
     this.state = {currentExecutionConf: 1}
   }
 
@@ -30,7 +31,7 @@ class Menu extends Component {
   };
 
   componentDidMount(){
-    document.addEventListener('keyup', this.keyboardShortcutsHandler.bind(this));
+    document.addEventListener('keyup', this.keyboardShortcutsHandler);
   }
 
   keyboardShortcutsHandler(e){
@@ -65,7 +66,7 @@ class Menu extends Component {
     }
   }
 
-  executionSetChange(val){
+  executionConfChange(val){
     val = val.value;
     if(val !=  'conf'){
       this.setState({currentExecutionConf: val});
@@ -122,7 +123,7 @@ class Menu extends Component {
               clearable={false}
               searchable={false}
               className={styles.select}
-              onChange={this.executionSetChange}
+              onChange={this.executionConfChange}
             />
           </li>
         </ul>
