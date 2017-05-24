@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
+import ExecutionConfigurationsWell from 'renderer/wells/ExecutionConfigurationsWell';
 import styles from './Menu.scss';
 import CursorMode from 'shared/enums/CursorMode';
 import * as uiActions from 'shared/actions/ui';
@@ -19,7 +20,8 @@ class Menu extends Component {
 
     this.executionConfChange = this.executionConfChange.bind(this);
     this.keyboardShortcutsHandler = this.keyboardShortcutsHandler.bind(this);
-    this.state = {currentExecutionConf: 1}
+    this.state = {currentExecutionConf: null, confs: []};
+    if(props.adapter) this.loadExecConfs(props.adapter.getId());
   }
 
   getCallback(callback, fireAlways){
@@ -29,6 +31,13 @@ class Menu extends Component {
       }
     }
   };
+
+  componentWillReceiveProps(nextProps){
+    if((!this.props.adapter && nextProps.adapter)
+      || (this.props.adapter && nextProps.adapter && nextProps.adapter.getId() != this.props.adapter.getId()) ){
+      this.loadExecConfs(nextProps.adapter.getId());
+    }
+  }
 
   componentDidMount(){
     document.addEventListener('keyup', this.keyboardShortcutsHandler);
@@ -66,10 +75,18 @@ class Menu extends Component {
     }
   }
 
+  async loadExecConfs(adapterId){
+    const confs = await ExecutionConfigurationsWell.getConfigurations(adapterId);
+    const active = await ExecutionConfigurationsWell.getActive(adapterId);
+
+    this.setState({currentExecutionConf: active, confs: Object.values(confs)})
+  }
+
   executionConfChange(val){
     val = val.value;
     if(val !=  'conf'){
       this.setState({currentExecutionConf: val});
+      ExecutionConfigurationsWell.setActive(this.props.adapter.getId(), val);
     }else{
       this.props.onOpenExecConfs();
     }
@@ -77,11 +94,8 @@ class Menu extends Component {
 
   // TODO: [BUG] Contain does not work
   render() {
-    const options = [
-      { value: '1', label: 'One' },
-      { value: '2', label: 'Two' },
-      { value: 'conf', label: 'Configuration', classNames: styles.configureOption}
-    ];
+    const confsOptions = this.state.confs.map(conf => {return {value: conf.name, label: conf.name}});
+    confsOptions.push({ value: 'conf', label: 'Configuration', classNames: styles.configureOption});
 
     return (
       <div className={styles.container}>
@@ -119,7 +133,7 @@ class Menu extends Component {
           <li>
             <Select
               value={this.state.currentExecutionConf}
-              options={options}
+              options={confsOptions}
               clearable={false}
               searchable={false}
               className={styles.select}
