@@ -7,8 +7,8 @@ export default {
   lastHistorySaved: 0,
   adapter: SparkAdapter,
   language: Python,
-  adapterTarget: '2.1',
-  languageTarget: '',
+  adapterVersion: '2.1',
+  languageVersion: '',
   $selected: [],
   $pan: {
     x: 0,

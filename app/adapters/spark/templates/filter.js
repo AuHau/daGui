@@ -1,10 +1,14 @@
 import joint from 'jointjs';
 
-import DefaultShape from '../../../core/graph/DefaultShape';
+import DefaultShape, {generatePorts} from '../../../core/graph/DefaultShape';
 import NodeTemplate from '../../../core/graph/NodeTemplate';
 
 const NAME = 'Filter';
 const NODE_TYPE = 'spark.filter';
+const NO_INPUT_NODES = 1;
+const NO_OUTPUT_NODES = 1;
+
+const ports = [...generatePorts('in', NO_INPUT_NODES), ...generatePorts('out', NO_OUTPUT_NODES)];
 const MODEL = DefaultShape.extend({
   defaults: joint.util.deepSupplement({
     type: NODE_TYPE,
@@ -15,16 +19,7 @@ const MODEL = DefaultShape.extend({
       description: NAME,
     },
     ports: {
-      items: [
-        {
-          id: 'in',
-          group: 'in'
-        },
-        {
-          id: 'out',
-          group: 'out'
-        }
-      ]
+      items: ports
     }
   }, DefaultShape.prototype.defaults)
 });
@@ -50,19 +45,15 @@ export default class Filter extends NodeTemplate{
     return false;
   }
 
-  static hasCodeToFill(lang){
-    return true;
-  }
-
-  static getCodePrefix(lang){
+  static getCodePrefix(langId){
     return "filter(";
   }
 
-  static getCodeSuffix(lang){
+  static getCodeSuffix(langId){
     return ")";
   }
 
-  static getCodeParameters(lang){
+  static getCodeParameters(langId){
     return [
       {
         description: 'Function which accepts one parameter (element) and return true if if the value should be present in the outcome RDD or false if not',

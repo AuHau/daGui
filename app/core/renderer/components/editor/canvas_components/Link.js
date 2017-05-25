@@ -50,7 +50,7 @@ export default class Link extends CanvasComponentBase {
       for (let children of sourcesChildren) {
         childrenElement = this.graph.getCell(children.attributes.target.id);
         if (!childrenElement.attributes.dfGui.variableName) {
-          const variableName = this.get('language').nameNode(this.get('adapter').getNodeTemplates()[childrenElement.attributes.type], this.get('usedVariables'));
+          const variableName = this.get('language').nameNode(this.get('adapter').getNodeTemplates(this.get('adapterVersion'))[childrenElement.attributes.type], this.get('usedVariables'));
           batchUpdate.push({nid: childrenElement.id, newVariableName: variableName});
         }
       }

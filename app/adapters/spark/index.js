@@ -27,14 +27,14 @@ export default class SparkAdapter extends BaseAdapter{
     return 'Spark'
   }
 
-  static getSupportedLanguages(){
+  static getSupportedLanguages(adaptersVersion){
     return [
       Python,
       Scala
     ];
   }
 
-  static getSupportedLanguageVersions(langId){
+  static getSupportedLanguageVersions(langId, adaptersVersion){
     const versions = {
       [Python.getId()]: Python.getSupportedVersions(),
       [Scala.getId()]: [
@@ -52,7 +52,7 @@ export default class SparkAdapter extends BaseAdapter{
     ]
   }
 
-  static getNodeTemplates(){
+  static getNodeTemplates(adaptersVersion){
     const nodeMap = {};
 
     nodeMap[Filter.getType()] = Filter;
@@ -91,7 +91,11 @@ export default class SparkAdapter extends BaseAdapter{
     ]
   }
 
-  static isTypeInput(type){
+  static getValidationCriteria(adapterVersion){
+    throw new TypeError("Method 'getValidationCriteria' has to be implemented!");
+  }
+
+  static isTypeInput(type, adapterVersion){
     return SparkAdapter.getGroupedNodeTemplates()
       .find(group => group.name == 'Input')['templates']
       .find(template => template.getType() == type) != undefined;
@@ -101,10 +105,10 @@ export default class SparkAdapter extends BaseAdapter{
     return validateGraph(graph, normalizedGraph, language, inputs, SparkAdapter);
   }
 
-  static generateCode(output, normalizedGraph, inputs, usedVariables, language){
-    switch (language.getName()){
-      case 'Python':
-        return pythonGenerator(output, SparkAdapter, normalizedGraph, inputs, usedVariables);
+  static generateCode(output, normalizedGraph, inputs, usedVariables, language, languageVersion, adaptersVersion){
+    switch (language.getId()){
+      case 'py':
+        return pythonGenerator(output, SparkAdapter, normalizedGraph, inputs, usedVariables, languageVersion, adaptersVersion);
       default:
         throw new Error("Not supported language!");
     }
@@ -115,5 +119,9 @@ export default class SparkAdapter extends BaseAdapter{
 
   static getExecutionConfigurationForm(){
     return ExecutionConfigurationForm;
+  }
+
+  static getSettingsForm(){
+
   }
 }

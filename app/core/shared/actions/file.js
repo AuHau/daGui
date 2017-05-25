@@ -90,16 +90,16 @@ export function save(index){
   }
 }
 
-export function load(name, path, adapter, adapterTarget, language, languageTarget, cells) {
+export function load(name, path, adapter, adapterVersion, language, languageVersion, cells) {
   return {
     type: FILE.LOAD,
     payload: {
       name,
       path,
       adapter,
-      adapterTarget,
+      adapterVersion,
       language,
-      languageTarget,
+      languageVersion,
       cells
     }
   }

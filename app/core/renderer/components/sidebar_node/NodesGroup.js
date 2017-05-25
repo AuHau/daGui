@@ -63,7 +63,7 @@ class NodesGroup extends Component {
         // Redux action
         if(countInPorts(s) > 1 || this.props.adapter.isTypeInput(s.attributes.type)){
           const sJson = s.toJSON();
-          const variableName = this.props.language.nameNode(this.props.adapter.getNodeTemplates()[s.attributes.type], this.props.usedVariables);
+          const variableName = this.props.language.nameNode(this.props.adapter.getNodeTemplates(this.props.adapterVersion)[s.attributes.type], this.props.usedVariables);
           sJson.dfGui.variableName = variableName;
           this.props.addNodeAndVariable(sJson, variableName);
         }else{
@@ -174,7 +174,8 @@ const mapStateToProps = (state) => {
     canvasContainerSpec: state.getIn(['ui', 'canvasContainerSpec']),
     language: state.getIn(['files', 'opened', activeFile, 'language']),
     usedVariables: state.getIn(['files', 'opened', activeFile, 'history', 'present', 'usedVariables']).toJS(),
-    adapter: state.getIn(['files', 'opened', activeFile, 'adapter'])
+    adapter: state.getIn(['files', 'opened', activeFile, 'adapter']),
+    adapterVersion: state.getIn(['files', 'opened', activeFile, 'adapterVersion']),
   };
 };
 

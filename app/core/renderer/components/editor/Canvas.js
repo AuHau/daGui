@@ -204,6 +204,7 @@ const mapStateToProps = (state) => {
     language: state.getIn(['files', 'opened', activeFile, 'language']),
     usedVariables: state.getIn(['files', 'opened', activeFile, 'history', 'present', 'usedVariables']).toJS(),
     adapter: state.getIn(['files', 'opened', activeFile, 'adapter']),
+    adapterVersion: state.getIn(['files', 'opened', activeFile, 'adapterVersion']),
     graphJson: {'cells': state.getIn(['files', 'opened', activeFile,  'history', 'present', 'cells']).toJS()},
     detailNodeId: state.getIn('ui.detailNodeId'.split('.')),
     showCodeView: state.getIn('ui.showCodeView'.split('.')),

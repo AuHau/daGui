@@ -75,9 +75,9 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
   }
 }
 
-export default function generatePython(output, adapter, normalizedGraph, inputs, usedVariables) {
+export default function generatePython(output, adapter, normalizedGraph, inputs, usedVariables, languageVersion, adaptersVersion) {
   inputs = detectDependencies(normalizedGraph, inputs, usedVariables, Python);
-  const templates = adapter.getNodeTemplates();
+  const templates = adapter.getNodeTemplates(adaptersVersion);
   const variableStack = [];
   output.reset();
 

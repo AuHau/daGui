@@ -92,6 +92,24 @@ joint.shapes['dfGui']['defaultShape'] = MODEL;
 
 export default MODEL;
 
+export function generatePorts(type, count) {
+  if (count == 1) {
+    return [{
+      id: type,
+      group: type
+    }]
+  }
+
+  const ports = [];
+  for (let i = 0; i < count; i++) {
+    ports.push({
+      id: type,
+      group: type + count
+    });
+  }
+  return ports;
+}
+
 // Link definition
 export const defaultLink = joint.dia.Link.extend({
   markup: [

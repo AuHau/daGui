@@ -73,25 +73,27 @@ class NewFileModal extends Component {
           </select>
         </div>
       );
+    }
 
+    if(this.state.adaptersVersion){
       languages = (
         <div>
           <h4>Language:</h4>
           <select defaultValue="-1" onChange={this.onSelectedLanguage}>
             <option value="-1" disabled>select language</option>
-            {this.state.adapter.getSupportedLanguages().map(language => <option key={language.getId()} value={language.getId()}>{language.getName()}</option>)}
+            {this.state.adapter.getSupportedLanguages(this.state.adaptersVersion).map(language => <option key={language.getId()} value={language.getId()}>{language.getName()}</option>)}
           </select>
         </div>
       );
     }
 
-    if(this.state.language){
+    if(this.state.language && this.state.adaptersVersion){
       languageVersions = (
         <div>
           <h5>Language version:</h5>
           <select name="languageVersion" defaultValue="-1" onChange={this.handleInputChange}>
             <option value="-1" disabled>select language</option>
-            {this.state.adapter.getSupportedLanguageVersions(this.state.language.getId()).map(langVersion => <option key={langVersion} value={langVersion}>{langVersion}</option>)}
+            {this.state.adapter.getSupportedLanguageVersions(this.state.language.getId(), this.state.adaptersVersion).map(langVersion => <option key={langVersion} value={langVersion}>{langVersion}</option>)}
           </select>
         </div>
       )

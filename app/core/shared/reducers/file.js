@@ -38,8 +38,8 @@ export default (state, action, wholeState) => {
           lastHistorySaved: -1,
           adapter: action.payload.adapter,
           language: action.payload.language,
-          adapterTarget: action.payload.adapterVersion,
-          languageTarget: action.payload.languageVersion,
+          adapterVersion: action.payload.adapterVersion,
+          languageVersion: action.payload.languageVersion,
           $selected: [],
           $pan: {
             x: 0,

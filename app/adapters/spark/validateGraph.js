@@ -27,11 +27,6 @@ const checkParameters = (node, lang, adapter, nodeTemplate) => {
   return parametersErrors;
 };
 
-const isNodeTypeInGroup = (adapter, nodeType, groupName) => {
-  const group = adapter.getGroupedNodeTemplates().find(group => group.name == groupName);
-  return group.templates.find(template => template.getType() == nodeType) != undefined;
-};
-
 /**
  * Implements topological ordering to check if graph contains cycles ==> O(|E|+|V|)
  * Inspired from: https://simplapi.wordpress.com/2015/08/19/detect-graph-cycle-in-javascript/

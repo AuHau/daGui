@@ -66,7 +66,7 @@ export default class DetailSidebar extends Component {
       return (<div></div>);
 
     let codeInput;
-    if (this.nodeTemplate.hasCodeToFill()) {
+    if (this.nodeTemplate.getCodeParameters() !== null) {
       codeInput = (
         <div>
           <div>

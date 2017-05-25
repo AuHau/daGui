@@ -35,6 +35,7 @@ export default class NodesSidebar extends Component {
     let renderedGroups;
     if(this.props.adapter) {
 
+      // TODO: [Low] getGroupedNodeTemplates does not needs to be implemented ==> in such a case use getNodeTemplates instead.
       const groups = this.props.adapter.getGroupedNodeTemplates();
       renderedGroups = groups.map((group, index) => <NodesGroup key={index}
                                                                       displayHiddenNodes={this.state.showHiddenNodes}

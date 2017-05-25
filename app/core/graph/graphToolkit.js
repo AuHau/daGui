@@ -5,7 +5,9 @@ import joint from 'jointjs';
 
 export function generateCode(codeBuilder, $currentFile, currentHash=null, regenerateOnlyOnChange=false){
   const language = $currentFile.get('language');
+  const languageVersion = $currentFile.get('languageVersion');
   const adapter = $currentFile.get('adapter');
+  const adapterVersion = $currentFile.get('adapterVersion');
   const graph = {cells: $currentFile.getIn(['history', 'present', 'cells']).toJS()};
   const usedVariables = $currentFile.getIn(['history', 'present', 'usedVariables']).toJS();
 
@@ -37,7 +39,7 @@ export function generateCode(codeBuilder, $currentFile, currentHash=null, regene
   // TODO: Limit when the actual generation of code happens? App.js => generate only when showCodeView (Maybe splitting validation&generation)
 
   try {
-    adapter.generateCode(codeBuilder, normalizedGraph, inputs, usedVariables, language);
+    adapter.generateCode(codeBuilder, normalizedGraph, inputs, usedVariables, language, languageVersion,adapterVersion);
   } catch (e) {
     if (e.name == 'CircularDependency') {
       return {
@@ -127,8 +129,8 @@ export function serializeGraph($file){
   }
 
   let output = '';
-  output += 'adapter:' + $file.get('adapter').getId() + ':' + $file.get('adapterTarget');
-  output += ';language:' + $file.get('language').getId() + ':' + $file.get('languageTarget');
+  output += 'adapter:' + $file.get('adapter').getId() + ':' + $file.get('adapterVersion');
+  output += ';language:' + $file.get('language').getId() + ':' + $file.get('languageVersion');
   output += ';' + JSON.stringify(graph).replace('\n', '');
 
   return output;
