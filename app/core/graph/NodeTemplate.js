@@ -1,3 +1,7 @@
+import cssVariables from '!!sass-variable-loader!renderer/variables.scss';
+
+const WIDTH = parseInt(cssVariables.nodeDefaultWidth);
+const HEIGHT = parseInt(cssVariables.nodeDefaultHeight);
 
 export default class NodeTemplate {
   /**
@@ -28,6 +32,24 @@ export default class NodeTemplate {
    */
   static getModel() {
     throw new TypeError("Method 'getModel' has to be implemented!");
+  }
+
+  /**
+   * Returns an integer which represents the width of the node.
+   *
+   * @return {Number}
+   */
+  static getWidth(){
+    return WIDTH;
+  }
+
+  /**
+   * Returns an integer which represents the height of the node.
+   *
+   * @return {Number}
+   */
+  static getHeight(){
+    return HEIGHT;
   }
 
   /**

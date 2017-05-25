@@ -10,8 +10,6 @@ import styles from './NodesGroup.scss';
 
 import {addNode, addNodeAndUpdateVariables} from 'shared/actions/graph';
 
-const nodeWidth = parseInt(cssVariables.nodesSidebarNodeWidth);
-const nodeHeight = parseInt(cssVariables.nodesSidebarNodeHeight);
 const nodeMargin = parseInt(cssVariables.nodesSidebarMargin);
 
 class NodesGroup extends Component {
@@ -90,12 +88,11 @@ class NodesGroup extends Component {
   }
 
   renderNodes(nodes){
-    const centeredPositionX = (this.wrapperElem.offsetWidth - nodeWidth)/2;
     const nodeTemplates = nodes.map((nodeTemplate, index) => {
       const model = nodeTemplate.getModel();
       return new model({
-        position: { x: centeredPositionX, y: (nodeHeight+nodeMargin)*index },
-        size: { width: nodeWidth, height: nodeHeight } // TODO: [High] Let Adaptor's authors decide the size ==> Figure out centering & scaling to fit
+        position: { x: (this.wrapperElem.offsetWidth - nodeTemplate.getWidth())/2, y: (nodeTemplate.getHeight()+nodeMargin)*index },
+         // TODO: [High] Let Adaptor's authors decide the size ==> Figure out centering & scaling to fit
       })
     });
 
@@ -106,7 +103,8 @@ class NodesGroup extends Component {
     this.wrapperElem = findDOMNode(this.refs.placeholder);
 
     const nodes = this.filterOutNodes();
-    const totalHeight = nodes.length * nodeHeight + (nodes.length - 1) * nodeMargin;
+    let nodesHeight = 0; nodes.forEach(nodeTemplate => nodesHeight += nodeTemplate.getHeight());
+    const totalHeight = nodesHeight + (nodes.length - 1) * nodeMargin;
     this.paper = new joint.dia.Paper({
       el: this.wrapperElem,
       width: this.wrapperElem.offsetWidth,

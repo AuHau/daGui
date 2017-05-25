@@ -72,6 +72,7 @@ export default class Variables extends CanvasComponentBase{
     }
   }
 
+  // TODO: [BUG/High] Validate that there does not exists a variable with the new name, if so ==> error!
   onVariableNameChange(e){
     const nodeId = e.target.closest('.joint-cell').getAttribute('model-id');
     this.call('onUpdateVariable', nodeId, e.target.value);

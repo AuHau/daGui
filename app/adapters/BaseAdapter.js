@@ -133,7 +133,7 @@ export default class BaseAdapter {
   }
 
   /**
-   * 
+   *
    */
   static getSettingsForm(){
 

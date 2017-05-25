@@ -35,6 +35,8 @@ const PORT_DEFINITION = {
 
 const NAME = 'DefaultShape';
 const NODE_TYPE = 'dfGui.defaultShape';
+const WIDTH = parseInt(cssVariables.nodeDefaultWidth);
+const HEIGHT = parseInt(cssVariables.nodeDefaultHeight);
 const MODEL = joint.shapes.basic.Generic.extend({
   markup: '<g class="rotatable"><rect/><text/><g class="variableName ' + styles.variableNameWrapper + '"><foreignObject><div xmlns="http://www.w3.org/1999/xhtml"><input type="text"/></div></foreignObject></g></g>',
   portMarkup: '<circle class="port-body"/>',
@@ -42,8 +44,8 @@ const MODEL = joint.shapes.basic.Generic.extend({
   defaults: joint.util.deepSupplement({
     type: NODE_TYPE,
     size: {
-      width: 130,
-      height: 30
+      width: WIDTH + 30,
+      height: HEIGHT
     },
     attrs: {
       '.': {
@@ -52,8 +54,8 @@ const MODEL = joint.shapes.basic.Generic.extend({
       'rect': {
         fill: cssVariables.nodeBackground,
         stroke: cssVariables.nodeBackground,
-        width: 100,
-        height: 30,
+        width: WIDTH,
+        height: HEIGHT,
         rx: 2,
         ry: 2
       },

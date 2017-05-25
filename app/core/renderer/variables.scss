@@ -55,7 +55,7 @@ $button-color: $very-light-grey;
 $button-active-background-color: darken($grey, 2%);
 $button-disabled-background-color: #565656;
 
-// Graph colors
+// Canvas&graph styling
 $canvas-background: $dark-grey;
 $node-background: $light-grey;
 $node-color: $white;
@@ -70,6 +70,8 @@ $node-active-color: $yellow;
 $node-active-stroke-width: 1;
 $node-error-color: $red;
 $node-error-stroke-width: 1;
+$node-default-width: 100px;
+$node-default-height: 30px;
 
 // Tabs
 $tabs-height: 50px;
