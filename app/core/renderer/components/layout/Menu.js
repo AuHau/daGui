@@ -129,7 +129,8 @@ class Menu extends Component {
         </ul>
 
         <ul className={styles.right}>
-          <li className={styles.launchIcon}><a href="#" data-tip="Launch the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-play"/></a></li>
+          {!this.props.isExecutionRunning && <li className={styles.launchIcon}><a href="#" onClick={this.getCallback('onExecutionStart')} data-tip="Launch the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-play"/></a></li>}
+          {this.props.isExecutionRunning && <li className={styles.launchIcon}><a href="#" onClick={this.getCallback('onExecutionTermination')} data-tip="Terminate the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-stop"/></a></li>}
           <li>
             <Select
               value={this.state.currentExecutionConf}
@@ -153,7 +154,8 @@ const mapStateToProps = (state) => {
     currentFileIndex: currentFileIndex,
     adapter: state.getIn(['files', 'opened', currentFileIndex, 'adapter']),
     showCodeView: state.getIn('ui.showCodeView'.split('.')),
-    cursorMode: state.getIn(['ui', 'cursorMode'])
+    cursorMode: state.getIn(['ui', 'cursorMode']),
+    isExecutionRunning: state.getIn('ui.isExecutionRunning'.split('.')),
   };
 };
 
@@ -203,6 +205,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     onNew: () => {
       dispatch(uiActions.showNewFileModal())
+    },
+    onExecutionStart: () => {
+      dispatch(uiActions.startExecution())
+    },
+    onExecutionTermination: () => {
+      dispatch(uiActions.terminateExecution())
     },
     onOpenExecConfs: () => {
       dispatch(uiActions.showExecConfsModal())

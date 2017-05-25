@@ -260,8 +260,6 @@ export default class CodeView extends Component {
 
   onResize(){
     this.editor.resize(true);
-    // this.editor.renderer.
-
     setTimeout(()=> this.hookMarkers(this.props.codeBuilder.getMarkers()), 1000);
   }
 }

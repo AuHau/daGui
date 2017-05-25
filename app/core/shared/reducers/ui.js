@@ -9,7 +9,8 @@ const defaultState = {
   detailNodeId: null,
   showSettingsWindow: false,
   cursorMode: CursorMode.MULTISELECT,
-  showCodeView: false
+  showCodeView: false,
+  isExecutionRunning: false,
 };
 
 export default (state, action) => {
@@ -20,7 +21,7 @@ export default (state, action) => {
 
   switch (action.type){
     case REHYDRATE:
-      return action.payload.ui;
+      return (action.payload.ui ? action.payload.ui : state);
 
     case UI.CANVAS_RESIZE:
       const rect = action.payload;
@@ -57,6 +58,12 @@ export default (state, action) => {
 
     case UI.HIDE_EXEC_CONFS_MODAL:
       return state.set('displayExecConfsModal', false);
+
+    case UI.START_EXECUTION:
+      return state.set('isExecutionRunning', true).set('showCodeView', false);
+
+    case UI.TERMINATE_EXECUTION:
+      return state.set('isExecutionRunning', false);
 
     default:
       return state;

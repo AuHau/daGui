@@ -8,6 +8,7 @@ import ConfigurationsMenu from './exec_confs/ConfigurationsMenu';
 
 import styles from './ExecutionConfigurations.scss';
 
+// TODO: [BUG/High] When name of configuration changes, the change won't propagate to Menu's Select
 class ExecutionConfigurations extends Component {
 
   constructor(props){

@@ -10,6 +10,8 @@ const UI = {
   HIDE_NEW_FILE_MODAL: 'UI_HIDE_OPEN_MODAL',
   SHOW_EXEC_CONFS_MODAL: 'UI_SHOW_EXEC_CONFS_MODAL',
   HIDE_EXEC_CONFS_MODAL: 'UI_HIDE_EXEC_CONFS_MODAL',
+  START_EXECUTION: 'UI_START_EXECUTION',
+  TERMINATE_EXECUTION: 'UI_TERMINATE_EXECUTION',
   UNDO: 'UNDO',
   REDO: 'REDO'
 };
@@ -74,6 +76,18 @@ export const showExecConfsModal = () => {
 export const hideExecConfsModal = () => {
   return {
     type: UI.HIDE_EXEC_CONFS_MODAL
+  }
+};
+
+export const startExecution = () => {
+  return {
+    type: UI.START_EXECUTION
+  }
+};
+
+export const terminateExecution = () => {
+  return {
+    type: UI.TERMINATE_EXECUTION
   }
 };
 
