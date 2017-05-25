@@ -1,5 +1,6 @@
 // @flow
 import React, {Component} from 'react';
+import Scrollbar from 'react-scrollbar/dist/no-css';
 
 import levels, {classTranslation, textTranslation} from 'shared/enums/ErrorLevel.js';
 import styles from './ErrorsView.scss';
@@ -98,8 +99,10 @@ export default class ErrorsView extends Component {
         <div className={styles.messages} onClick={this.onClick}>
           {renderedErrors}
         </div>
-        <div className={styles.detailWindow} style={(this.state.showDetailWindow ? {display: 'block'} : {})}>
-          {detailedErrors}
+        <div className={styles.detailWindowWrapper} style={(this.state.showDetailWindow ? {display: 'block'} : {})}>
+          <Scrollbar className={styles.detailWindow} horizontal={false} >
+            {detailedErrors}
+          </Scrollbar>
         </div>
       </div>
     );

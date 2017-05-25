@@ -31,7 +31,7 @@
 
   .count.active{
 	background-color: $error;
-	border-color: transparent;
+	border-color: lighten($error, 15%);
   }
 }
 
@@ -43,7 +43,7 @@
 
   .count.active{
 	background-color: $warning;
-	border-color: transparent;
+	border-color: lighten($warning, 15%);
   }
 }
 
@@ -55,7 +55,7 @@
 
   .count.active{
 	background-color: $info;
-	border-color: transparent;
+	border-color: lighten($info, 15%);
   }
 }
 
@@ -103,22 +103,22 @@
   z-index: 5;
 }
 
-
+.detailWindowWrapper{
+  display: none;
+}
 
 .detailWindow {
-  display: none;
   position: absolute;
   left: 4px;
   bottom: $footer-height + 10px;
   width: 500px;
   height: 200px;
-  overflow-y: auto;
   background-color: $grey;
   border: 1px solid $dark-grey;
 
   padding: 10px;
 }
 
-.container:not(.ok):hover .detailWindow{
+.container:not(.ok):hover .detailWindowWrapper{
   display: block;
 }
