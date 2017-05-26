@@ -8,6 +8,8 @@ const getActive = (state) => {
   return state.get('active');
 };
 
+// TODO: [High] Add transformer for redux-persist, which will filterr out the "past" states
+
 export default function undoable(reducer, config) {
   return function (state, action) {
 

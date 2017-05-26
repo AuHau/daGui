@@ -186,6 +186,15 @@ function deleteNodeReducer(state, payload, wholeState){
 
   const cells = state.get('cells');
   const nid = payload.nid;
+
+  // If the nodes had associated variableName ==> delete it from usedVariables
+  let usedVariables = state.get('usedVariables');
+  const variableName = usedVariables.findKey(tempNid => nid == tempNid);
+  if (variableName) {
+    usedVariables = usedVariables.delete(variableName);
+  }
+
+  // Remove any associated links presence in occupiedPorts
   const linkOriginatingFromNid = cells.filter(node => node.getIn(['source', 'id']) == nid);
   const newOccupiedPorts = state.get('$occupiedPorts')
     .mapEntries(([occupiedNid, ports]) => {
@@ -196,8 +205,14 @@ function deleteNodeReducer(state, payload, wholeState){
 
       return [occupiedNid, ports];
     });
+
+  // Remove the node + all the links incoming/outgoing from the node
   const filtered = cells.filter(node => node.get('id') != nid && node.getIn(['source', 'id']) != nid && node.getIn(['target', 'id']) != nid );
-  return state.set('cells', filtered).set('$occupiedPorts', newOccupiedPorts);
+
+  return state
+    .set('cells', filtered)
+    .set('$occupiedPorts', newOccupiedPorts)
+    .set('usedVariables', usedVariables);
 }
 
 function updateVariableReducer(state, payload, wholeState){
