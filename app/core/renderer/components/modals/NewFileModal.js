@@ -46,6 +46,7 @@ class NewFileModal extends Component {
     });
   }
 
+  // TODO: [BUG/Low] The name has to be valid file name (i.e., validation of the used characters - no @#$...)
   handleInputChange(event) {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;

@@ -1,8 +1,9 @@
 // @flow
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import styles from './NodesSidebar.scss';
+import Scrollbar from 'react-scrollbar/dist/no-css';
 
+import styles from './NodesSidebar.scss';
 import NodesGroup from './NodesGroup';
 
 export default class NodesSidebar extends Component {
@@ -58,9 +59,9 @@ export default class NodesSidebar extends Component {
             </label>
           </div>
         </div>
-        <div className={styles.nodeList}>
+        <Scrollbar className={styles.nodeList} horizontal={false}>
           {renderedGroups}
-        </div>
+        </Scrollbar>
       </div>
     );
   }

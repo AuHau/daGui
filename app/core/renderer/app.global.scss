@@ -86,12 +86,16 @@ div[contenteditable] {
 
 @import "~react-scrollbar/dist/css/scrollArea.css";
 
-.scrollarea .scrollbar-container{
-  &:hover{
-	background: $scrollbar-background !important;
-  }
+.scrollarea {
+  padding-right: 15px;
 
-  .scrollbar{
-	background: $scrollbar-color !important;
+  .scrollbar-container {
+	&:hover {
+	  background: $scrollbar-background !important;
+	}
+
+	.scrollbar {
+	  background: $scrollbar-color !important;
+	}
   }
 }
