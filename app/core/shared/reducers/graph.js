@@ -186,8 +186,18 @@ function deleteNodeReducer(state, payload, wholeState){
 
   const cells = state.get('cells');
   const nid = payload.nid;
-  let filtered = cells.filter(node => node.get('id') != nid && node.getIn(['source', 'id']) != nid && node.getIn(['target', 'id']) != nid );
-  return state.set('cells', filtered);
+  const linkOriginatingFromNid = cells.filter(node => node.getIn(['source', 'id']) == nid);
+  const newOccupiedPorts = state.get('$occupiedPorts')
+    .mapEntries(([occupiedNid, ports]) => {
+      const link = linkOriginatingFromNid.find(node => node.getIn(['target', 'id']) == occupiedNid);
+      if(link && ports.has(link.getIn(['target', 'port']))){
+        return [occupiedNid, ports.delete(link.getIn(['target', 'port']))];
+      }
+
+      return [occupiedNid, ports];
+    });
+  const filtered = cells.filter(node => node.get('id') != nid && node.getIn(['source', 'id']) != nid && node.getIn(['target', 'id']) != nid );
+  return state.set('cells', filtered).set('$occupiedPorts', newOccupiedPorts);
 }
 
 function updateVariableReducer(state, payload, wholeState){
