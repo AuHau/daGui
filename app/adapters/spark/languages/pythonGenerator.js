@@ -2,8 +2,12 @@ import Python from 'languages/Python';
 import CodeMarker from 'shared/enums/CodeMarker';
 import detectDependencies from '../../utils/detectDependencies';
 
-const IMPORT = 'from pyspark import SparkConf, SparkContext';
-const INIT = ['conf = SparkConf()', 'sc = SparkContext(\'local\', \'test\', conf=conf)']; // TODO: SparkContext and SparkConf based on Running configuration
+const IMPORT = 'from pyspark import SparkConf, SparkContext, SparkSession';
+const INIT = {
+  conf: 'conf = SparkConf()',
+  sc: 'sc = SparkContext(\'local\', \'test\', conf=conf)',
+  sparkSession: 'sparkSession = SparkSession.builder.getOrCreate()',
+}; // TODO: SparkContext and SparkConf based on Running configuration
 
 const INDENTATION = '    '; // TODO: [LOW] Load from user's settings
 
@@ -86,11 +90,21 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
   }
 }
 
+function isDfInGraph(templates, graph) {
+  for (let node of Object.values(graph)) {
+    if (templates[node.type].getOutputDataType() == 'df') {
+      return true;
+    }
+  }
+
+  return false
+}
+
 export default function generatePython(output, adapter, normalizedGraph, inputs, usedVariables, languageVersion, adaptersVersion) {
   inputs = detectDependencies(normalizedGraph, inputs, usedVariables, Python);
   const templates = adapter.getNodeTemplates(adaptersVersion);
   const variableStack = [];
-  output.reset();
+  output.reset(); // Empty the CodeBuilder
 
   output
     .add(IMPORT)
@@ -98,21 +112,30 @@ export default function generatePython(output, adapter, normalizedGraph, inputs,
     .breakLine();
 
   output
-    .add(INIT[0])
+    .add(INIT.conf)
     .breakLine()
-    .add(INIT[1])
-    .breakLine()
+    .add(INIT.sc)
     .breakLine();
+
+  if (isDfInGraph(templates, normalizedGraph)) {
+    output
+      .add(INIT.sparkSession)
+      .breakLine();
+  }
+
+  output.breakLine();
 
   let markerIndex;
   for(let input of inputs) {
     variableStack.push(input.variableName);
 
+    const isDfNode = templates[input.type].getOutputDataType() == 'df';
+
     markerIndex = output
       .startMarker()
       .add(input.variableName)
       .marker(input.id, CodeMarker.VARIABLE)
-      .add(' = sc')
+      .add(isDfNode ? ' = sparkSession' : ' = sc')
       .finishMarker(input.id)
       .getLastMarkerIndex();
 
