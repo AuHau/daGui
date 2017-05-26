@@ -90,6 +90,8 @@ div[contenteditable] {
   padding-right: 15px;
 
   .scrollbar-container {
+	z-index: 999;
+
 	&:hover {
 	  background: $scrollbar-background !important;
 	}
