@@ -60,10 +60,6 @@ export default class MapPartitions extends NodeTemplate{
     return true;
   }
 
-  static hasCodeToFill(lang){
-    return true;
-  }
-
   static getCodePrefix(lang){
     return "mapPartitions(";
   }

@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Scrollbar from 'react-scrollbar/dist/no-css';
+import Toggle from 'material-ui/Toggle';
 
 import styles from './NodesSidebar.scss';
 import NodesGroup from './NodesGroup';
@@ -15,14 +16,16 @@ export default class NodesSidebar extends Component {
       searchedText: '',
       showHiddenNodes: false
     };
+
+    this.onHiddenNodesToggle = this.onHiddenNodesToggle.bind(this);
   }
 
   onSearch(e){
     this.setState({searchedText: e.target.value});
   }
 
-  onHiddenNodesToggle(e){
-    this.setState({showHiddenNodes: !this.state.showHiddenNodes});
+  onHiddenNodesToggle(e, toggled){
+    this.setState({showHiddenNodes: toggled});
   }
 
   componentDidMount(){
@@ -54,8 +57,13 @@ export default class NodesSidebar extends Component {
           </div>
           <div>
             <label>
-              <input type="checkbox" checked={this.state.showHiddenNodes} onChange={this.onHiddenNodesToggle.bind(this)}/>
-              Display hidden nodes
+              <Toggle
+                style={{fontSize: 13, lineHeight: 20}}
+                label="Display hidden nodes"
+                labelPosition="right"
+                toggled={this.state.showHiddenNodes}
+                onToggle={this.onHiddenNodesToggle}
+              />
             </label>
           </div>
         </div>
