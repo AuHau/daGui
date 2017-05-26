@@ -1,32 +1,38 @@
 import joint from 'jointjs';
-import * as config from '../../config';
 
 import DefaultShape, {generatePorts} from '../../../../core/graph/DefaultShape';
 import NodeTemplate from '../../../../core/graph/NodeTemplate';
+import * as config from '../../config';
 
-const NAME = 'Create DataFrame';
-const NODE_TYPE = 'dfCreateDataFrame';
+const NAME = 'Range';
+const NODE_TYPE = 'dfRange';
 const NO_INPUT_NODES = 0;
 const NO_OUTPUT_NODES = 1;
 const INPUT_DATA_TYPE = null;
-const OUTPUT_DATA_TYPE = 'df';
+const OUTPUT_DATA_TYPE = 'rdd';
 const IS_NODE_HIDEN = false;
-const PREFIX = 'createDataFrame(';
-const WIDTH = 150;
+const PREFIX = 'range(';
 const PARAMS = [
   {
-    name: 'data',
-    description: 'An RDD of any kind of SQL data representation(e.g. row, tuple, int, boolean, etc.), or list, or pandas.DataFrame.',
+    name: 'start',
+    description: 'the start value, if "end" is not specified, then this value is used as "end" and "start" is 0',
     required: true,
   },
   {
-    name: 'schema',
-    description: 'A pyspark.sql.types.DataType or a datatype string or a list of column names, default is None. The data type string format equals to pyspark.sql.types.DataType.simpleString, except that top level struct type can omit the struct<> and atomic types use typeName() as their format, e.g. use byte instead of tinyint for pyspark.sql.types.ByteType. We can also use int as a short name for IntegerType.',
+    name: 'end',
+    description: 'the start value, if "end" is not specified, then this value is used as "end" and "start" is 0',
     required: false,
-    template: 'schema=None',
-    selectionStart: '7',
-    selectionEnd: 'all'
   },
+  {
+    name: 'step',
+    description: 'the start value, if "end" is not specified, then this value is used as "end" and "start" is 0',
+    required: false,
+  },
+  {
+    name: 'numSlices',
+    description: 'the start value, if "end" is not specified, then this value is used as "end" and "start" is 0',
+    required: false,
+  }
 ];
 
 ///////////////////////////////////////////////////////////
@@ -35,14 +41,10 @@ const ports = [...generatePorts('in', NO_INPUT_NODES), ...generatePorts('out', N
 const MODEL = DefaultShape.extend({
   defaults: joint.util.deepSupplement({
     type: FULL_NODE_TYPE,
-    size:{
-      width: WIDTH
-    },
     attrs: {
       text : { text: NAME },
       rect : {
-        width: WIDTH,
-        fill: config.DF_NODES_FILL
+        fill: config.RDD_NODES_FILL
       }
     },
     dfGui: {
@@ -57,7 +59,7 @@ const MODEL = DefaultShape.extend({
 if(!joint.shapes['spark']) joint.shapes['spark'] = {};
 joint.shapes['spark'][NODE_TYPE] = MODEL;
 
-export default class CreateDataFrame extends NodeTemplate{
+export default class Range extends NodeTemplate{
 
   static getType(){
     return FULL_NODE_TYPE;
@@ -100,9 +102,5 @@ export default class CreateDataFrame extends NodeTemplate{
     }
 
     return false;
-  }
-
-  static getWidth() {
-    return WIDTH;
   }
 }

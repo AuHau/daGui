@@ -1,31 +1,22 @@
 import joint from 'jointjs';
-import * as config from '../../config';
 
 import DefaultShape, {generatePorts} from '../../../../core/graph/DefaultShape';
 import NodeTemplate from '../../../../core/graph/NodeTemplate';
+import * as config from '../../config';
 
-const NAME = 'Create DataFrame';
-const NODE_TYPE = 'dfCreateDataFrame';
-const NO_INPUT_NODES = 0;
-const NO_OUTPUT_NODES = 1;
-const INPUT_DATA_TYPE = null;
-const OUTPUT_DATA_TYPE = 'df';
+const NAME = 'Write JSON';
+const NODE_TYPE = 'dfWriteJson';
+const NO_INPUT_NODES = 1;
+const NO_OUTPUT_NODES = 0;
+const INPUT_DATA_TYPE = 'df';
+const OUTPUT_DATA_TYPE = null;
 const IS_NODE_HIDEN = false;
-const PREFIX = 'createDataFrame(';
-const WIDTH = 150;
+const PREFIX = 'write.json(';
 const PARAMS = [
   {
-    name: 'data',
-    description: 'An RDD of any kind of SQL data representation(e.g. row, tuple, int, boolean, etc.), or list, or pandas.DataFrame.',
+    name: 'path',
+    description: 'String represents path to the parquet file.',
     required: true,
-  },
-  {
-    name: 'schema',
-    description: 'A pyspark.sql.types.DataType or a datatype string or a list of column names, default is None. The data type string format equals to pyspark.sql.types.DataType.simpleString, except that top level struct type can omit the struct<> and atomic types use typeName() as their format, e.g. use byte instead of tinyint for pyspark.sql.types.ByteType. We can also use int as a short name for IntegerType.',
-    required: false,
-    template: 'schema=None',
-    selectionStart: '7',
-    selectionEnd: 'all'
   },
 ];
 
@@ -35,13 +26,9 @@ const ports = [...generatePorts('in', NO_INPUT_NODES), ...generatePorts('out', N
 const MODEL = DefaultShape.extend({
   defaults: joint.util.deepSupplement({
     type: FULL_NODE_TYPE,
-    size:{
-      width: WIDTH
-    },
     attrs: {
       text : { text: NAME },
       rect : {
-        width: WIDTH,
         fill: config.DF_NODES_FILL
       }
     },
@@ -93,16 +80,9 @@ export default class CreateDataFrame extends NodeTemplate{
 
   static isInputDataTypeValid(dataType, langId){
     if(INPUT_DATA_TYPE){
-      if(typeof INPUT_DATA_TYPE == 'string')
-        return dataType == INPUT_DATA_TYPE;
-
       return INPUT_DATA_TYPE.has(dataType);
     }
 
     return false;
-  }
-
-  static getWidth() {
-    return WIDTH;
   }
 }

@@ -19,9 +19,6 @@ const PORT_DEFINITION = {
   'out': {
     position: {
       name: 'right',
-      args: {
-        dx: 40
-      }
     },
     attrs: {
       '.port-body': {
@@ -44,7 +41,7 @@ const MODEL = joint.shapes.basic.Generic.extend({
   defaults: joint.util.deepSupplement({
     type: NODE_TYPE,
     size: {
-      width: WIDTH + 30,
+      width: WIDTH,
       height: HEIGHT
     },
     attrs: {
@@ -105,8 +102,8 @@ export function generatePorts(type, count) {
   const ports = [];
   for (let i = 0; i < count; i++) {
     ports.push({
-      id: type,
-      group: type + count
+      id: type + count,
+      group: type
     });
   }
   return ports;

@@ -1,18 +1,15 @@
 import BaseAdapter from '../BaseAdapter';
 import validateGraph from './validateGraph';
 import pythonGenerator from './languages/pythonGenerator';
+import ValidationCriteria from 'shared/enums/ValidationCriteria';
 
 // Languages
 import Python from '../../core/languages/Python';
 import Scala from '../../core/languages/Scala';
+import Java from '../../core/languages/Java';
 
 // NodeTemplates
-import Filter from './templates/filter';
-import Count from './templates/count';
-import Map from './templates/map';
-import MapPartitions from './templates/mapPartitions';
-import Parallelize from './templates/parallelize';
-import Union from './templates/union';
+import {allNodeTemplates, groupedTemplates} from './templates';
 
 // Components
 import ExecutionConfigurationForm from './components/ExecutionConfigurationForm';
@@ -30,16 +27,16 @@ export default class SparkAdapter extends BaseAdapter{
   static getSupportedLanguages(adaptersVersion){
     return [
       Python,
-      Scala
+      Scala,
+      Java
     ];
   }
 
   static getSupportedLanguageVersions(langId, adaptersVersion){
     const versions = {
+      [Java.getId()]: Java.getSupportedVersions(),
       [Python.getId()]: Python.getSupportedVersions(),
-      [Scala.getId()]: [
-        '2.11'
-      ]
+      [Scala.getId()]: Scala.getSupportedVersions(),
     };
 
     return versions[langId];
@@ -47,58 +44,36 @@ export default class SparkAdapter extends BaseAdapter{
 
   static getSupportedVersions(){
     return [
+      '2.1.1',
       '2.1.0',
-      '2.0.2',
     ]
   }
 
   static getNodeTemplates(adaptersVersion){
-    const nodeMap = {};
-
-    nodeMap[Filter.getType()] = Filter;
-    nodeMap[Map.getType()] = Map;
-    nodeMap[Count.getType()] = Count;
-    nodeMap[MapPartitions.getType()] = MapPartitions;
-    nodeMap[Parallelize.getType()] = Parallelize;
-    nodeMap[Union.getType()] = Union;
-
-    return nodeMap
+    return allNodeTemplates;
   }
 
   static getGroupedNodeTemplates(){
-    return [
-      {
-        name: 'Transformations',
-        templates: [
-          Filter,
-          Map,
-          MapPartitions,
-          Union
-        ]
-      },
-      {
-        name: 'Actions',
-        templates: [
-          Count
-        ]
-      },
-      {
-        name: 'Input',
-        templates: [
-          Parallelize
-        ]
-      }
-    ]
+    return groupedTemplates;
   }
 
   static getValidationCriteria(adapterVersion){
-    throw new TypeError("Method 'getValidationCriteria' has to be implemented!");
+    return [
+      ValidationCriteria.NO_CYCLES,
+      ValidationCriteria.HAS_INPUT_NODES,
+      ValidationCriteria.HAS_PORTS_CONNECTED,
+      ValidationCriteria.HAS_REQUIRED_PARAMETERS_FILLED,
+    ]
   }
 
   static isTypeInput(type, adapterVersion){
     return SparkAdapter.getGroupedNodeTemplates()
-      .find(group => group.name == 'Input')['templates']
-      .find(template => template.getType() == type) != undefined;
+      .find(group => group.name == 'RDD Input')['templates']
+      .find(template => template.getType() == type) != undefined
+      ||
+      SparkAdapter.getGroupedNodeTemplates()
+        .find(group => group.name == 'DF Input')['templates']
+        .find(template => template.getType() == type) != undefined;
   }
 
   static validateGraph(graph, normalizedGraph, inputs, language){

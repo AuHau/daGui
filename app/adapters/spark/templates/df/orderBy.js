@@ -1,32 +1,34 @@
 import joint from 'jointjs';
-import * as config from '../../config';
 
 import DefaultShape, {generatePorts} from '../../../../core/graph/DefaultShape';
 import NodeTemplate from '../../../../core/graph/NodeTemplate';
+import * as config from '../../config';
 
-const NAME = 'Create DataFrame';
-const NODE_TYPE = 'dfCreateDataFrame';
-const NO_INPUT_NODES = 0;
+const NAME = 'Order By';
+const NODE_TYPE = 'dfOrderBy';
+const NO_INPUT_NODES = 1;
 const NO_OUTPUT_NODES = 1;
-const INPUT_DATA_TYPE = null;
+const INPUT_DATA_TYPE = 'df';
 const OUTPUT_DATA_TYPE = 'df';
 const IS_NODE_HIDEN = false;
-const PREFIX = 'createDataFrame(';
-const WIDTH = 150;
+const PREFIX = 'orderBy(';
 const PARAMS = [
   {
-    name: 'data',
-    description: 'An RDD of any kind of SQL data representation(e.g. row, tuple, int, boolean, etc.), or list, or pandas.DataFrame.',
+    name: '*cols',
+    description: 'List of Column or column names to sort by.',
     required: true,
+    template: '[]',
+    selectionStart: 1,
+    selectionEnd: 1,
   },
   {
-    name: 'schema',
-    description: 'A pyspark.sql.types.DataType or a datatype string or a list of column names, default is None. The data type string format equals to pyspark.sql.types.DataType.simpleString, except that top level struct type can omit the struct<> and atomic types use typeName() as their format, e.g. use byte instead of tinyint for pyspark.sql.types.ByteType. We can also use int as a short name for IntegerType.',
+    name: 'ascending',
+    description: 'Boolean or list of boolean (default True). Sort ascending vs. descending. Specify list for multiple sort orders. If a list is specified, length of the list must equal length of the cols.',
     required: false,
-    template: 'schema=None',
-    selectionStart: '7',
-    selectionEnd: 'all'
-  },
+    template: 'ascending=[]',
+    selectionStart: 11,
+    selectionEnd: 11,
+  }
 ];
 
 ///////////////////////////////////////////////////////////
@@ -35,13 +37,9 @@ const ports = [...generatePorts('in', NO_INPUT_NODES), ...generatePorts('out', N
 const MODEL = DefaultShape.extend({
   defaults: joint.util.deepSupplement({
     type: FULL_NODE_TYPE,
-    size:{
-      width: WIDTH
-    },
     attrs: {
       text : { text: NAME },
       rect : {
-        width: WIDTH,
         fill: config.DF_NODES_FILL
       }
     },
@@ -100,9 +98,5 @@ export default class CreateDataFrame extends NodeTemplate{
     }
 
     return false;
-  }
-
-  static getWidth() {
-    return WIDTH;
   }
 }

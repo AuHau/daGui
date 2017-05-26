@@ -1,33 +1,18 @@
 import joint from 'jointjs';
-import * as config from '../../config';
 
 import DefaultShape, {generatePorts} from '../../../../core/graph/DefaultShape';
 import NodeTemplate from '../../../../core/graph/NodeTemplate';
 
-const NAME = 'Create DataFrame';
-const NODE_TYPE = 'dfCreateDataFrame';
-const NO_INPUT_NODES = 0;
+const NAME = 'Convert DF to RDD';
+const NODE_TYPE = 'dfConvertDfToRdd';
+const NO_INPUT_NODES = 1;
 const NO_OUTPUT_NODES = 1;
-const INPUT_DATA_TYPE = null;
-const OUTPUT_DATA_TYPE = 'df';
+const INPUT_DATA_TYPE = new Set(['df']);
+const OUTPUT_DATA_TYPE = 'rdd';
 const IS_NODE_HIDEN = false;
-const PREFIX = 'createDataFrame(';
-const WIDTH = 150;
-const PARAMS = [
-  {
-    name: 'data',
-    description: 'An RDD of any kind of SQL data representation(e.g. row, tuple, int, boolean, etc.), or list, or pandas.DataFrame.',
-    required: true,
-  },
-  {
-    name: 'schema',
-    description: 'A pyspark.sql.types.DataType or a datatype string or a list of column names, default is None. The data type string format equals to pyspark.sql.types.DataType.simpleString, except that top level struct type can omit the struct<> and atomic types use typeName() as their format, e.g. use byte instead of tinyint for pyspark.sql.types.ByteType. We can also use int as a short name for IntegerType.',
-    required: false,
-    template: 'schema=None',
-    selectionStart: '7',
-    selectionEnd: 'all'
-  },
-];
+const PREFIX = 'rdd';
+const PARAMS = null;
+const WIDTH = 155;
 
 ///////////////////////////////////////////////////////////
 const FULL_NODE_TYPE = 'spark.' + NODE_TYPE;
@@ -42,7 +27,6 @@ const MODEL = DefaultShape.extend({
       text : { text: NAME },
       rect : {
         width: WIDTH,
-        fill: config.DF_NODES_FILL
       }
     },
     dfGui: {
@@ -57,7 +41,7 @@ const MODEL = DefaultShape.extend({
 if(!joint.shapes['spark']) joint.shapes['spark'] = {};
 joint.shapes['spark'][NODE_TYPE] = MODEL;
 
-export default class CreateDataFrame extends NodeTemplate{
+export default class ConvertDfToRdd extends NodeTemplate{
 
   static getType(){
     return FULL_NODE_TYPE;
@@ -80,7 +64,7 @@ export default class CreateDataFrame extends NodeTemplate{
   }
 
   static getCodeSuffix(langId){
-    return ")";
+    return "";
   }
 
   static getCodeParameters(langId){

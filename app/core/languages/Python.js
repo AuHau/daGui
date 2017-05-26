@@ -24,13 +24,15 @@ export default class Python extends BaseLanguage {
 
   static getSupportedVersions(){
     return [
-      '2.7',
-      '3.5'
+      '2.7.x',
+      '3.4.x',
+      '3.5.x',
+      '3.6.x',
     ]
   }
 
   static nameNode(nodeTemplate, usedVariables){
-    // TODO: [Medium] Implement SnakeCase generator to drop lodash depedendency
+    // TODO: [Optimisation/Medium] Implement SnakeCase generator to drop lodash depedendency
     const baseName = _.snakeCase(nodeTemplate.getName());
 
     let num;

@@ -1,13 +1,13 @@
 import BaseLanguage from './BaseLanguage';
 import _ from "lodash";
 
-export default class Scala extends BaseLanguage {
+export default class Java extends BaseLanguage {
   static getName() {
-    return 'Scala';
+    return 'Java';
   }
 
   static getId() {
-    return 'scala';
+    return 'java';
   }
 
   static getCommentChar(){
@@ -15,16 +15,17 @@ export default class Scala extends BaseLanguage {
   }
 
   static getAceName(){
-    return 'scala';
+    return 'java';
   }
 
   static getFileExtension(){
-    return '.scala';
+    return '.java';
   }
 
   static getSupportedVersions(){
     return [
-      '2.11'
+      '7',
+      '8'
     ]
   }
   static nameNode(nodeTemplate, usedVariables){
@@ -37,7 +38,7 @@ export default class Scala extends BaseLanguage {
     return baseName + num;
   }
 
-  // TODO: [Critical] Implement intelligent Scala parsing (ignoring scope variables, keywords etc)
+  // TODO: [Critical] Implement intelligent Java parsing (ignoring scope variables, keywords etc)
   static parseVariables(parameters, usedVariables){
     let variables = [];
 

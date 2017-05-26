@@ -1,7 +1,8 @@
 import joint from 'jointjs';
+import * as config from '../../config';
 
-import DefaultShape, {generatePorts} from '../../../core/graph/DefaultShape';
-import NodeTemplate from '../../../core/graph/NodeTemplate';
+import DefaultShape, {generatePorts} from '../../../../core/graph/DefaultShape';
+import NodeTemplate from '../../../../core/graph/NodeTemplate';
 
 const NAME = 'Filter';
 const NODE_TYPE = 'spark.filter';
@@ -13,7 +14,10 @@ const MODEL = DefaultShape.extend({
   defaults: joint.util.deepSupplement({
     type: NODE_TYPE,
     attrs: {
-      text : { text: NAME }
+      text : { text: NAME },
+      rect : {
+        fill: config.RDD_NODES_FILL
+      }
     },
     dfGui: {
       description: NAME,
@@ -56,10 +60,20 @@ export default class Filter extends NodeTemplate{
   static getCodeParameters(langId){
     return [
       {
+        name: 'f',
         description: 'Function which accepts one parameter (element) and return true if if the value should be present in the outcome RDD or false if not',
         required: true,
         template: 'lambda x: '
       }
     ];
   }
+
+  static getOutputDataType(langId){
+    return 'rdd';
+  }
+
+  static isInputDataTypeValid(dataType, langId){
+    return dataType == 'rdd';
+  }
+
 }

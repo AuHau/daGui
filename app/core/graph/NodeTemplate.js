@@ -129,7 +129,10 @@ export default class NodeTemplate {
     let output = this.getCodePrefix(langId);
 
     for(let [index, parameter] of parameters.entries()){
-      if(parameter.trim() != templateParams[index].template.trim() || templateParams[index].required){
+      if(!templateParams[index].template
+        || parameter.trim() != templateParams[index].template.trim()
+        || templateParams[index].required){
+
         output += parameter + ', ';
       }
     }

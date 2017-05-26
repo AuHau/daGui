@@ -1,47 +1,52 @@
 import joint from 'jointjs';
-import * as config from '../../config';
 
 import DefaultShape, {generatePorts} from '../../../../core/graph/DefaultShape';
 import NodeTemplate from '../../../../core/graph/NodeTemplate';
+import * as config from '../../config';
 
-const NAME = 'Create DataFrame';
-const NODE_TYPE = 'dfCreateDataFrame';
-const NO_INPUT_NODES = 0;
+const NAME = 'Join';
+const NODE_TYPE = 'dfJoin';
+const NO_INPUT_NODES = 2;
 const NO_OUTPUT_NODES = 1;
-const INPUT_DATA_TYPE = null;
+const INPUT_DATA_TYPE = 'df';
 const OUTPUT_DATA_TYPE = 'df';
 const IS_NODE_HIDEN = false;
-const PREFIX = 'createDataFrame(';
-const WIDTH = 150;
+const PREFIX = 'join(';
 const PARAMS = [
   {
-    name: 'data',
-    description: 'An RDD of any kind of SQL data representation(e.g. row, tuple, int, boolean, etc.), or list, or pandas.DataFrame.',
-    required: true,
+    name: 'on',
+    description: 'a string for the join column name, a list of column names, a join expression (Column), or a list of Columns. If on is a string or a list of strings indicating the name of the join column(s), the column(s) must exist on both sides, and this performs an equi-join.',
+    required: false,
   },
   {
-    name: 'schema',
-    description: 'A pyspark.sql.types.DataType or a datatype string or a list of column names, default is None. The data type string format equals to pyspark.sql.types.DataType.simpleString, except that top level struct type can omit the struct<> and atomic types use typeName() as their format, e.g. use byte instead of tinyint for pyspark.sql.types.ByteType. We can also use int as a short name for IntegerType.',
+    name: 'how',
+    description: 'str, default ‘inner’. One of inner, outer, left_outer, right_outer, leftsemi.',
     required: false,
-    template: 'schema=None',
-    selectionStart: '7',
-    selectionEnd: 'all'
-  },
+  }
 ];
 
 ///////////////////////////////////////////////////////////
 const FULL_NODE_TYPE = 'spark.' + NODE_TYPE;
-const ports = [...generatePorts('in', NO_INPUT_NODES), ...generatePorts('out', NO_OUTPUT_NODES)];
+const ports = [
+  {
+    id: 'in1',
+    group: 'in'
+  },
+  {
+    id: 'in2',
+    group: 'in'
+  },
+  {
+    id: 'out',
+    group: 'out'
+  }
+];
 const MODEL = DefaultShape.extend({
   defaults: joint.util.deepSupplement({
     type: FULL_NODE_TYPE,
-    size:{
-      width: WIDTH
-    },
     attrs: {
       text : { text: NAME },
       rect : {
-        width: WIDTH,
         fill: config.DF_NODES_FILL
       }
     },
@@ -102,7 +107,26 @@ export default class CreateDataFrame extends NodeTemplate{
     return false;
   }
 
-  static getWidth() {
-    return WIDTH;
+  static generateCode(parameters, lang, prevNodes){
+    let output = this.getCodePrefix(lang);
+
+    if(prevNodes.length != 2){
+      throw Error("DF Join node has to have only 2 previous nodes!")
+    }
+
+    output += prevNodes[1].variable + ', ';
+
+    for(let [index, parameter] of parameters.entries()){
+      if(!templateParams[index].template
+        || parameter.trim() != templateParams[index].template.trim()
+        || templateParams[index].required){
+
+        output += parameter + ', ';
+      }
+    }
+
+    output = output.substring(0, output.length - 2);
+
+    return prevNodes[0].variable + '.' + output + this.getCodeSuffix(lang);
   }
 }

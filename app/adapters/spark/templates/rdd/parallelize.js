@@ -1,7 +1,9 @@
 import joint from 'jointjs';
 
-import DefaultShape from '../../../core/graph/DefaultShape';
-import NodeTemplate from '../../../core/graph/NodeTemplate';
+import DefaultShape from '../../../../core/graph/DefaultShape';
+import NodeTemplate from '../../../../core/graph/NodeTemplate';
+import * as config from '../../config';
+
 
 const NAME = 'Parallelize';
 const NODE_TYPE = 'spark.parallelize';
@@ -9,7 +11,10 @@ const MODEL = DefaultShape.extend({
   defaults: joint.util.deepSupplement({
     type: NODE_TYPE,
     attrs: {
-      text : { text: NAME }
+      text : { text: NAME },
+      rect : {
+        fill: config.RDD_NODES_FILL
+      }
     },
     dfGui: {
       description: NAME,
@@ -78,4 +83,13 @@ export default class Parallelize extends NodeTemplate{
       }
     ];
   }
+
+  static getOutputDataType(langId){
+    return 'rdd';
+  }
+
+  static isInputDataTypeValid(dataType, langId){
+    return dataType == 'rdd';
+  }
+
 }

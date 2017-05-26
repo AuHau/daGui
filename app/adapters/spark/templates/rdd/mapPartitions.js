@@ -1,7 +1,8 @@
 import joint from 'jointjs';
 
-import DefaultShape from '../../../core/graph/DefaultShape';
-import NodeTemplate from '../../../core/graph/NodeTemplate';
+import DefaultShape from '../../../../core/graph/DefaultShape';
+import NodeTemplate from '../../../../core/graph/NodeTemplate';
+import * as config from '../../config';
 
 const NAME = 'Map Partitions';
 const NODE_TYPE = 'spark.mapPartitions';
@@ -9,7 +10,10 @@ const MODEL = DefaultShape.extend({
   defaults: joint.util.deepSupplement({
     type: NODE_TYPE,
     attrs: {
-      text : { text: NAME }
+      text : { text: NAME },
+      rect : {
+        fill: config.RDD_NODES_FILL
+      }
     },
     dfGui: {
       title: NAME,
@@ -71,6 +75,7 @@ export default class MapPartitions extends NodeTemplate{
   static getCodeParameters(lang){
     return [
       {
+        name: 'f',
         description: 'Function which accepts one parameter (element) and return modified element',
         required: true,
         template: 'lambda x: ',
@@ -78,6 +83,7 @@ export default class MapPartitions extends NodeTemplate{
         selectionEnd: 'all'
       },
       {
+        name: 'preservesPartitioning',
         description: 'If set True, map elements per partition',
         required: false,
         template: 'preservesPartitioning=False',
@@ -86,4 +92,14 @@ export default class MapPartitions extends NodeTemplate{
       }
     ];
   }
+
+
+  static getOutputDataType(langId){
+    return 'rdd';
+  }
+
+  static isInputDataTypeValid(dataType, langId){
+    return dataType == 'rdd';
+  }
+
 }
