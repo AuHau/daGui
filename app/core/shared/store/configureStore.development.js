@@ -4,6 +4,7 @@ import { batchedSubscribe } from 'redux-batched-subscribe';
 import {persistStore, autoRehydrate} from 'redux-persist-immutable'
 import reduxMulti from 'redux-multi'
 import thunk from 'redux-thunk';
+import localForage from 'localforage';
 
 import rootReducer from '../reducers';
 import functionSerialize from 'shared/utils/functionSerialize';
@@ -41,7 +42,11 @@ export default function configureStore(initialState: Object) {
     );
   }
 
-  persistStore(store, {transforms: [functionSerialize]});
+  persistStore(store, {
+    storage: localForage,
+    blacklist: ['ui'],
+    transforms: [functionSerialize],
+  });
 
   return store;
 }
