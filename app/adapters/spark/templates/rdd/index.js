@@ -7,7 +7,7 @@ import Parallelize from './parallelize';
 import Collect from './collect';
 import Foreach from './foreach';
 import LoadTextFile from './loadTextFile';
-import LoadPickleFile from './loadṔickleFile';
+import LoadPickleFile from './loadPickleFile';
 import Range from './range';
 import SaveAsPickleFile from './saveAsPickleFile';
 import SaveAsTextFile from './saveAsTextFile';
