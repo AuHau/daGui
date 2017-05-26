@@ -12,7 +12,7 @@
 }
 
 .search{
-  padding: $detail-sidebar-padding-vertical $detail-sidebar-padding-horizontal 0 $detail-sidebar-padding-horizontal;
+  padding: $detail-sidebar-padding-vertical $detail-sidebar-padding-horizontal 10px $detail-sidebar-padding-horizontal;
 
   input[type=search]{
 	width: 100%;
@@ -37,6 +37,6 @@
 
 .nodeList{
   width: 100%;
-  height: calc(100% - 84px);
+  height: calc(100% - 94px);
   padding: 0 $detail-sidebar-padding-horizontal;
 }
