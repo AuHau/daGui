@@ -59,7 +59,10 @@ class NodesGroup extends Component {
         s.position(x - canvas.get('left') - offset.x, y - canvas.get('top') - offset.y);
 
         // Redux action
-        if(countInPorts(s) > 1 || this.props.adapter.isTypeInput(s.attributes.type)){
+        if(countInPorts(s) > 1
+          || this.props.adapter.isTypeInput(s.attributes.type)
+          || this.props.adapter.getNodeTemplates(this.props.adapterVersion)[s.attributes.type].requiresBreakChaining()){
+
           const sJson = s.toJSON();
           const variableName = this.props.language.nameNode(this.props.adapter.getNodeTemplates(this.props.adapterVersion)[s.attributes.type], this.props.usedVariables);
           sJson.dfGui.variableName = variableName;

@@ -97,13 +97,34 @@ export default class NodeTemplate {
   }
 
   /**
+   * Returns a string that represents the output data type of the node.
+   *
+   * @param {string} langId
+   * @return {string}
+   */
+  static getOutputDataType(langId){
+    throw new TypeError("Method 'getOutputDataType' has to be implemented!");
+  }
+
+  /**
+   * Returns true if the passed dataType is valid input data type.
+   *
+   * @param dataType
+   * @param langId
+   */
+  static isInputDataTypeValid(dataType, langId){
+    throw new TypeError("Method 'isInputDataTypeValid' has to be implemented!");
+  }
+
+  /**
    * Method that generates a source code representations of a node.
    *
    * @param {array} parameters
-   * @param langId
+   * @param {string} langId
+   * @param {array} prevNodes
    * @return {string}
    */
-  static generateCode(parameters, langId){
+  static generateCode(parameters, langId, prevNodes){
     const templateParams = this.getCodeParameters(langId);
     let output = this.getCodePrefix(langId);
 
@@ -118,5 +139,15 @@ export default class NodeTemplate {
     }
 
     return output + this.getCodeSuffix(langId);
+  }
+
+  /**
+   * Specifies if during the code generation the channing of method calls should be breaked.
+   * Breaking chainning is the same situation as "out-break". New variable name is defined.
+   *
+   * @return {boolean}
+   */
+  static requiresBreakChaining(){
+    return false;
   }
 }

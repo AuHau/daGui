@@ -1,6 +1,7 @@
 import CanvasComponentBase from './CanvasComponentBase'
 import {countInPorts} from 'graph/graphToolkit';
 
+// TODO: [BUG/High] It is impossible to change the path of a link --> the new "waypoints" are not saved.
 export default class Link extends CanvasComponentBase {
   constructor(canvas) {
     super(canvas);

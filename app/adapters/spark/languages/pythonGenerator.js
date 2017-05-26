@@ -33,9 +33,9 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
     variableStack.push(node.variableName);
 
   }else{
-    generatedCode = templates[node.type].generateCode(node.parameters, Python);
+    generatedCode = templates[node.type].generateCode(node.parameters, Python, node.prevNodes);
 
-    if(afterOutBreak){
+    if(afterOutBreak) {
       output
         .breakLine()
         .startMarker()
@@ -45,6 +45,17 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
         .finishMarker(node.id)
         .breakLine();
 
+      variableStack.push(node.variableName);
+    }else if(templates[node.type].requiresBreakChaining()){
+      generatedCode = templates[node.type].generateCode(node.parameters, Python, node.prevNodes, variableStack.pop());
+      output
+        .breakLine()
+        .startMarker()
+        .add(node.variableName)
+        .marker(node.id, CodeMarker.VARIABLE)
+        .add(' = ' + generatedCode + (!node.nextNodes.length ? '' : ' \\'))
+        .finishMarker(node.id)
+        .breakLine();
       variableStack.push(node.variableName);
     }else{
       output

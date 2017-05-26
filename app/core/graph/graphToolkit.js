@@ -80,10 +80,9 @@ export function normalizeGraph(graphObject, isInputFnc){
       });
     } else {
       normalizedGraph[element.id] = {
+        ...element.dfGui,
         id: element.id,
         type: element.type,
-        parameters: element.dfGui.parameters,
-        variableName: element.dfGui.variableName,
         nextNodes: [],
         prevNodes: []
       };
