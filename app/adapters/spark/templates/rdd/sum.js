@@ -30,7 +30,7 @@ const MODEL = DefaultShape.extend({
 });
 
 if(!joint.shapes['spark']) joint.shapes['spark'] = {};
-joint.shapes['spark']['count'] = MODEL;
+joint.shapes['spark']['sum'] = MODEL;
 
 export default class Count extends NodeTemplate{
 
@@ -51,7 +51,7 @@ export default class Count extends NodeTemplate{
   }
 
   static getCodePrefix(lang){
-    return "count(";
+    return "sum(";
   }
 
   static getCodeSuffix(lang){
