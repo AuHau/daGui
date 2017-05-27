@@ -4,7 +4,7 @@
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(111, 111, 111, 0.7);
   z-index: 1000;
 }
 
@@ -19,7 +19,6 @@
   margin-left: -($width/2);
   margin-top: -($height/2);
 
-  border: 1px solid rgb(204, 204, 204);
   background: rgb(255, 255, 255);
   overflow: auto;
   border-radius: 6px;
