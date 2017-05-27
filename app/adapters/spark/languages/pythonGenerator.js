@@ -30,7 +30,7 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
       .startMarker()
       .add(node.variableName)
       .marker(node.id, CodeMarker.VARIABLE)
-      .add(' = ' + generatedCode + (!node.nextNodes.length ? '' : ' \\'))
+      .add(' = ' + generatedCode + (node.nextNodes.length ? ' \\' : ''))
       .finishMarker(node.id)
       .breakLine();
 
@@ -38,6 +38,7 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
 
   }else{
     generatedCode = templates[node.type].generateCode(node.parameters, Python, node.prevNodes);
+    const willBeInBreak = node.nextNodes.length == 1 && graph[node.nextNodes[0]].prevNodes.length > 1;
 
     if(afterOutBreak) {
       output
@@ -45,7 +46,7 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
         .startMarker()
         .add(node.variableName)
         .marker(node.id, CodeMarker.VARIABLE)
-        .add(' = ' + variableStack.pop() + '.' + generatedCode + (!node.nextNodes.length ? '' : ' \\'))
+        .add(' = ' + variableStack.pop() + '.' + generatedCode + (node.nextNodes.length && !willBeInBreak ? ' \\' : ''))
         .finishMarker(node.id)
         .breakLine();
 
@@ -57,13 +58,13 @@ export function processNode(output, node, prevNode, templates, graph, variableSt
         .startMarker()
         .add(node.variableName)
         .marker(node.id, CodeMarker.VARIABLE)
-        .add(' = ' + generatedCode + (!node.nextNodes.length ? '' : ' \\'))
+        .add(' = ' + generatedCode + (node.nextNodes.length && !willBeInBreak ? ' \\' : ''))
         .finishMarker(node.id)
         .breakLine();
       variableStack.push(node.variableName);
     }else{
       output
-        .add((prevNode ? INDENTATION : ''), '.' + generatedCode + (!node.nextNodes.length ? '' : ' \\'))
+        .add((prevNode ? INDENTATION : ''), '.' + generatedCode + (node.nextNodes.length && !willBeInBreak ? ' \\' : ''))
         .marker(node.id)
         .breakLine();
     }
