@@ -7,8 +7,27 @@
   z-index: 10;
   width: $detail-sidebar-width;
   height: calc(100% - #{$menu-height} - #{$footer-height});
-  padding: 8px;
 
   border-left: 1px solid $detail-sidebar-border-color;
   background-color: $detail-sidebar-background;
+}
+
+.wrapper{
+  h3{
+	margin-top: 0;
+	margin-bottom: 7px;
+	border-bottom: 1px solid $light-grey;
+  }
+
+  & > div {
+	margin-bottom: 10px;
+  }
+}
+
+.padding{
+  padding: 15px 15px 0 15px;
+}
+
+.codeInputWrapper{
+
 }

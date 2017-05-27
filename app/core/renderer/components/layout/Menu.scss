@@ -9,7 +9,7 @@
   line-height: $menu-height - 10px;
   padding: 5px 25px;
   overflow: visible;
-  z-index: 10;
+  z-index: 15;
 
   background: $menu-sidebar-background;
   border-bottom: 2px solid $menu-sidebar-border-color;
@@ -109,6 +109,7 @@ $select-color: $very-light-grey;
 	  background-color: $light-grey;
 	  color: $select-color;
 	  border: none;
+	  z-index: 20;
 	}
 
 	.Select-option{
@@ -134,6 +135,12 @@ $select-color: $very-light-grey;
 .launchIcon{
   position: relative;
   top: -6px;
+}
+
+.execViewIcon{
+  position: relative;
+  top: -6px;
+  font-size: 18px;
 }
 
 //.container a{

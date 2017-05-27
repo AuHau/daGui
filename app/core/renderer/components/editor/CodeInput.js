@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import selectRange from 'shared/utils/selectRange';
 
 import styles from './CodeInput.scss';
+import Tooltip from 'react-tooltip';
 
 
 export default class CodeInput extends Component {
@@ -15,7 +16,12 @@ export default class CodeInput extends Component {
     const templateClass =  isParameterValueTemplate ? ' ' + styles.template : '';
     const parameterValue = isParameterValueTemplate ? parameter.template : this.props.node.dfGui.parameters[index];
 
-    return (<div data-parameter={index} key={this.props.node.id + '_' + index} className={parameterClass + templateClass} suppressContentEditableWarning={true} contentEditable="true">{parameterValue}</div>);
+    const params = {};
+    if(parameter.description){
+      params['data-tip'] = parameter.description;
+    }
+
+    return (<div {...params} data-parameter={index} key={this.props.node.id + '_' + index} className={parameterClass + templateClass} suppressContentEditableWarning={true} contentEditable="true">{parameterValue}</div>);
   }
 
   onBlur(e){
@@ -70,6 +76,7 @@ export default class CodeInput extends Component {
     if(this.rebindInputs){
       this.bindEventsToInput();
       this.rebindInputs = false;
+      Tooltip.rebuild();
     }
   }
 
@@ -93,6 +100,7 @@ export default class CodeInput extends Component {
         <div className={styles.nodesCode}>.{this.props.nodeTemplate.getCodePrefix()}</div>
         {parameters}
         <div className={styles.nodesCode}>{this.props.nodeTemplate.getCodeSuffix()}</div>
+        <Tooltip place="left" type="dark" effect="solid" delayShow={450} className={styles.tooltip} html={true}/>
       </div>
     );
   }

@@ -122,12 +122,14 @@ $code-view-node-active-border: 1px solid $yellow;
 
 
 // Code Input
-$code-input-border: 1px solid $dark-grey;
+$code-input-border: 1px solid $light-grey;
+$code-input-border-radius: 5px;
+$parameter-background: $light-grey;
 $parameter-border: 1px solid;
 $parameter-required: $dark-red;
 $parameter-optional: $blue;
 $parameter-focused: $yellow;
 
 // Resizable
-$resizable-size: 5px;
+$resizable-size: 4px;
 $resizable-color: $very-dark-grey;

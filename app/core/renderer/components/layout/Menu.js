@@ -118,8 +118,8 @@ class Menu extends Component {
           {/*<li><a href="#" onClick={this.getCallback('onContain')}><i className="fa fa-arrows-alt"/></a></li>*/}
         </ul>
         <ul className={styles.left}>
-          <li className={this.props.cursorMode == CursorMode.MULTISELECT ? styles.active : ''}><a href="#" onClick={this.getCallback('onMultiselectMode', true)} data-tip="Selection mode"><i className="icon-hand"/></a></li>
-          <li className={this.props.cursorMode == CursorMode.PAN  ? styles.active : ''}><a href="#" onClick={this.getCallback('onPanMode', true)} data-tip="Panning mode"><i className="icon-cursor"/></a></li>
+          <li className={this.props.cursorMode == CursorMode.MULTISELECT ? styles.active : ''}><a href="#" onClick={this.getCallback('onMultiselectMode', true)} data-tip="Selection mode"><i className="icon-cursor"/></a></li>
+          <li className={this.props.cursorMode == CursorMode.PAN  ? styles.active : ''}><a href="#" onClick={this.getCallback('onPanMode', true)} data-tip="Panning mode"><i className="icon-hand"/></a></li>
           <li><a href="#" data-tip="Group nodes"><i className="fa fa-object-group"/></a></li>
         </ul>
 
@@ -131,6 +131,7 @@ class Menu extends Component {
         <ul className={styles.right}>
           {!this.props.isExecutionRunning && <li className={styles.launchIcon}><a href="#" onClick={this.getCallback('onExecutionStart')} data-tip="Launch the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-play"/></a></li>}
           {this.props.isExecutionRunning && <li className={styles.launchIcon}><a href="#" onClick={this.getCallback('onExecutionTermination')} data-tip="Terminate the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-stop"/></a></li>}
+          <li className={styles.execViewIcon}><a href="#" data-tip="Show/Display log of execution"><i className="fa fa-file-text-o"/></a></li>
           <li>
             <Select
               value={this.state.currentExecutionConf}

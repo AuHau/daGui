@@ -1,9 +1,11 @@
 @import "../../variables";
 
 .container{
-  padding: 5px;
-  margin-top: 5px;
+  padding: 10px;
+  margin-top: 8px;
+  margin-left: 15px;
   border: $code-input-border;
+  border-radius: $code-input-border-radius;
 }
 
 .nodesCode{
@@ -14,11 +16,11 @@
 
 .parameter{
   display: block;
-  padding: 0 2px;
-  margin-left: 10px;
-  margin-bottom: 2px;
-  margin-right: 3px;
+  padding: 4px 8px;
+  margin: 4px 3px 4px 10px;
+  background-color: $parameter-background;
   border: $parameter-border;
+  border-radius: 3px;
 
   &:focus{
 	border-color: $parameter-focused;

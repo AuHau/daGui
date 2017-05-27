@@ -106,7 +106,7 @@ export default class Resizable extends Component {
     return (
       <div className={containerClass + " " + this.props.class} ref="container">
         <div className={styles.bar} onMouseDown={this.onMouseDown}></div>
-        <div className={styles.contentWrapper}>
+        <div className={styles.contentWrapper + " " + this.props.wrapperClass}>
           {this.props.children}
         </div>
       </div>
@@ -115,7 +115,8 @@ export default class Resizable extends Component {
 }
 
 Resizable.propTypes = {
-  class: React.PropTypes.string.isRequired,
+  class: React.PropTypes.string,
+  wrapperClass: React.PropTypes.string,
   side: React.PropTypes.string.isRequired,
   getMin: React.PropTypes.func,
   getMax: React.PropTypes.func,
