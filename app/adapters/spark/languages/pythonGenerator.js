@@ -2,7 +2,7 @@ import Python from 'languages/Python';
 import CodeMarker from 'shared/enums/CodeMarker';
 import detectDependencies from '../../utils/detectDependencies';
 
-const IMPORT = 'from pyspark import SparkConf, SparkContext, SparkSession';
+const IMPORT = 'from pyspark import SparkConf, SparkContext\nfrom pyspark.sql import SparkSession';
 const INIT = {
   conf: 'conf = SparkConf()',
   sc: 'sc = SparkContext(\'local\', \'test\', conf=conf)',

@@ -43,7 +43,8 @@ export default class CodeInput extends Component {
     if(!elem.dataset.parameter){
       const firstOption = ReactDOM.findDOMNode(this.refs.container).querySelectorAll('.' + styles.parameter)[0];
       const firstParameter = this.props.nodeTemplate.getCodeParameters()[0];
-      selectRange(firstOption, firstParameter.selectionStart, firstParameter.selectionEnd);
+      if (firstParameter.selectionStart && firstParameter.selectionEnd)
+        selectRange(firstOption, firstParameter.selectionStart, firstParameter.selectionEnd);
     }
   }
 
@@ -52,12 +53,14 @@ export default class CodeInput extends Component {
       const next = e.target.nextElementSibling;
       if(next && next.dataset.parameter){
         const parameter = this.props.nodeTemplate.getCodeParameters()[next.dataset.parameter];
-        selectRange(next, parameter.selectionStart, parameter.selectionEnd);
+        if (parameter.selectionStart && parameter.selectionEnd)
+          selectRange(next, parameter.selectionStart, parameter.selectionEnd);
       }else{
         const container = ReactDOM.findDOMNode(this.refs.container);
         const firstOption = container.querySelectorAll('.' + styles.parameter)[0];
         const parameter = this.props.nodeTemplate.getCodeParameters()[0];
-        selectRange(firstOption, parameter.selectionStart, parameter.selectionEnd);
+        if (parameter.selectionStart && parameter.selectionEnd)
+          selectRange(firstOption, parameter.selectionStart, parameter.selectionEnd);
       }
 
       e.preventDefault();

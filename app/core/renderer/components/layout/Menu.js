@@ -13,6 +13,8 @@ import * as fileActions from 'shared/actions/file';
 
 import Tooltip from 'react-tooltip';
 
+
+// TODO: [BUG/Critical] Copy/Cut/Paste support --> check that the event originates from the Canvas. Can not copy from CodeView
 class Menu extends Component {
 
   constructor(props){
