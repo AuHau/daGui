@@ -1,5 +1,6 @@
 import { app, BrowserWindow, Menu, shell } from 'electron';
 import path from 'path';
+import config from '../../config/electron';
 
 let menu;
 let template;
@@ -51,6 +52,10 @@ app.on('ready', async () => {
   });
 
   mainWindow.loadURL(`file://${mainHtml}`);
+
+  // Init of Adapter's IPC channels
+  Object.values(config.adapters)
+    .forEach(adapter => adapter.bootstrap());
 
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show();
@@ -205,8 +210,8 @@ app.on('ready', async () => {
       }]
     }];
 
-    menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
+    // menu = Menu.buildFromTemplate(template);
+    // Menu.setApplicationMenu(menu);
   } else {
     template = [{
       label: '&File',
@@ -271,7 +276,7 @@ app.on('ready', async () => {
         }
       }]
     }];
-    menu = Menu.buildFromTemplate(template);
-    mainWindow.setMenu(menu);
+    // menu = Menu.buildFromTemplate(template);
+    // mainWindow.setMenu(menu);
   }
 });

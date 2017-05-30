@@ -32,6 +32,17 @@ export default class BaseAdapter {
   }
 
   /**
+   * Defines if the adapter has support for execution. Which means
+   * if has class extending BaseAdapterExecution and registered
+   * in the /app/config/electon.js config.
+   *
+   * @return {boolean}
+   */
+  static hasExecutionSupport() {
+    throw new TypeError("Method 'hasExecutionSupport' has to be implemented!");
+  }
+
+  /**
    * Returns an arrays of strings that represents the versions of the framework
    * which the adapter supports.
    */
