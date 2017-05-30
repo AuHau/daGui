@@ -133,7 +133,9 @@ class Menu extends Component {
         <ul className={styles.right}>
           {!this.props.isExecutionRunning && <li className={styles.launchIcon}><a href="#" onClick={this.getCallback('onExecutionStart')} data-tip="Launch the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-play"/></a></li>}
           {this.props.isExecutionRunning && <li className={styles.launchIcon}><a href="#" onClick={this.getCallback('onExecutionTermination')} data-tip="Terminate the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-stop"/></a></li>}
-          <li className={styles.execViewIcon}><a href="#" data-tip="Show/Display log of execution"><i className="fa fa-file-text-o"/></a></li>
+          <li className={styles.execViewIcon + (this.props.showExecutionReporter ? " " + styles.active : '')}><a
+            href="#" onClick={this.getCallback('onToggleExecutionReporter')} data-tip="Show/Display log of execution"><i
+            className="fa fa-file-text-o"/></a></li>
           <li>
             <Select
               value={this.state.currentExecutionConf}
@@ -157,6 +159,7 @@ const mapStateToProps = (state) => {
     currentFileIndex: currentFileIndex,
     adapter: state.getIn(['files', 'opened', currentFileIndex, 'adapter']),
     showCodeView: state.getIn('ui.showCodeView'.split('.')),
+    showExecutionReporter: state.getIn('ui.showExecutionReporter'.split('.')),
     cursorMode: state.getIn(['ui', 'cursorMode']),
     isExecutionRunning: state.getIn('ui.isExecutionRunning'.split('.')),
   };
@@ -217,6 +220,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onOpenExecConfs: () => {
       dispatch(uiActions.showExecConfsModal())
+    },
+    onToggleExecutionReporter: () => {
+      dispatch(uiActions.toggleEXecutionReporter())
     }
   };
 };

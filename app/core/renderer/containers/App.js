@@ -147,7 +147,8 @@ class App extends Component {
         <ToggleDisplay show={this.props.currentFileIndex < 0}><NoFilesOpened/></ToggleDisplay>
         <ToggleDisplay show={this.props.nodeDetail !== null}><DetailSidebar node={(this.props.nodeDetail ? this.props.nodeDetail.toJS() : null)} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/></ToggleDisplay>
         <ToggleDisplay show={this.props.showCodeView}><CodeView onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} highlights={this.state.highlights.get(HighlightDestination.CODE_VIEW)} language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange}/></ToggleDisplay>
-        <ToggleDisplay show={this.props.isExecutionRunning}><ExecutionReporter/></ToggleDisplay>
+        <ToggleDisplay show={this.props.showExecutionReporter}><ExecutionReporter
+          isExecutionRunning={this.props.isExecutionRunning} adapter={adapter}/></ToggleDisplay>
         <Footer messages={this.graphErrors} framework={adapterName} language={languageName}/>
         <Modals openedModals={this.props.modals} onClose={this.props.onModalClose} />
       </div>
@@ -171,6 +172,7 @@ const mapStateToProps = (state) => {
     nodeDetail: (nodeId && activeFile >= 0 ? state.getIn(['files', 'opened', activeFile, 'history', 'present', 'cells']).find(node => node.get('id') == nodeId) : null),
     showCodeView: state.getIn('ui.showCodeView'.split('.')),
     isExecutionRunning: state.getIn('ui.isExecutionRunning'.split('.')),
+    showExecutionReporter: state.getIn('ui.showExecutionReporter'.split('.')),
     modals: modals
   };
 };

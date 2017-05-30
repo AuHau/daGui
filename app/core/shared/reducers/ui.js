@@ -45,7 +45,15 @@ export default (state, action) => {
       return state.set('cursorMode', CursorMode.PAN);
 
     case UI.TOGGLE_CODE_VIEW:
-      return state.update('showCodeView', (value) => !value);
+      const showCodeView = state.get('showCodeView');
+
+      if (showCodeView) {
+        return state.set('showCodeView', false);
+      } else {
+        return state
+          .set('showExecutionReporter', false)
+          .set('showCodeView', true);
+      }
 
     case UI.SHOW_NEW_FILE_MODAL:
       return state.set('displayNewFileModal', true);
@@ -59,8 +67,30 @@ export default (state, action) => {
     case UI.HIDE_EXEC_CONFS_MODAL:
       return state.set('displayExecConfsModal', false);
 
+    case UI.TOGGLE_EXECUTION_REPORTER:
+      const showExecutionReporter = state.get('showExecutionReporter');
+
+      if (showExecutionReporter) {
+        return state.set('showExecutionReporter', false);
+      } else {
+        return state
+          .set('showCodeView', false)
+          .set('showExecutionReporter', true);
+      }
+
+    case UI.SHOW_EXECUTION_REPORTER:
+      return state
+        .set('showCodeView', false)
+        .set('showExecutionReporter', true);
+
+    case UI.HIDE_EXECUTION_REPORTER:
+      return state.set('showExecutionReporter', false);
+
     case UI.START_EXECUTION:
-      return state.set('isExecutionRunning', true).set('showCodeView', false);
+      return state
+        .set('isExecutionRunning', true)
+        .set('showCodeView', false)
+        .set('showExecutionReporter', true);
 
     case UI.TERMINATE_EXECUTION:
       return state.set('isExecutionRunning', false);
