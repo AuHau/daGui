@@ -1,8 +1,9 @@
 // @flow
 import React, {Component} from 'react';
-import {ipcRenderer} from 'electron';
 import Scrollbar from 'react-scrollbar/dist/no-css';
 import Resizable from 'renderer/components/utils/Resizable';
+import ExecutionConfigurationsWell from 'renderer/wells/ExecutionConfigurationsWell';
+import {bindExecutorCallbacks, startExecution, terminateExecution} from 'renderer/platformConnector';
 
 import styles from './ExecutionReporter.scss';
 import cssVariables from '!!sass-variable-loader!renderer/variables.scss';
@@ -15,13 +16,11 @@ export default class ExecutionReporter extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {data: []};
+    this.state = {data: [], exitCode: null};
     this.receiveData = this.receiveData.bind(this);
     this.finishedExecution = this.finishedExecution.bind(this);
 
-    ipcRenderer.on('execution:stdout', this.receiveData('out'));
-    ipcRenderer.on('execution:stderr', this.receiveData('err'));
-    ipcRenderer.on('execution:done', this.finishedExecution);
+    bindExecutorCallbacks(this.receiveData('out'), this.receiveData('err'), this.finishedExecution);
 
     if (props.isExecutionRunning) {
       this.startExecution();
@@ -29,36 +28,38 @@ export default class ExecutionReporter extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.isExecutionRunning != nextProps.isExecutionRunning) {
+    if (this.props.isExecutionRunning != nextProps.isExecutionRunning && nextProps.adapter) {
       if (nextProps.isExecutionRunning) {
-        this.setState({data: []});
+        this.setState({data: [], exitCode: null});
         this.startExecution();
-      } else {
+      } else if(!this.state.exitCode){
         this.terminateExecution();
       }
     }
   }
 
-  finishedExecution() {
-
+  finishedExecution(exitCode) {
+    this.setState({exitCode: exitCode});
+    this.props.onFinishedExecution();
   }
 
-  startExecution() {
+  async startExecution() {
     if (this.props.adapter) {
-      ipcRenderer.send(this.props.adapter.getId() + ':launchExec')
+      const execConf = await ExecutionConfigurationsWell.getActiveConfiguration(this.props.adapter.getId());
+      startExecution(this.props.adapter.getId(), null, execConf, null);
     }
   }
 
   terminateExecution() {
     if (this.props.adapter) {
-      ipcRenderer.send(this.props.adapter.getId() + ':terminateExec')
+      terminateExecution(this.props.adapter.getId())
     }
   }
 
   receiveData(type) {
-    return (event, data) => {
+    return ((data) => {
       this.setState({data: [...this.state.data, {type: type, data: data}]})
-    };
+    }).bind(this);
   }
 
   getMaxHeight(){
@@ -80,5 +81,6 @@ export default class ExecutionReporter extends Component {
 
 ExecutionReporter.propTypes = {
   isExecutionRunning: React.PropTypes.bool,
-  adapter: React.PropTypes.func
+  adapter: React.PropTypes.func,
+  onFinishedExecution: React.PropTypes.func.isRequired,
 };

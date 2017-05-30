@@ -147,8 +147,14 @@ class App extends Component {
         <ToggleDisplay show={this.props.currentFileIndex < 0}><NoFilesOpened/></ToggleDisplay>
         <ToggleDisplay show={this.props.nodeDetail !== null}><DetailSidebar node={(this.props.nodeDetail ? this.props.nodeDetail.toJS() : null)} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/></ToggleDisplay>
         <ToggleDisplay show={this.props.showCodeView}><CodeView onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} highlights={this.state.highlights.get(HighlightDestination.CODE_VIEW)} language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange}/></ToggleDisplay>
-        <ToggleDisplay show={this.props.showExecutionReporter}><ExecutionReporter
-          isExecutionRunning={this.props.isExecutionRunning} adapter={adapter}/></ToggleDisplay>
+
+        <ToggleDisplay show={this.props.showExecutionReporter}>
+          <ExecutionReporter
+            isExecutionRunning={this.props.isExecutionRunning}
+            adapter={adapter}
+            onFinishedExecution={this.props.onFinishedExecution}/>
+        </ToggleDisplay>
+
         <Footer messages={this.graphErrors} framework={adapterName} language={languageName}/>
         <Modals openedModals={this.props.modals} onClose={this.props.onModalClose} />
       </div>
@@ -182,6 +188,7 @@ const mapDispatchToProps = (dispatch) => {
     onNodeChange: (node) => dispatch(updateNode(node)),
     onVariableChange: (nid, newVariableName) => dispatch(updateVariable(nid, newVariableName)),
     onTabChange: (newIndex) => dispatch(switchTab(newIndex)),
+    onFinishedExecution: () => dispatch(uiActions.terminateExecution()),
     onModalClose: (modal) => {
       switch(modal){
         case modalsList.NEW_FILE:

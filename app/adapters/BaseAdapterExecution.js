@@ -18,7 +18,7 @@ export default class BaseAdapterExecution {
    * This method should start listening for IPC communication channels where the execution is launched.
    * The channels are prefixed with the adapter's ID and the values in the brackets means values which are passed
    * to the channel callback. The channels are following:
-   *  - adapterId:launchExec(generatedCode, execConf)
+   *  - adapterId:launchExec(generatedCode, execConf, settings)
    *  - adapterId:terminateExec()
    *
    * To communicate with the ExecutionReporter use following channels:

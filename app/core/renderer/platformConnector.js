@@ -3,6 +3,29 @@ import SaveMode from "../shared/enums/SaveMode";
 import electronConfig from "../../config/electron";
 import config from "../../config/index";
 import md5 from 'js-md5';
+import {ipcRenderer} from 'electron';
+
+function passData(cb){
+    return (event, data) => {
+      // const args = Array.prototype.slice.call(arguments, 1);
+      // cb.apply(null, args);
+      cb(Utf8ArrayToStr(data)); // TODO: [Very low] Make the passData general with arguments variable, not sure why it is not working as it is above.
+    }
+}
+
+export function bindExecutorCallbacks(onExecutionOutput, onExecutionError, onExecutionFinish){
+  ipcRenderer.on('execution:stdout', passData(onExecutionOutput));
+  ipcRenderer.on('execution:stderr', passData(onExecutionError));
+  ipcRenderer.on('execution:done', passData(onExecutionFinish));
+}
+
+export function startExecution(adapterId, code, execConf, settings){
+  ipcRenderer.send(adapterId + ':launchExec', code, execConf, settings);
+}
+
+export function terminateExecution(adapterId){
+  ipcRenderer.send(adapterId + ':terminateExec')
+}
 
 export function save(path, code, graph, commentChar, saveMode = SaveMode.FULL_SAVE) {
   return remote.require('./toolkit').save(path, code, graph, commentChar, saveMode);
@@ -27,7 +50,7 @@ export function open(path){
 
       const daguiMetadataRegex = new RegExp(
         language.getCommentChar() + electronConfig.daguiTags.start + "\\n"
-        + language.getCommentChar() + "hash:([a-zA-Z0-9]+);adapter:([a-zA-Z0-9]+):([0-9.]*);language:([a-zA-Z0-9]+):([0-9.]*);(\\[.*?\\])\\n"
+        + language.getCommentChar() + "hash:([a-zA-Z0-9]+);adapter:([a-zA-Z0-9]+):([0-9.x]*);language:([a-zA-Z0-9]+):([0-9.x]*);(\\[.*?\\])\\n"
         + language.getCommentChar() + electronConfig.daguiTags.end, "gm");
 
       const daguiData = daguiMetadataRegex.exec(data);
@@ -105,4 +128,46 @@ export function confirmDialog(title, message, type = "warning") {
 
 export function messageDialog(options) {
   return remote.dialog.showMessageBox(options)
+}
+
+/* utf.js - UTF-8 <=> UTF-16 convertion
+ *
+ * Copyright (C) 1999 Masanao Izumo <iz@onicos.co.jp>
+ * Version: 1.0
+ * LastModified: Dec 25 1999
+ * This library is free.  You can redistribute it and/or modify it.
+ */
+
+function Utf8ArrayToStr(array) {
+  let out, i, len, c;
+  let char2, char3;
+
+  out = "";
+  len = array.length;
+  i = 0;
+  while(i < len) {
+    c = array[i++];
+    switch(c >> 4)
+    {
+      case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+      // 0xxxxxxx
+      out += String.fromCharCode(c);
+      break;
+      case 12: case 13:
+      // 110x xxxx   10xx xxxx
+      char2 = array[i++];
+      out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F));
+      break;
+      case 14:
+        // 1110 xxxx  10xx xxxx  10xx xxxx
+        char2 = array[i++];
+        char3 = array[i++];
+        out += String.fromCharCode(((c & 0x0F) << 12) |
+          ((char2 & 0x3F) << 6) |
+          ((char3 & 0x3F) << 0));
+        break;
+    }
+  }
+
+  return out;
 }

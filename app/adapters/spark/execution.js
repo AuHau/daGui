@@ -29,9 +29,9 @@ function handleStartExecution(event, generatedCode, execConf) {
   processHandler.on('error', (err) => {
     console.log("ERROR! " + err.message)
   });
-  processHandler.on('exit', () => {
+  processHandler.on('exit', (code) => {
     processHandler = null;
-    sendData(event, 'execution:done')();
+    sendData(event, 'execution:done')(code);
   });
 }
 

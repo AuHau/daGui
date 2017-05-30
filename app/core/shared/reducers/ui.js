@@ -11,6 +11,7 @@ const defaultState = {
   cursorMode: CursorMode.MULTISELECT,
   showCodeView: false,
   isExecutionRunning: false,
+  showExecutionReporter: false,
 };
 
 export default (state, action) => {
