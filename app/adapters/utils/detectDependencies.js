@@ -67,7 +67,7 @@ function processNode(node, component, graph, usedVariables, language) {
   let subcomponents = {};
   let nextNodesComponents = {};
   for (let nextNode of node.nextNodes) {
-    let nextNodeDependencies = processNode(graph[nextNode], component, graph, usedVariables, language, node.nextNodes.length > 1);
+    let nextNodeDependencies = processNode(graph[nextNode], component, graph, usedVariables, language);
     subcomponents[subcomponentCounter] = nextNodeDependencies;
     nextNodesComponents[subcomponentCounter] = nextNode;
 
