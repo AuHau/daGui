@@ -1,0 +1,58 @@
+@import "../../../variables";
+
+$sidebar-width: 40px;
+
+.container{
+
+  position: absolute;
+  bottom: $footer-height;
+  right: 0;
+  z-index: 9;
+  width: calc(100% - #{$nodes-sidebar-width});
+  height: $code-view-height;
+  overflow: hidden;
+  background-color: $grey;
+  border-top: 1px solid $code-view-border-color;
+}
+
+.sidebar{
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: $sidebar-width;
+}
+
+.dataContainer{
+  position: absolute;
+  left:$sidebar-width;
+  width: calc(100% - #{$sidebar-width});
+  height: 100%;
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-bottom: 5px;
+}
+
+.exitCode{
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.okExitCode{
+  composes: exitCode;
+  color: $green;
+}
+
+.errorExitCode{
+  composes: exitCode;
+  color: $red;
+}
+
+.output{
+  font-weight: normal;
+}
+
+.error{
+  composes: output;
+  color: $yellow;
+}

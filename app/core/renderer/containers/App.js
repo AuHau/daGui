@@ -26,7 +26,7 @@ import NodesSidebar from 'renderer/components/sidebar_node/NodesSidebar';
 import DetailSidebar from 'renderer/components/sidebar_detail/DetailSidebar';
 import Canvas from 'renderer/components/editor/Canvas';
 import CodeView from 'renderer/components/editor/CodeView';
-import ExecutionReporter from 'renderer/components/editor/ExecutionReporter';
+import ExecutionReporter from 'renderer/components/editor/execution_reporter/ExecutionReporter';
 import Modals, {modalsList} from 'renderer/components/modals/Modals';
 import NoFilesOpened from 'renderer/components/editor/NoFilesOpened';
 
@@ -152,7 +152,7 @@ class App extends Component {
           <ExecutionReporter
             isExecutionRunning={this.props.isExecutionRunning}
             adapter={adapter}
-            onFinishedExecution={this.props.onFinishedExecution}/>
+            onTerminateExecution={this.props.onTerminateExecution}/>
         </ToggleDisplay>
 
         <Footer messages={this.graphErrors} framework={adapterName} language={languageName}/>
@@ -188,7 +188,7 @@ const mapDispatchToProps = (dispatch) => {
     onNodeChange: (node) => dispatch(updateNode(node)),
     onVariableChange: (nid, newVariableName) => dispatch(updateVariable(nid, newVariableName)),
     onTabChange: (newIndex) => dispatch(switchTab(newIndex)),
-    onFinishedExecution: () => dispatch(uiActions.terminateExecution()),
+    onTerminateExecution: () => dispatch(uiActions.terminateExecution()),
     onModalClose: (modal) => {
       switch(modal){
         case modalsList.NEW_FILE:

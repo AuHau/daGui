@@ -2,6 +2,8 @@
 import React, {Component} from 'react';
 import Scrollbar from 'react-scrollbar/dist/no-css';
 import Resizable from 'renderer/components/utils/Resizable';
+import ExecutionSidebar from './ExecutionSidebar';
+
 import ExecutionConfigurationsWell from 'renderer/wells/ExecutionConfigurationsWell';
 import {bindExecutorCallbacks, startExecution, terminateExecution} from 'renderer/platformConnector';
 
@@ -20,7 +22,7 @@ export default class ExecutionReporter extends Component {
     this.receiveData = this.receiveData.bind(this);
     this.finishedExecution = this.finishedExecution.bind(this);
 
-    bindExecutorCallbacks(this.receiveData('out'), this.receiveData('err'), this.finishedExecution);
+    bindExecutorCallbacks(this.receiveData('output'), this.receiveData('error'), this.finishedExecution);
 
     if (props.isExecutionRunning) {
       this.startExecution();
@@ -40,7 +42,7 @@ export default class ExecutionReporter extends Component {
 
   finishedExecution(exitCode) {
     this.setState({exitCode: exitCode});
-    this.props.onFinishedExecution();
+    this.props.onTerminateExecution();
   }
 
   async startExecution() {
@@ -58,7 +60,8 @@ export default class ExecutionReporter extends Component {
 
   receiveData(type) {
     return ((data) => {
-      this.setState({data: [...this.state.data, {type: type, data: data}]})
+      this.setState({data: [...this.state.data, {type: type, data: data}]});
+      this.scrollBar.scrollArea.scrollBottom()
     }).bind(this);
   }
 
@@ -67,12 +70,21 @@ export default class ExecutionReporter extends Component {
   }
 
   render() {
-    const renderedData = this.state.data.map(entry => (<div>{entry.data}</div>));
+    const renderedData = this.state.data.map(entry => (<div className={styles[entry.type]}>{entry.data}</div>));
+
+    let exitCode;
+    if(this.state.exitCode !== null){
+      exitCode = (<div className={(this.state.exitCode == 0 ? styles.okExitCode : styles.errorExitCode)}>The execution finished with exit code {this.state.exitCode}</div>);
+    }
 
     return (
       <Resizable class={styles.container} side={"top"} getMax={this.getMaxHeight}>
-        <Scrollbar className={styles.nodeList} horizontal={false}>
+        <div className={styles.sidebar}>
+          <ExecutionSidebar/>
+        </div>
+        <Scrollbar ref={c => {this.scrollBar = c}} className={styles.dataContainer} horizontal={false}>
           {renderedData}
+          {exitCode}
         </Scrollbar>
       </Resizable>
     );
@@ -82,5 +94,5 @@ export default class ExecutionReporter extends Component {
 ExecutionReporter.propTypes = {
   isExecutionRunning: React.PropTypes.bool,
   adapter: React.PropTypes.func,
-  onFinishedExecution: React.PropTypes.func.isRequired,
+  onTerminateExecution: React.PropTypes.func.isRequired,
 };

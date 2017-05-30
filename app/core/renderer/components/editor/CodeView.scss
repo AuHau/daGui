@@ -3,7 +3,7 @@
 
 .container{
   position: absolute;
-  bottom: 0;
+  bottom: $footer-height;
   right: 0;
   z-index: 9;
   width: calc(100% - #{$nodes-sidebar-width});;
