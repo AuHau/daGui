@@ -1,7 +1,7 @@
 import ErrorLevel from 'shared/enums/ErrorLevel.js';
 import ErrorType from 'shared/enums/ErrorType.js';
 import ValidationCriteria from 'shared/enums/ValidationCriteria';
-import toposort from 'toposort';
+import topsort from 'topsort';
 
 function createError(id, type, description, importance = 10, level = ErrorLevel.ERROR){
   return {
@@ -45,7 +45,7 @@ function checkCycles(graph){
   }
 
   try{
-    toposort(dependencies);
+    topsort(dependencies);
   }catch (e){
     return createError(null, ErrorType.HAS_CYCLE, 'Graph is not valid! It contains a cycle!', 20);
   }
