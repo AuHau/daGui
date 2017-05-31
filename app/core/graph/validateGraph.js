@@ -108,12 +108,12 @@ export default function validateGraph(graph, normalizedGraph, lang, inputs, adap
   }
 
   if(checks.has(ValidationCriteria.HAS_INPUT_NODES) && !inputs.length){
-    return [createError(null, ErrorType.NO_INPUTS, 'There are no inputs nodes in the graph!', 15), ...errors];
+    errors.push(createError(null, ErrorType.NO_INPUTS, 'There are no inputs nodes in the graph!', 15));
   }
 
   if(checks.has(ValidationCriteria.NO_CYCLES)){
     const cycles = checkCycles(normalizedGraph, inputs);
-    if(cycles) return [cycles, ...errors];
+    if (cycles) errors.push(cycles);
   }
 
   return errors;

@@ -24,7 +24,6 @@ export function generateCode(codeBuilder, $currentFile, currentHash=null, regene
   }
   currentHash = newHash;
 
-  // TODO: Limit when the actual generation of code happens? App.js => generate only when showCodeView (Maybe splitting validation&generation)
   try {
     adapter.generateCode(codeBuilder, normalizedGraph, inputs, usedVariables, language, languageVersion,adapterVersion);
   } catch (e) {
