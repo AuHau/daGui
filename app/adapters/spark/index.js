@@ -27,16 +27,16 @@ export default class SparkAdapter extends BaseAdapter{
   static getSupportedLanguages(adaptersVersion){
     return [
       Python,
-      Scala,
-      Java
+      // Scala,
+      // Java
     ];
   }
 
   static getSupportedLanguageVersions(langId, adaptersVersion){
     const versions = {
-      [Java.getId()]: Java.getSupportedVersions(),
+      // [Java.getId()]: Java.getSupportedVersions(),
       [Python.getId()]: Python.getSupportedVersions(),
-      [Scala.getId()]: Scala.getSupportedVersions(),
+      // [Scala.getId()]: Scala.getSupportedVersions(),
     };
 
     return versions[langId];
