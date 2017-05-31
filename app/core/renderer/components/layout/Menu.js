@@ -99,6 +99,29 @@ class Menu extends Component {
     const confsOptions = this.state.confs.map(conf => {return {value: conf.name, label: conf.name}});
     confsOptions.push({ value: 'conf', label: 'Configuration', classNames: styles.configureOption});
 
+    let execItems;
+    if(this.props.adapter && this.props.adapter.hasExecutionSupport()){
+      execItems = (
+        <ul className={styles.right}>
+          {!this.props.isExecutionRunning && <li className={styles.launchIcon}><a href="#" onClick={this.getCallback('onExecutionStart')} data-tip="Launch the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-play"/></a></li>}
+          {this.props.isExecutionRunning && <li className={styles.launchIcon}><a href="#" onClick={this.getCallback('onExecutionTermination')} data-tip="Terminate the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-stop"/></a></li>}
+          <li className={styles.execViewIcon + (this.props.showExecutionReporter ? " " + styles.active : '')}><a
+            href="#" onClick={this.getCallback('onToggleExecutionReporter')} data-tip="Show/Display log of execution"><i
+            className="fa fa-file-text-o"/></a></li>
+          <li>
+            <Select
+              value={this.state.currentExecutionConf}
+              options={confsOptions}
+              clearable={false}
+              searchable={false}
+              className={styles.select}
+              onChange={this.executionConfChange}
+            />
+          </li>
+        </ul>
+      );
+    }
+
     return (
       <div className={styles.container}>
         <ul className={styles.left}>
@@ -130,23 +153,7 @@ class Menu extends Component {
           <li><a href="#" data-tip="Settings"><i className="icon-settings"/></a></li>
         </ul>
 
-        <ul className={styles.right}>
-          {!this.props.isExecutionRunning && <li className={styles.launchIcon}><a href="#" onClick={this.getCallback('onExecutionStart')} data-tip="Launch the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-play"/></a></li>}
-          {this.props.isExecutionRunning && <li className={styles.launchIcon}><a href="#" onClick={this.getCallback('onExecutionTermination')} data-tip="Terminate the execution<br><span class='shortcut'>(Ctrl+T)</span>"><i className="fa fa-stop"/></a></li>}
-          <li className={styles.execViewIcon + (this.props.showExecutionReporter ? " " + styles.active : '')}><a
-            href="#" onClick={this.getCallback('onToggleExecutionReporter')} data-tip="Show/Display log of execution"><i
-            className="fa fa-file-text-o"/></a></li>
-          <li>
-            <Select
-              value={this.state.currentExecutionConf}
-              options={confsOptions}
-              clearable={false}
-              searchable={false}
-              className={styles.select}
-              onChange={this.executionConfChange}
-            />
-          </li>
-        </ul>
+        {execItems}
         <Tooltip place="bottom" type="dark" effect="solid" delayShow={850} className={styles.tooltip} offset={{'top': -13, 'left': -10}} html={true}/>
       </div>
     );

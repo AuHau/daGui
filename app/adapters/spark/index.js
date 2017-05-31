@@ -63,6 +63,10 @@ export default class SparkAdapter extends BaseAdapter{
     return groupedTemplates;
   }
 
+  static hasExecutionSupport(){
+    return true;
+  }
+
   static getValidationCriteria(adapterVersion){
     return validationCriteria;
   }

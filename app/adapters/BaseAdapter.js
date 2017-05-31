@@ -123,11 +123,6 @@ export default class BaseAdapter {
     throw new TypeError("Method 'isTypeInput' has to be implemented!");
   }
 
-
-  static validateGraph(graph){
-    throw new TypeError("Method 'validateGraph' has to be implemented!");
-  }
-
   static generateCode(graph){
     throw new TypeError("Method 'generateCode' has to be implemented!");
   }
