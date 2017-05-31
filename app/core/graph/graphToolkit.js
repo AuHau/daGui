@@ -63,8 +63,7 @@ export function validateGraph($currentFile, currentHash=null){
 
   const {normalizedGraph, inputs} = normalizeGraph(graph, adapter.isTypeInput);
   const newHash = hashGraph(normalizedGraph);
-  const isGraphEmpty = !Object.keys(normalizedGraph).length;
-  if(isGraphEmpty || (currentHash && currentHash == newHash)){
+  if(currentHash && currentHash == newHash){
     return null; // No graph's changes which are connected with code ===> don't re-generate the code OR there are no nodes...
   }
 

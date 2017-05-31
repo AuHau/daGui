@@ -95,15 +95,18 @@ class App extends Component {
     if(nextProps.currentFileIndex < 0) return;
 
     const currentFile = nextProps.files.get(nextProps.currentFileIndex);
-
-    const validationResult = validateGraph(currentFile, this.graphHash);
-
-    if(validationResult == null){ // Hashes matches ==> No regeneration
-      if(this.graphErrors.length){
+    if(currentFile.getIn(['history', 'present', 'cells']).isEmpty()){ // Graph is empty => nothing to check
+      if(this.graphErrors.length){ // There were errors before => delete them
         this.resetHighlights();
         this.graphErrors = [];
       }
 
+      return;
+    }
+
+    const validationResult = validateGraph(currentFile, this.graphHash);
+
+    if(validationResult == null) { // Hashes matches ==> No regeneration
       return;
     }else if(validationResult.errors && validationResult.errors.length){
       this.graphErrors = validationResult.errors;
@@ -114,6 +117,8 @@ class App extends Component {
     }else if(!nextProps.showCodeView){
       return; // When code is not displayed, it is not needed to regenerate it.
     }
+
+
 
     const result = generateCode(this.codeBuilder, currentFile, this.graphHash, true);
 
