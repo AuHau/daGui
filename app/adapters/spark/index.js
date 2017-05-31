@@ -1,5 +1,4 @@
 import BaseAdapter from '../BaseAdapter';
-import validateGraph from './validateGraph';
 import pythonGenerator from './languages/pythonGenerator';
 import ValidationCriteria from 'shared/enums/ValidationCriteria';
 
@@ -13,6 +12,13 @@ import {allNodeTemplates, groupedTemplates} from './templates';
 
 // Components
 import ExecutionConfigurationForm from './components/ExecutionConfigurationForm';
+
+const validationCriteria = new Set([
+  ValidationCriteria.NO_CYCLES,
+  ValidationCriteria.HAS_INPUT_NODES,
+  ValidationCriteria.HAS_PORTS_CONNECTED,
+  ValidationCriteria.HAS_REQUIRED_PARAMETERS_FILLED,
+]);
 
 export default class SparkAdapter extends BaseAdapter{
 
@@ -58,12 +64,7 @@ export default class SparkAdapter extends BaseAdapter{
   }
 
   static getValidationCriteria(adapterVersion){
-    return [
-      ValidationCriteria.NO_CYCLES,
-      ValidationCriteria.HAS_INPUT_NODES,
-      ValidationCriteria.HAS_PORTS_CONNECTED,
-      ValidationCriteria.HAS_REQUIRED_PARAMETERS_FILLED,
-    ]
+    return validationCriteria;
   }
 
   static isTypeInput(type, adapterVersion){
@@ -74,10 +75,6 @@ export default class SparkAdapter extends BaseAdapter{
       SparkAdapter.getGroupedNodeTemplates()
         .find(group => group.name == 'DF Input')['templates']
         .find(template => template.getType() == type) != undefined;
-  }
-
-  static validateGraph(graph, normalizedGraph, inputs, language){
-    return validateGraph(graph, normalizedGraph, language, inputs, SparkAdapter);
   }
 
   static generateCode(output, normalizedGraph, inputs, usedVariables, language, languageVersion, adaptersVersion){

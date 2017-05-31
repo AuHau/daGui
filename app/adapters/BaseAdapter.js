@@ -99,13 +99,13 @@ export default class BaseAdapter {
   }
 
   /**
-   * Return an array of criteria which the graph created by user have to fulfill in
+   * Return an Set of criteria which the graph created by user have to fulfill in
    * order to be called a valid graph from the adaptor's point of view.
    * The criteria are specified in ValidationCriteria enum and the array
    * have to consists only of its values.
    *
    * @param {string} adapterVersion
-   * @return {Array}
+   * @return {Set}
    */
   static getValidationCriteria(adapterVersion){
     throw new TypeError("Method 'getValidationCriteria' has to be implemented!");

@@ -167,6 +167,7 @@
     "redux-thunk": "^2.1.0",
     "source-map-support": "^0.4.6",
     "svg-pan-zoom": "github:ariutta/svg-pan-zoom",
+    "toposort": "^1.0.3",
     "topsort": "0.0.2",
     "typeface-montserrat": "0.0.24"
   },

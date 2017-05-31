@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import joint from 'jointjs';
 import Immutable from 'immutable';
-import {generateCode, hashGraph, normalizeGraph} from 'graph/graphToolkit.js';
+import {generateCode, validateGraph} from 'graph/graphToolkit.js';
 import CodeBuilder from 'graph/CodeBuilder';
 
 // Enums
@@ -96,16 +96,26 @@ class App extends Component {
 
     const currentFile = nextProps.files.get(nextProps.currentFileIndex);
 
-    const result = generateCode(this.codeBuilder, currentFile, this.graphHash, true);
+    const validationResult = validateGraph(currentFile, this.graphHash);
 
-    if(result == null){ // Hashes matches ==> No regeneration
+    if(validationResult == null){ // Hashes matches ==> No regeneration
       if(this.graphErrors.length){
         this.resetHighlights();
         this.graphErrors = [];
       }
 
       return;
+    }else if(validationResult.errors && validationResult.errors.length){
+      this.graphErrors = validationResult.errors;
+      this.highlightErrors();
+      this.graphHash = validationResult.hash;
+
+      return;
+    }else if(!nextProps.showCodeView){
+      return; // When code is not displayed, it is not needed to regenerate it.
     }
+
+    const result = generateCode(this.codeBuilder, currentFile, this.graphHash, true);
 
     if(!result.success){
       this.graphErrors = result.errors;

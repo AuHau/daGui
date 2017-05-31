@@ -2,6 +2,7 @@ import md5 from 'js-md5';
 import ErrorType from 'shared/enums/ErrorType';
 import ErrorLevel from 'shared/enums/ErrorLevel';
 import joint from 'jointjs';
+import graphValidation from './validateGraph';
 
 export function generateCode(codeBuilder, $currentFile, currentHash=null, regenerateOnlyOnChange=false){
   const language = $currentFile.get('language');
@@ -23,21 +24,7 @@ export function generateCode(codeBuilder, $currentFile, currentHash=null, regene
   }
   currentHash = newHash;
 
-  // TODO: Optimalization - drop JointJS graph dependency (use only normalized graph)
-  const jointGraph = new joint.dia.Graph();
-  jointGraph.fromJSON(graph);
-  const errors = adapter.validateGraph(jointGraph, normalizedGraph, inputs, language);
-
-  if(errors && errors.length){
-    return {
-      hash: currentHash,
-      success: false,
-      errors
-    };
-  }
-
   // TODO: Limit when the actual generation of code happens? App.js => generate only when showCodeView (Maybe splitting validation&generation)
-
   try {
     adapter.generateCode(codeBuilder, normalizedGraph, inputs, usedVariables, language, languageVersion,adapterVersion);
   } catch (e) {
@@ -64,6 +51,32 @@ export function generateCode(codeBuilder, $currentFile, currentHash=null, regene
     hash: currentHash,
     success: true
   }
+}
+
+export function validateGraph($currentFile, currentHash=null){
+  const language = $currentFile.get('language');
+  const languageVersion = $currentFile.get('languageVersion');
+  const adapter = $currentFile.get('adapter');
+  const adapterVersion = $currentFile.get('adapterVersion');
+  const graph = {cells: $currentFile.getIn(['history', 'present', 'cells']).toJS()};
+  const usedVariables = $currentFile.getIn(['history', 'present', 'usedVariables']).toJS();
+
+  const {normalizedGraph, inputs} = normalizeGraph(graph, adapter.isTypeInput);
+  const newHash = hashGraph(normalizedGraph);
+  const isGraphEmpty = !Object.keys(normalizedGraph).length;
+  if(isGraphEmpty || (currentHash && currentHash == newHash)){
+    return null; // No graph's changes which are connected with code ===> don't re-generate the code OR there are no nodes...
+  }
+
+  currentHash = newHash;
+  const jointGraph = new joint.dia.Graph();
+  jointGraph.fromJSON(graph);
+  const errors = graphValidation(jointGraph, normalizedGraph, language, inputs, adapter, adapterVersion);
+
+  return {
+    hash: currentHash,
+    errors
+  };
 }
 
 export function normalizeGraph(graphObject, isInputFnc){
