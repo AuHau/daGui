@@ -108,17 +108,20 @@ class App extends Component {
 
     if(validationResult == null) { // Hashes matches ==> No regeneration
       return;
-    }else if(validationResult.errors && validationResult.errors.length){
+    }else if(validationResult.errors && validationResult.errors.length){ // New errors
       this.graphErrors = validationResult.errors;
       this.highlightErrors();
       this.graphHash = validationResult.hash;
 
       return;
-    }else if(!nextProps.showCodeView){
-      return; // When code is not displayed, it is not needed to regenerate it.
+    }else if(this.graphErrors && (!validationResult.errors || !validationResult.errors.length)){ // No errors => have to delete the current ones
+      this.resetHighlights();
+      this.graphErrors = [];
     }
 
-
+    if(!nextProps.showCodeView){
+      return; // When code is not displayed, it is not needed to regenerate it.
+    }
 
     const result = generateCode(this.codeBuilder, currentFile, this.graphHash, true);
 
