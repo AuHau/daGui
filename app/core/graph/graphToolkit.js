@@ -97,7 +97,7 @@ export function normalizeGraph(graphObject, isInputFnc){
     normalizedGraph,
     inputs
   };
-};
+}
 
 export function hashGraph(normalizedGraph) {
   if(normalizedGraph.hasOwnProperty('cells')){

@@ -18,7 +18,7 @@ const canvas = {
   zoomStep: 0.2
 };
 
-const version = "0.5";
+const version = "0.5.0";
 
 const localForageConfig = {
   name        : 'daGui',

@@ -1,7 +1,7 @@
 {
   "name": "daGui",
   "productName": "daGui",
-  "version": "0.0.1",
+  "version": "0.5.0",
   "description": "Desktop application for constructing Big Data programs through building DAG",
   "main": "main.js",
   "scripts": {

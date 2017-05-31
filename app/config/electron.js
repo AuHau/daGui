@@ -15,7 +15,10 @@ const adapters = {
   [SparkAdapter.getId()]: SparkAdapter
 };
 
+const version = "0.5.0";
+
 export default {
+  version,
   daguiTags,
   adapters
 };

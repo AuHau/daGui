@@ -17,11 +17,16 @@ export function open(path) {
 
 export function save(path, code, graph, commentChar, saveMode) {
   return new Promise((resolve, reject) => {
-    code += '\n';
+    if(!code){
+      code = ''
+    }else{
+      code += '\n';
+    }
+
     const codeHash = md5(code);
     let daguiMetadata = '';
     daguiMetadata += commentChar + config.daguiTags.start + '\n';
-    daguiMetadata += commentChar + 'hash:' + codeHash + ';' + graph + '\n';
+    daguiMetadata += commentChar + 'version:' + config.version + ';hash:' + codeHash + ';' + graph + '\n';
     daguiMetadata += commentChar + config.daguiTags.end;
 
     if (saveMode == SaveMode.FULL_SAVE) {

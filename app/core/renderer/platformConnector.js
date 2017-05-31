@@ -50,7 +50,7 @@ export function open(path){
 
       const daguiMetadataRegex = new RegExp(
         language.getCommentChar() + electronConfig.daguiTags.start + "\\n"
-        + language.getCommentChar() + "hash:([a-zA-Z0-9]+);adapter:([a-zA-Z0-9]+):([0-9.x]*);language:([a-zA-Z0-9]+):([0-9.x]*);(\\[.*?\\])\\n"
+        + language.getCommentChar() + "version:([0-9.]*);hash:([a-zA-Z0-9]+);adapter:([a-zA-Z0-9]+):([0-9.x]*);language:([a-zA-Z0-9]+):([0-9.x]*);(\\[.*?\\])\\n"
         + language.getCommentChar() + electronConfig.daguiTags.end, "gm");
 
       const daguiData = daguiMetadataRegex.exec(data);
