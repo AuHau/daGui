@@ -151,7 +151,7 @@ class App extends Component {
         <ToggleDisplay show={this.props.showExecutionReporter}>
           <ExecutionReporter
             isExecutionRunning={this.props.isExecutionRunning}
-            adapter={adapter}
+            $file={$currentFile}
             onTerminateExecution={this.props.onTerminateExecution}/>
         </ToggleDisplay>
 

@@ -30,7 +30,7 @@ export default class ExecutionReporter extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.isExecutionRunning != nextProps.isExecutionRunning && nextProps.adapter) {
+    if (this.props.isExecutionRunning != nextProps.isExecutionRunning && nextProps.$file) {
       if (nextProps.isExecutionRunning) {
         this.setState({data: [], exitCode: null});
         this.startExecution();
@@ -46,15 +46,16 @@ export default class ExecutionReporter extends Component {
   }
 
   async startExecution() {
-    if (this.props.adapter) {
-      const execConf = await ExecutionConfigurationsWell.getActiveConfiguration(this.props.adapter.getId());
-      startExecution(this.props.adapter.getId(), null, execConf, null);
+    if (this.props.$file) {
+      const execConf = await ExecutionConfigurationsWell.getActiveConfiguration(this.props.$file.get('adapter').getId());
+
+      startExecution(this.props.$file.get('adapter').getId(), null, execConf, null);
     }
   }
 
   terminateExecution() {
-    if (this.props.adapter) {
-      terminateExecution(this.props.adapter.getId())
+    if (this.props.$file) {
+      terminateExecution(this.props.$file.get('adapter').getId())
     }
   }
 
@@ -93,6 +94,6 @@ export default class ExecutionReporter extends Component {
 
 ExecutionReporter.propTypes = {
   isExecutionRunning: React.PropTypes.bool,
-  adapter: React.PropTypes.func,
+  $file: React.PropTypes.func,
   onTerminateExecution: React.PropTypes.func.isRequired,
 };

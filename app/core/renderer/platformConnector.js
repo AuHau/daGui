@@ -13,9 +13,9 @@ function passData(cb){
     }
 }
 
-export function bindExecutorCallbacks(onExecutionOutput, onExecutionError, onExecutionFinish){
-  ipcRenderer.on('execution:stdout', passData(onExecutionOutput));
-  ipcRenderer.on('execution:stderr', passData(onExecutionError));
+export function bindExecutorCallbacks(onExecutionStdout, onExecutionStderr, onExecutionFinish){
+  ipcRenderer.on('execution:stdout', passData(onExecutionStdout));
+  ipcRenderer.on('execution:stderr', passData(onExecutionStderr));
   ipcRenderer.on('execution:done', passData(onExecutionFinish));
 }
 
