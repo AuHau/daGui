@@ -5,6 +5,7 @@ import joint from 'jointjs';
 import Immutable from 'immutable';
 import {generateCode, validateGraph} from 'graph/graphToolkit.js';
 import CodeBuilder from 'graph/CodeBuilder';
+import ExecutionConfigurationsWell from 'renderer/wells/ExecutionConfigurationsWell';
 
 // Enums
 import ErrorType from 'shared/enums/ErrorType';
@@ -29,8 +30,9 @@ import CodeView from 'renderer/components/editor/CodeView';
 import ExecutionReporter from 'renderer/components/editor/execution_reporter/ExecutionReporter';
 import Modals, {modalsList} from 'renderer/components/modals/Modals';
 import NoFilesOpened from 'renderer/components/editor/NoFilesOpened';
+import Dialog from 'material-ui/Dialog';
+import Button from 'renderer/components/form/Button';
 
-// TODO: [BUG/High] When dispatching multiple actions for multi-events (deleting multiple node), the undo/redo is not working correctly ==> need of batching the multiple events, so there is only entry in the history
 // TODO: [High] Import of system libraries (Math etc) when used. Most probably implement "hasLibrary" on platform adapter, which will query the platform for available libraries
 // TODO: [Low] Import of user's libraries. Enable user to import his custom libraries
 // TODO: []
@@ -45,7 +47,11 @@ class App extends Component {
     this.highlightsTemplate = Immutable.fromJS(highlights);
 
     this.state = {
-      highlights: this.highlightsTemplate
+      highlights: this.highlightsTemplate,
+      showDialog: false,
+      dialogMsg: '',
+      isExecutionRunning: false,
+      executionCode: null,
     };
 
     this.codeBuilder = new CodeBuilder();
@@ -56,6 +62,7 @@ class App extends Component {
     this.switchHighlight = this.switchHighlight.bind(this);
     this.changeTab = this.changeTab.bind(this);
     this.closeTab = this.closeTab.bind(this);
+    this.closeDialog = this.closeDialog.bind(this);
   }
 
   changeTab(newIndex){
@@ -91,10 +98,16 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    // When no file is opened don't validate the graph
+    const currentFile = nextProps.files.get(nextProps.currentFileIndex);
+
+    this.handleCodeGeneration(currentFile, nextProps);
+    this.handleExecution(currentFile, nextProps);
+  }
+
+  handleCodeGeneration(currentFile, nextProps){
+    // When no file is opened don't validate the graph & generate the code
     if(nextProps.currentFileIndex < 0) return;
 
-    const currentFile = nextProps.files.get(nextProps.currentFileIndex);
     if(currentFile.getIn(['history', 'present', 'cells']).isEmpty()){ // Graph is empty => nothing to check
       if(this.graphErrors.length){ // There were errors before => delete them
         this.resetHighlights();
@@ -123,16 +136,54 @@ class App extends Component {
       return; // When code is not displayed, it is not needed to regenerate it.
     }
 
-    const result = generateCode(this.codeBuilder, currentFile, this.graphHash, true);
+    const result = generateCode(this.codeBuilder, currentFile, null, this.graphHash, true);
 
     if(!result.success){
       this.graphErrors = result.errors;
       this.highlightErrors();
-    }else{
+    }else if(this.graphErrors.length){
       this.resetHighlights();
       this.graphErrors = [];
     }
     this.graphHash = result.hash;
+  }
+
+  async handleExecution(currentFile, nextProps){
+    if(!this.props.isExecutionRunning && nextProps.isExecutionRunning){ // Start of execution
+      // When no file is opened don't launch the execution
+      if(nextProps.currentFileIndex < 0){
+        this.props.onTerminateExecution(true);
+        return Promise.resolve();
+      }
+
+      if(this.graphErrors.length){ // Don't allow execution of file with errors
+        this.openDialog("The current file contains errors! It is not possible to execute a file which contains errors, please fix them and then try again.");
+        this.props.onTerminateExecution(true);
+        return Promise.resolve();
+      }
+
+      if(currentFile.getIn(['history', 'present', 'cells']).isEmpty()) { // Graph is empty => nothing to execute
+        this.openDialog("The current file is empty! You can not execute empty file!");
+        this.props.onTerminateExecution(true);
+        return Promise.resolve();
+      }
+
+      const execConf = await ExecutionConfigurationsWell.getActiveConfiguration(currentFile.get('adapter').getId())
+      const tempCodeBuilder = new CodeBuilder();
+      const result = generateCode(tempCodeBuilder, currentFile, execConf);
+
+      if(!result.success){
+        this.graphErrors = result.errors;
+        this.highlightErrors();
+      }else{
+        this.setState({
+          isExecutionRunning: true,
+          executionCode: tempCodeBuilder.getCode()
+        });
+      }
+    }else if(this.props.isExecutionRunning && !nextProps.isExecutionRunning){
+      this.setState({isExecutionRunning: false});
+    }
   }
 
   highlightErrors(){
@@ -144,6 +195,14 @@ class App extends Component {
     }
 
     this.setState({highlights: errHighlights.asImmutable()});
+  }
+
+  openDialog(msg){
+    this.setState({showDialog: true, dialogMsg: msg});
+  }
+
+  closeDialog(){
+    this.setState({showDialog: false, dialogMsg: ''});
   }
 
   render() {
@@ -161,20 +220,51 @@ class App extends Component {
         <Menu />
         <NodesSidebar ref={(n) => {this.refSidebar = n}} adapter={adapter} />
         <Tabs currentFileIndex={this.props.currentFileIndex} $files={this.props.files} onTabClose={this.closeTab} onTabChange={this.changeTab}/>
-        <Canvas onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} onSwitchHighlight={this.switchHighlight} highlights={this.state.highlights.get(HighlightDestination.CANVAS)}/>
+
+        <Canvas
+          onAddHighlight={this.addHighlight}
+          onRemoveHighlight={this.removeHighlight}
+          onSwitchHighlight={this.switchHighlight}
+          highlights={this.state.highlights.get(HighlightDestination.CANVAS)}/>
+
         <ToggleDisplay show={this.props.currentFileIndex < 0}><NoFilesOpened/></ToggleDisplay>
-        <ToggleDisplay show={this.props.nodeDetail !== null}><DetailSidebar node={(this.props.nodeDetail ? this.props.nodeDetail.toJS() : null)} language={language} adapter={adapter} onNodeChange={this.props.onNodeChange}/></ToggleDisplay>
-        <ToggleDisplay show={this.props.showCodeView}><CodeView onAddHighlight={this.addHighlight} onRemoveHighlight={this.removeHighlight} highlights={this.state.highlights.get(HighlightDestination.CODE_VIEW)} language={language} codeBuilder={this.codeBuilder} errors={this.graphErrors} onVariableNameChange={this.props.onVariableChange}/></ToggleDisplay>
+
+        <ToggleDisplay show={this.props.nodeDetail !== null}>
+          <DetailSidebar
+            node={(this.props.nodeDetail ? this.props.nodeDetail.toJS() : null)}
+            language={language}
+            adapter={adapter}
+            onNodeChange={this.props.onNodeChange}/>
+        </ToggleDisplay>
+
+        <ToggleDisplay show={this.props.showCodeView}>
+          <CodeView
+            onAddHighlight={this.addHighlight}
+            onRemoveHighlight={this.removeHighlight}
+            highlights={this.state.highlights.get(HighlightDestination.CODE_VIEW)}
+            language={language}
+            codeBuilder={this.codeBuilder}
+            errors={this.graphErrors}
+            onVariableNameChange={this.props.onVariableChange}/>
+        </ToggleDisplay>
 
         <ToggleDisplay show={this.props.showExecutionReporter}>
           <ExecutionReporter
-            isExecutionRunning={this.props.isExecutionRunning}
-            $file={$currentFile}
+            isExecutionRunning={this.state.isExecutionRunning}
+            adapter={adapter}
+            generatedCode={this.state.executionCode}
             onTerminateExecution={this.props.onTerminateExecution}/>
         </ToggleDisplay>
 
         <Footer messages={this.graphErrors} framework={adapterName} language={languageName}/>
+
+        {/*Invisible components*/}
         <Modals openedModals={this.props.modals} onClose={this.props.onModalClose} />
+        <Dialog
+          open={this.state.showDialog}
+          onRequestClose={this.closeDialog}
+          actions={[<Button onClick={this.closeDialog}>Ok</Button>]}
+        >{this.state.dialogMsg}</Dialog>
       </div>
     );
   }
@@ -206,7 +296,7 @@ const mapDispatchToProps = (dispatch) => {
     onNodeChange: (node) => dispatch(updateNode(node)),
     onVariableChange: (nid, newVariableName) => dispatch(updateVariable(nid, newVariableName)),
     onTabChange: (newIndex) => dispatch(switchTab(newIndex)),
-    onTerminateExecution: () => dispatch(uiActions.terminateExecution()),
+    onTerminateExecution: (closeReporter) => dispatch(uiActions.terminateExecution(closeReporter)),
     onModalClose: (modal) => {
       switch(modal){
         case modalsList.NEW_FILE:

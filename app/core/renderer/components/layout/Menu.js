@@ -97,7 +97,7 @@ class Menu extends Component {
   // TODO: [BUG] Contain does not work
   render() {
     const confsOptions = this.state.confs.map(conf => {return {value: conf.name, label: conf.name}});
-    confsOptions.push({ value: 'conf', label: 'Configuration', classNames: styles.configureOption});
+    confsOptions.push({ value: 'conf', label: 'Edit configurations', classNames: styles.configureOption});
 
     let execItems;
     if(this.props.adapter && this.props.adapter.hasExecutionSupport()){

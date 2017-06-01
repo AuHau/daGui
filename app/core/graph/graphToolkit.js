@@ -4,7 +4,7 @@ import ErrorLevel from 'shared/enums/ErrorLevel';
 import joint from 'jointjs';
 import graphValidation from './validateGraph';
 
-export function generateCode(codeBuilder, $currentFile, currentHash=null, regenerateOnlyOnChange=false){
+export function generateCode(codeBuilder, $currentFile, executionConf=null, currentHash=null, regenerateOnlyOnChange=false){
   const language = $currentFile.get('language');
   const languageVersion = $currentFile.get('languageVersion');
   const adapter = $currentFile.get('adapter');

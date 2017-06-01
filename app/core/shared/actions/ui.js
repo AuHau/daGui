@@ -106,9 +106,12 @@ export const startExecution = () => {
   }
 };
 
-export const terminateExecution = () => {
+export const terminateExecution = (closeReporter) => {
   return {
-    type: UI.TERMINATE_EXECUTION
+    type: UI.TERMINATE_EXECUTION,
+    payload: {
+      closeReporter
+    }
   }
 };
 

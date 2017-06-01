@@ -94,7 +94,13 @@ export default (state, action) => {
         .set('showExecutionReporter', true);
 
     case UI.TERMINATE_EXECUTION:
-      return state.set('isExecutionRunning', false);
+      if(action.payload.closeReporter){
+        return state
+          .set('showExecutionReporter', false)
+          .set('isExecutionRunning', false);
+      }else{
+        return state.set('isExecutionRunning', false);
+      }
 
     default:
       return state;

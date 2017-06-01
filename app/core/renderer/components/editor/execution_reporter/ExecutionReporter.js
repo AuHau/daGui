@@ -30,7 +30,7 @@ export default class ExecutionReporter extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.isExecutionRunning != nextProps.isExecutionRunning && nextProps.$file) {
+    if (this.props.isExecutionRunning != nextProps.isExecutionRunning && nextProps.adapter) {
       if (nextProps.isExecutionRunning) {
         this.setState({data: [], exitCode: null});
         this.startExecution();
@@ -40,29 +40,32 @@ export default class ExecutionReporter extends Component {
     }
   }
 
+  componentDidUpdate(){
+    this.scrollBar.scrollArea.scrollBottom();
+  }
+
   finishedExecution(exitCode) {
     this.setState({exitCode: exitCode});
     this.props.onTerminateExecution();
   }
 
   async startExecution() {
-    if (this.props.$file) {
-      const execConf = await ExecutionConfigurationsWell.getActiveConfiguration(this.props.$file.get('adapter').getId());
+    if (this.props.adapter) {
+      const execConf = await ExecutionConfigurationsWell.getActiveConfiguration(this.props.adapter.getId());
 
-      startExecution(this.props.$file.get('adapter').getId(), null, execConf, null);
+      startExecution(this.props.adapter.getId(), this.props.generatedCode, execConf, null);
     }
   }
 
   terminateExecution() {
-    if (this.props.$file) {
-      terminateExecution(this.props.$file.get('adapter').getId())
+    if (this.props.adapter) {
+      terminateExecution(this.props.adapter.getId())
     }
   }
 
   receiveData(type) {
     return ((data) => {
       this.setState({data: [...this.state.data, {type: type, data: data}]});
-      this.scrollBar.scrollArea.scrollBottom()
     }).bind(this);
   }
 
@@ -75,7 +78,7 @@ export default class ExecutionReporter extends Component {
 
     let exitCode;
     if(this.state.exitCode !== null){
-      exitCode = (<div className={(this.state.exitCode == 0 ? styles.okExitCode : styles.errorExitCode)}>The execution finished with exit code {this.state.exitCode}</div>);
+      exitCode = (<div className={(this.state.exitCode == 0 ? styles.okExitCode : styles.errorExitCode)}>The execution finished with exit code: {this.state.exitCode}</div>);
     }
 
     return (
@@ -94,6 +97,7 @@ export default class ExecutionReporter extends Component {
 
 ExecutionReporter.propTypes = {
   isExecutionRunning: React.PropTypes.bool,
-  $file: React.PropTypes.func,
+  adapter: React.PropTypes.func,
+  generatedCode: React.PropTypes.string,
   onTerminateExecution: React.PropTypes.func.isRequired,
 };

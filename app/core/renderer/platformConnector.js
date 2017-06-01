@@ -7,9 +7,10 @@ import {ipcRenderer} from 'electron';
 
 function passData(cb){
     return (event, data) => {
+      data = (typeof data == 'object' ? Utf8ArrayToStr(data) : data);
       // const args = Array.prototype.slice.call(arguments, 1);
       // cb.apply(null, args);
-      cb(Utf8ArrayToStr(data)); // TODO: [Very low] Make the passData general with arguments variable, not sure why it is not working as it is above.
+      cb(data); // TODO: [Very low] Make the passData general with arguments variable, not sure why it is not working as it is above.
     }
 }
 
