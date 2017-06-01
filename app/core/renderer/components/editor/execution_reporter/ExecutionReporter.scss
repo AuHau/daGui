@@ -44,6 +44,16 @@ $sidebar-width: 40px;
 
 .listing{
   padding-bottom: 5px;
+
+  cursor: text;
+  -webkit-user-select: auto;
+  user-select: auto;
+
+  div{
+	cursor: text;
+	-webkit-user-select: auto;
+	user-select: auto;
+  }
 }
 
 .exitCode{
