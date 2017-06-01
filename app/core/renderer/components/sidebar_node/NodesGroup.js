@@ -155,7 +155,7 @@ class NodesGroup extends Component {
   render(){
     return (
       <div className={styles.container}>
-        <div className={styles.groupName}>{this.props.name}</div>
+        {this.props.name && <div className={styles.groupName}>{this.props.name}</div>}
         <div ref="placeholder"></div>
         {this.state.isDragging && <div ref="flyPaper" style={{cursor: 'default', position:'fixed', zIndex:100, opacity:.7, pointerEvent:'none'}}></div>}
       </div>

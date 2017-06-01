@@ -41,10 +41,15 @@ export default class NodesSidebar extends Component {
 
       // TODO: [Low] getGroupedNodeTemplates does not needs to be implemented ==> in such a case use getNodeTemplates instead.
       const groups = this.props.adapter.getGroupedNodeTemplates();
-      renderedGroups = groups.map((group, index) => <NodesGroup key={index}
-                                                                      displayHiddenNodes={this.state.showHiddenNodes}
-                                                                      name={group.name} nodeTemplates={group.templates}
-                                                                      searchedText={this.state.searchedText}/>);
+
+      if(groups){
+        renderedGroups = groups.map((group, index) => <NodesGroup key={index}
+                                                                  displayHiddenNodes={this.state.showHiddenNodes}
+                                                                  name={group.name} nodeTemplates={group.templates}
+                                                                  searchedText={this.state.searchedText}/>);
+      }else{
+        renderedGroups = <NodesGroup name={null} nodeTemplates={Object.values(this.props.adapter.getNodeTemplates())}/>
+      }
     }
 
     // TODO: [Medium] Filter type of nodes (i.e. only for RDD, only for DF, all, etc.)

@@ -95,7 +95,7 @@ export default class BaseAdapter {
    * @return {Array|null}
    */
   static getGroupedNodeTemplates(adapterVersion){
-    throw new TypeError("Method 'getGroupedNodeTemplates' has to be implemented!");
+    return null;
   }
 
   /**
