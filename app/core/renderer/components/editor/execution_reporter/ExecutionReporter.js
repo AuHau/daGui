@@ -20,7 +20,7 @@ export default class ExecutionReporter extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {data: [], exitCode: null};
+    this.state = {data: [], exitCode: undefined};
     this.receiveData = this.receiveData.bind(this);
     this.finishedExecution = this.finishedExecution.bind(this);
 
@@ -34,7 +34,7 @@ export default class ExecutionReporter extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.isExecutionRunning != nextProps.isExecutionRunning && nextProps.adapter) {
       if (nextProps.isExecutionRunning) {
-        this.setState({data: [], exitCode: null});
+        this.setState({data: [], exitCode: undefined});
         this.startExecution();
       } else if(!this.state.exitCode){
         this.terminateExecution();
@@ -79,7 +79,9 @@ export default class ExecutionReporter extends Component {
     const renderedData = this.state.data.map(entry => (<div className={styles[entry.type]}>{entry.data}</div>));
 
     let exitCode;
-    if(this.state.exitCode !== null){
+    if (this.state.exitCode === null) {
+      exitCode = (<div className={styles.warningExitCode}>The execution was terminated before finishing!</div>);
+    } else if (this.state.exitCode !== undefined) {
       exitCode = (<div className={(this.state.exitCode == 0 ? styles.okExitCode : styles.errorExitCode)}>The execution finished with exit code: {this.state.exitCode}</div>);
     }
 

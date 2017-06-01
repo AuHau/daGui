@@ -61,6 +61,11 @@ $sidebar-width: 40px;
   color: $red;
 }
 
+.warningExitCode {
+  composes: exitCode;
+  color: $yellow;
+}
+
 .output{
   font-weight: normal;
   white-space: pre;

@@ -140,6 +140,10 @@ export function messageDialog(options) {
  */
 
 function Utf8ArrayToStr(array) {
+  if (array == null) {
+    return null;
+  }
+
   let out, i, len, c;
   let char2, char3;
 
