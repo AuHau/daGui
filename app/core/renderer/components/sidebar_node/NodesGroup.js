@@ -143,7 +143,8 @@ class NodesGroup extends Component {
       }else{
         this.paper.el.style.display = 'block';
         this.graph.clear();
-        const totalHeight = nodes.length * nodeHeight + (nodes.length - 1) * nodeMargin;
+
+        const totalHeight = nodes.reduce((acc, node) => acc + node.getHeight(), 0) + (nodes.length - 1) * nodeMargin;
         this.paper.setDimensions(this.wrapperElem.offsetWidth, totalHeight);
         this.renderNodes(nodes);
       }

@@ -30,7 +30,7 @@ const MODEL = DefaultShape.extend({
         }
       ]
     }
-  }, DefaultShape.defaults)
+  }, DefaultShape.prototype.defaults)
 });
 
 if(!joint.shapes['spark']) joint.shapes['spark'] = {};
