@@ -3,6 +3,8 @@ import React, {Component} from 'react';
 import Scrollbar from 'react-scrollbar/dist/no-css';
 import Resizable from 'renderer/components/utils/Resizable';
 import ExecutionSidebar from './ExecutionSidebar';
+import LinearProgress from 'material-ui/LinearProgress';
+import ToggleDisplay from 'react-toggle-display';
 
 import ExecutionConfigurationsWell from 'renderer/wells/ExecutionConfigurationsWell';
 import {bindExecutorCallbacks, startExecution, terminateExecution} from 'renderer/platformConnector';
@@ -86,10 +88,15 @@ export default class ExecutionReporter extends Component {
         <div className={styles.sidebar}>
           <ExecutionSidebar/>
         </div>
-        <Scrollbar ref={c => {this.scrollBar = c}} className={styles.dataContainer} horizontal={false}>
-          {renderedData}
-          {exitCode}
-        </Scrollbar>
+        <div className={styles.listingContainer}>
+          <ToggleDisplay show={this.props.isExecutionRunning}>
+            <LinearProgress mode="indeterminate" />
+          </ToggleDisplay>
+          <Scrollbar ref={c => {this.scrollBar = c}} className={styles.listingWrapper} contentClassName={styles.listing} horizontal={false}>
+            {renderedData}
+            {exitCode}
+          </Scrollbar>
+        </div>
       </Resizable>
     );
   }

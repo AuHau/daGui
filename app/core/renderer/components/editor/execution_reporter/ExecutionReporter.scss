@@ -23,13 +23,26 @@ $sidebar-width: 40px;
   width: $sidebar-width;
 }
 
-.dataContainer{
+.listingContainer{
   position: absolute;
   left:$sidebar-width;
   width: calc(100% - #{$sidebar-width});
   height: 100%;
-  padding-top: 5px;
+}
+
+.listingWrapper{
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 100%;
+  height: calc(100% - 4px);
+
+  padding-top: 1px;
   padding-left: 10px;
+  padding-bottom: 5px;
+}
+
+.listing{
   padding-bottom: 5px;
 }
 
@@ -50,6 +63,7 @@ $sidebar-width: 40px;
 
 .output{
   font-weight: normal;
+  white-space: pre;
 }
 
 .error{
