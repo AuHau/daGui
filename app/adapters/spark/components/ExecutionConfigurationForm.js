@@ -18,6 +18,12 @@ const SPARK_PARAMS = [
   {name: 'master', mode: [SPARK_MODES.ALL], label: 'Master URL', help: 'spark://host:port, mesos://host:port, yarn, or local'},
   {name: 'deploy-mode', mode: [SPARK_MODES.ALL], label: 'Deploy mode', help: 'Whether to launch the driver program locally ("client") or on one of the worker machines inside the cluster ("cluster") (Default: client).'},
   {name: 'app-name', mode: [SPARK_MODES.ALL], label: 'Application name', help: 'If not specified then the name of the file will be used.'},
+  {
+    name: 'app-arguments',
+    mode: [SPARK_MODES.ALL],
+    label: 'Application arguments',
+    help: 'Specify arguments which will be passed to application'
+  },
   {name: 'jars', mode: [SPARK_MODES.ALL], label: 'Local Jars', help: 'Comma-separated list of local jars to include on the driver and executor classpaths.'},
   {name: 'packages', mode: [SPARK_MODES.ALL], label: 'Maven packages', help: ' Comma-separated list of maven coordinates of jars to include on the driver and executor classpaths. Will search the local maven repo, then maven central and any additional remote repositories given by --repositories. The format for the coordinates should be groupId:artifactId:version.'},
   {name: 'exclude-packages', mode: [SPARK_MODES.ALL], label: 'Exclude packages', help: 'Comma-separated list of groupId:artifactId, to exclude while resolving the dependencies provided in --packages to avoid dependency conflicts.'},
@@ -90,6 +96,7 @@ export default class ExecutionConfigurationForm extends Component {
   onSave(){
     if(Object.keys(this.state.$errors).length == 0){
       this.props.onUpdate(JSON.parse(JSON.stringify(this.state.conf)));
+      this.props.onClose();
     }
   }
 

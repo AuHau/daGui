@@ -28,7 +28,7 @@ function storeCode(generatedCode){
 function buildArgs(execConf, settings, filePath){
   let output = [];
   for(let key in execConf){
-    if(!execConf.hasOwnProperty(key) || key == 'name') continue;
+    if (!execConf.hasOwnProperty(key) || key == 'name' || key == 'app-arguments') continue;
 
     if(key == 'app-name'){
       output.push('--name');
@@ -39,7 +39,11 @@ function buildArgs(execConf, settings, filePath){
     }
   }
 
-  output.push(' \\\n' + filePath);
+  output.push(filePath);
+
+  if (execConf.hasOwnProperty('app-arguments')) {
+    output.push(execConf['app-arguments']);
+  }
 
   return output;
 }
