@@ -80,6 +80,9 @@ export default class CreateDataFrame extends NodeTemplate{
 
   static isInputDataTypeValid(dataType, langId){
     if(INPUT_DATA_TYPE){
+      if (typeof INPUT_DATA_TYPE == 'string')
+        return dataType == INPUT_DATA_TYPE;
+
       return INPUT_DATA_TYPE.has(dataType);
     }
 
