@@ -5,12 +5,10 @@
   @include overlay()
 }
 
-$header-height: 29px;
 $menu-width: 200px;
 
 .modal{
   @include modal(600px, 450px);
-  background-color: $dark-grey;
 
   button[disabled]{
 	color: #8c8c8c;

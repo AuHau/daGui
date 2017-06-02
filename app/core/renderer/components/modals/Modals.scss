@@ -1,3 +1,8 @@
+@import "../../variables";
+
+$button-bar-height: 25px;
+$header-height: 29px;
+
 @mixin overlay{
   position: fixed;
   left: 0;
@@ -19,7 +24,7 @@
   margin-left: -($width/2);
   margin-top: -($height/2);
 
-  background: rgb(255, 255, 255);
+  background-color: $dark-grey;
   overflow: auto;
   border-radius: 6px;
   outline: none;

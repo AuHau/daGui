@@ -4,6 +4,10 @@ import ReactModal from 'react-modal';
 import config from "../../../../config/index";
 import { connect } from 'react-redux';
 
+import Input from 'renderer/components/form/Input';
+import Button from 'renderer/components/form/Button';
+import Scrollbar from 'react-scrollbar/dist/no-css';
+import Select from 'react-select';
 
 import styles from './NewFileModal.scss';
 import {newFile} from "../../../shared/actions/file";
@@ -33,14 +37,14 @@ class NewFileModal extends Component {
   }
 
   onSelectedAdapter(e){
-    const selectedAdapter = config.adapters[e.target.value];
+    const selectedAdapter = config.adapters[e.value];
     this.setState({
       adapter: selectedAdapter
     });
   }
 
   onSelectedLanguage(e){
-    const selectedLanguage = config.languages[e.target.value];
+    const selectedLanguage = config.languages[e.value];
     this.setState({
       language: selectedLanguage
     });
@@ -57,8 +61,23 @@ class NewFileModal extends Component {
     });
   }
 
+  handleSelectChange(name) {
+    return (value) => {
+
+      this.setState({
+        [name]: value.value
+      });
+    }
+  }
+
   close(){
-    this.setState({});
+    this.setState({
+      name: undefined,
+      adaptersVersion: undefined,
+      language: undefined,
+      languageVersions: undefined,
+      adapter: undefined,
+    });
     this.props.onClose();
   }
 
@@ -68,10 +87,15 @@ class NewFileModal extends Component {
       adapterVersions = (
         <div>
           <h5>Adapter version:</h5>
-          <select name="adaptersVersion" defaultValue="-1" onChange={this.handleInputChange}>
-            <option value="-1" disabled>select adapter's version</option>
-            {this.state.adapter.getSupportedVersions().map(version => <option key={version} value={version}>{version}</option>)}
-          </select>
+
+          <Select
+            value={this.state.adaptersVersion}
+            options={this.state.adapter.getSupportedVersions().map(version => {return {value: version, label: version}})}
+            clearable={false}
+            searchable={false}
+            className={styles.select}
+            placeholder="Select adapter's version"
+            onChange={this.handleSelectChange('adaptersVersion')}/>
         </div>
       );
     }
@@ -80,10 +104,15 @@ class NewFileModal extends Component {
       languages = (
         <div>
           <h4>Language:</h4>
-          <select defaultValue="-1" onChange={this.onSelectedLanguage}>
-            <option value="-1" disabled>select language</option>
-            {this.state.adapter.getSupportedLanguages(this.state.adaptersVersion).map(language => <option key={language.getId()} value={language.getId()}>{language.getName()}</option>)}
-          </select>
+
+          <Select
+            value={(this.state.language ? this.state.language.getId() : undefined)}
+            options={this.state.adapter.getSupportedLanguages(this.state.adaptersVersion).map(language => {return {value: language.getId(), label: language.getName()}})}
+            clearable={false}
+            searchable={false}
+            className={styles.select}
+            placeholder="Select language"
+            onChange={this.onSelectedLanguage}/>
         </div>
       );
     }
@@ -92,10 +121,15 @@ class NewFileModal extends Component {
       languageVersions = (
         <div>
           <h5>Language version:</h5>
-          <select name="languageVersion" defaultValue="-1" onChange={this.handleInputChange}>
-            <option value="-1" disabled>select language</option>
-            {this.state.adapter.getSupportedLanguageVersions(this.state.language.getId(), this.state.adaptersVersion).map(langVersion => <option key={langVersion} value={langVersion}>{langVersion}</option>)}
-          </select>
+
+          <Select
+            value={this.state.languageVersion}
+            options={this.state.adapter.getSupportedLanguageVersions(this.state.language.getId(), this.state.adaptersVersion).map(version => {return {value: version, label: version}})}
+            clearable={false}
+            searchable={false}
+            className={styles.select}
+            placeholder="Select language's version"
+            onChange={this.handleSelectChange('languageVersion')}/>
         </div>
       )
     }
@@ -114,25 +148,38 @@ class NewFileModal extends Component {
         className={styles.modal}
         contentLabel="New File Modal"
       >
-        <h1>New file</h1>
-        <form onSubmit={this.submit}>
-          <h4>Name:</h4>
-          <input type="text" name="name" onChange={this.handleInputChange}/>
-          <h4>Adapter:</h4>
-          <select defaultValue="-1" onChange={this.onSelectedAdapter}>
-            <option value="-1" disabled>select adapter</option>
-            {Object.values(config.adapters).map(adapter => <option key={adapter.getId()} value={adapter.getId()}>{adapter.getName()}</option>)}
-          </select>
+        <header>New file</header>
+        <div className={styles.contentWrapper}>
+          <Scrollbar className={styles.content}>
+            <h4>Name:</h4>
+            <Input name="name" value={this.state.name} onChange={this.handleInputChange}/>
 
-          {adapterVersions}
-          {languages}
-          {languageVersions}
+            <div className={styles.columnsWrapper}>
+              <div className={styles.column}>
+                <h4>Adapter:</h4>
+                <Select
+                  value={(this.state.adapter ? this.state.adapter.getId() : undefined)}
+                  options={Object.values(config.adapters).map(adapter => {return {value: adapter.getId(), label: adapter.getName()}})}
+                  clearable={false}
+                  searchable={false}
+                  className={styles.select}
+                  placeholder="Select adapter"
+                  onChange={this.onSelectedAdapter}/>
 
-          <div>
-            <button type="submit" disabled={!readyToSubmit}>Create new file</button>
-            <button type="button" onClick={this.close}>Cancel</button>
+                {adapterVersions}
+              </div>
+              <div className={styles.column}>
+                {languages}
+                {languageVersions}
+              </div>
+            </div>
+          </Scrollbar>
+          <div className={styles.buttonBar}>
+            <Button className={styles.button} onClick={this.submit} disabled={!readyToSubmit}>Create new file</Button>
+            <Button className={styles.button} onClick={this.close}>Cancel</Button>
           </div>
-        </form>
+        </div>
+        <a href="#" className={styles.close} onClick={this.close}><i className="icon-x"/></a>
       </ReactModal>
     );
   }
