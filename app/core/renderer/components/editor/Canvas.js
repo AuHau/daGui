@@ -97,6 +97,11 @@ class Canvas extends Component {
         if (cellViewS === cellViewT) return false;
         if (!magnetT || magnetT.getAttribute('port-group') !== 'in') return false;
 
+        const nodeDataOutput = this.props.adapter.getNodeTemplates()[cellViewS.model.attributes.type].getOutputDataType(this.props.language.getId());
+        if (!this.props.adapter.getNodeTemplates()[cellViewT.model.attributes.type].isInputDataTypeValid(nodeDataOutput)){
+          return false;
+        }
+
         const ports = this.props.$occupiedPorts.get(cellViewT.model.id);
         return !ports || !ports.has(magnetT.getAttribute('port'));
       }.bind(this)
