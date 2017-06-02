@@ -75,8 +75,8 @@ export default (state, action, wholeState) => {
     case GRAPH.CUT$:
       return cutReducer$(state, null, wholeState);
 
-    case GRAPH.PASTE:
-      return pasteReducer(state, null, wholeState);
+    case GRAPH.PASTE$:
+      return pasteReducer$(state, null, wholeState);
 
     ////////////////////////////////////////////////////////////
     // BATCH ACTIONS
@@ -304,14 +304,14 @@ function cutReducer$(state, payload, wholeState){
   ).set('$copied', cuttedNodes);
 }
 
-function pasteReducer(state, payload, wholeState){
+function pasteReducer$(state, payload, wholeState){
   if(state === null) return wholeState; // No opened files ==> terminate
 
   if(wholeState.get('$copied').isEmpty())
     return state;
 
   // Copied contains full node's objects not just their IDs ==> Copy them into the cells
-  if(wholeState.get('$copied').first().get('id')){
+  if(typeof wholeState.get('$copied').first() == "object"){
     return state.set('cells', state.get('cells').concat(wholeState.get('$copied')));
   }
 
@@ -334,11 +334,14 @@ function pasteReducer(state, payload, wholeState){
     }
   });
 
-  return state.update('cells', nodes => {
-    let outNodes = nodes;
-    for (let cell of pastingCells) {
-      outNodes = outNodes.push(cell);
-    }
-    return outNodes;
-  });
+  return newPresent(wholeState,
+    wholeState.getIn(['opened', getActive(wholeState), 'history', 'present'])
+      .update('cells', nodes => {
+        let outNodes = nodes;
+        for (let cell of pastingCells) {
+          outNodes = outNodes.push(cell);
+        }
+        return outNodes;
+      })
+  );
 }

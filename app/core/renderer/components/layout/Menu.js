@@ -57,7 +57,10 @@ class Menu extends Component {
         }
         break;
       case 'c':
-        this.getCallback('onCopy')();
+        // TODO: [BUG/High] The "artificial" input nodes (React-select, Ace editor) won't loose focuse when user click into SVG are
+        if(e.target.nodeName == "BODY"){ // Copy only when nothing is focused (e.g., input fileds, text areas etc.)
+          this.getCallback('onCopy')();
+        }
         break;
       case 'v':
         this.getCallback('onPaste')();

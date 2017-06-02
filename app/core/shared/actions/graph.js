@@ -22,7 +22,7 @@ const GRAPH = {
   ZOOM_OUT$: 'GRAPH_ZOOM_OUT_$',
   COPY$: 'GRAPH_COPY_$',
   CUT$: 'GRAPH_CUT_$',
-  PASTE: 'GRAPH_PASTE'
+  PASTE$: 'GRAPH_PASTE_$'
 };
 export default GRAPH;
 
@@ -213,7 +213,7 @@ export const cut = () => {
 
 export const paste = () => {
   return {
-    type: GRAPH.PASTE
+    type: GRAPH.PASTE$
   }
 };
 
