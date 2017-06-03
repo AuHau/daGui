@@ -29,7 +29,13 @@ class Menu extends Component {
   getCallback(callback, fireAlways){
     return () => {
       if(fireAlways || this.props.currentFileIndex >= 0){
-        this.props[callback]();
+        if(this.props.hasOwnProperty(callback)){
+          this.props[callback]();
+        }else if(this.hasOwnProperty(callback)){
+          this[callback]();
+        }else{
+          throw new Error("Unknown callback '" + callback + "'!");
+        }
       }
     }
   };
@@ -57,8 +63,8 @@ class Menu extends Component {
         }
         break;
       case 'c':
-        // TODO: [BUG/High] The "artificial" input nodes (React-select, Ace editor) won't loose focuse when user click into SVG are
-        if(e.target.nodeName == "BODY"){ // Copy only when nothing is focused (e.g., input fileds, text areas etc.)
+        // TODO: [BUG/High] The "artificial" input nodes (React-select, Ace editor) won't loose focus when user click into SVG area
+        if(e.target.nodeName == "BODY"){ // Copy only when nothing is focused (e.g., input fields, text areas etc.)
           this.getCallback('onCopy')();
         }
         break;
@@ -76,6 +82,9 @@ class Menu extends Component {
         break;
       case 'n':
         this.getCallback('onNew')();
+        break;
+      case 'e':
+        this.getCallback('onSaveImage')();
         break;
     }
   }
@@ -117,7 +126,7 @@ class Menu extends Component {
               options={confsOptions}
               clearable={false}
               searchable={false}
-              className={styles.select}
+              className={styles.selectWithLastOption}
               onChange={this.executionConfChange}
             />
           </li>
@@ -131,7 +140,7 @@ class Menu extends Component {
           <li><a href="#" onClick={this.getCallback('onNew', true)} data-tip="New file<br><span class='shortcut'>(Ctrl+N)</span>"><i className="icon-file"/></a></li>
           <li><a href="#" onClick={this.getCallback('onOpen', true)} data-tip="Open file<br><span class='shortcut'>(Ctrl+O)</span>"><i className="icon-open"/></a></li>
           <li><a href="#" onClick={this.getCallback('onSave')} data-tip="Save file<br><span class='shortcut'>(Ctrl+S)</span>"><i className="icon-save"/></a></li>
-          <li><a href="#" data-tip="Save image of the graph<br><span class='shortcut'>(Ctrl+G)</span>"><i className="icon-screenshot"/></a></li>
+          <li><a href="#" onClick={this.getCallback('onSaveImage')} data-tip="Save image of the graph<br><span class='shortcut'>(Ctrl+E)</span>"><i className="icon-screenshot"/></a></li>
         </ul>
         <ul className={styles.left}>
           <li><a href="#" onClick={this.getCallback('onCopy')} data-tip="Copy node(s)<br><span class='shortcut'>(Ctrl+C)</span>"><i className="icon-copy"/></a></li>
@@ -215,6 +224,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onSave: () => {
       dispatch(fileActions.save())
+    },
+    onSaveImage: () => {
+      dispatch(uiActions.saveImage())
     },
     onOpen: () => {
       dispatch(fileActions.open())

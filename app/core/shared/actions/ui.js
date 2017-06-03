@@ -15,10 +15,24 @@ const UI = {
   SHOW_EXECUTION_REPORTER: 'UI_SHOW_EXECUTION_REPORTER',
   HIDE_EXECUTION_REPORTER: 'UI_HIDE_EXECUTION_REPORTER',
   TOGGLE_EXECUTION_REPORTER: 'UI_TOGGLE_EXECUTION_REPORTER',
+  SAVE_IMAGE: 'UI_SAVE_IMAGE',
+  RESET_SAVE_IMAGE: 'UI_RESET_SAVE_IMAGE',
   UNDO: 'UNDO',
   REDO: 'REDO'
 };
 export default UI;
+
+export function saveImage(){
+  return {
+    type: UI.SAVE_IMAGE
+  }
+}
+
+export function resetSaveImage(){
+  return {
+    type: UI.RESET_SAVE_IMAGE
+  }
+}
 
 export const canvasResize = (dimensions) => {
   return {

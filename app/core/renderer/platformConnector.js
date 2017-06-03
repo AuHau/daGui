@@ -28,6 +28,22 @@ export function terminateExecution(adapterId){
   ipcRenderer.send(adapterId + ':terminateExec')
 }
 
+export function saveImage(name, uri) {
+  let prefilledPath;
+  // TODO: Refactor localStorage into localForage!
+  if(localStorage.getItem("platform.lastPath") && name){
+    prefilledPath = remote.require('path').join(localStorage.getItem("platform.lastPath"), name.replace(/\..*$/i, '.png'))
+  }
+
+  const path = remote.dialog.showSaveDialog({
+    title: "Save the image of the graph",
+    defaultPath: prefilledPath,
+    filters: [{name: "Portable Network Graphics (PNG) ", extensions: ['.png']}]
+  });
+
+  remote.require('./toolkit').saveImage(uri, path);
+}
+
 export function save(path, code, graph, commentChar, saveMode = SaveMode.FULL_SAVE) {
   return remote.require('./toolkit').save(path, code, graph, commentChar, saveMode);
 }
@@ -99,6 +115,7 @@ export function openDialog() {
 
 export function saveDialog(language, name) {
   let prefilledPath;
+  // TODO: Refactor localStorage into localForage!
   if(localStorage.getItem("platform.lastPath") && name){
     prefilledPath = remote.require('path').join(localStorage.getItem("platform.lastPath"), name)
   }

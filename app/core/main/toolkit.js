@@ -15,6 +15,17 @@ export function open(path) {
   });
 }
 
+export function saveImage(uri, path){
+  const base64Data = uri.replace(/^data:image\/png;base64,/, "");
+
+  return new Promise((resolve, reject) => {
+    fs.writeFile(path, base64Data, 'base64', function(err) {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
+}
+
 export function save(path, code, graph, commentChar, saveMode) {
   return new Promise((resolve, reject) => {
     if(!code){

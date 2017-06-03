@@ -8,7 +8,7 @@ import styles from "./Canvas.scss";
 
 import {defaultLink} from 'graph/DefaultShape';
 import CursorMode, {classTranslation as CursorClass} from 'shared/enums/CursorMode';
-import {changeNodeDetail, canvasResize} from 'shared/actions/ui';
+import {changeNodeDetail, canvasResize, resetSaveImage} from 'shared/actions/ui';
 import * as graphActions from 'shared/actions/graph';
 
 // Canvas components
@@ -19,6 +19,7 @@ import Nodes from './canvas_components/Nodes';
 import Highlights from './canvas_components/Highlights';
 import Variables from './canvas_components/Variables';
 import Selecting from './canvas_components/Selecting';
+import SaveImage from './canvas_components/SaveImage';
 
 class Canvas extends Component {
 
@@ -40,6 +41,7 @@ class Canvas extends Component {
     this.canvasComponents['highlights'] = new Highlights(this);
     this.canvasComponents['variables'] = new Variables(this);
     this.canvasComponents['selecting'] = new Selecting(this);
+    this.canvasComponents['saveImage'] = new SaveImage(this);
 
     this.graph = new joint.dia.Graph();
     this.currentDetailCell = null;
@@ -62,8 +64,6 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
-    const wrapperElem = findDOMNode(this.refs.placeholder);
-
     const link = new defaultLink({
       smooth: true
     });
@@ -81,8 +81,8 @@ class Canvas extends Component {
 
 
     this.paper = new joint.dia.Paper({
-      el: wrapperElem,
-      width: wrapperElem.offsetWidth,
+      el: this.canvasWrapper,
+      width: this.canvasWrapper.offsetWidth,
       height: 1000,
       model: this.graph,
       gridSize: 1,
@@ -157,7 +157,9 @@ class Canvas extends Component {
 
     // TODO: [Low] Optimalization - don't update when the action was created by graph's event or graph can be just modified
     if(!this.dontReloadGraph){
-      this.graph.fromJSON(this.props.graphJson);
+      if(!this.props.saveImage){ // When saving image, the graph does not need to be reloaded.
+        this.graph.fromJSON(this.props.graphJson);
+      }
     }else{
       this.dontReloadGraph = false;
     }
@@ -184,13 +186,12 @@ class Canvas extends Component {
   render() {
     let cursorClass = styles[CursorClass[this.state.cursorMode]];
 
-    return <div ref="placeholder" className={styles.container + ' ' + cursorClass}></div>;
+    return <div ref={(e) => this.canvasWrapper = e} className={styles.container + ' ' + cursorClass}></div>;
   }
 
   onResize(){
-    const wrapperElem = findDOMNode(this.refs.placeholder);
-    this.paper.setDimensions(wrapperElem.offsetWidth, wrapperElem.offsetHeight);
-    this.props.onCanvasResize(wrapperElem.getBoundingClientRect());
+    this.paper.setDimensions(this.canvasWrapper.offsetWidth, this.canvasWrapper.offsetHeight);
+    this.props.onCanvasResize(this.canvasWrapper.getBoundingClientRect());
   }
 }
 
@@ -210,8 +211,10 @@ const mapStateToProps = (state) => {
     usedVariables: state.getIn(['files', 'opened', activeFile, 'history', 'present', 'usedVariables']).toJS(),
     adapter: state.getIn(['files', 'opened', activeFile, 'adapter']),
     adapterVersion: state.getIn(['files', 'opened', activeFile, 'adapterVersion']),
+    name: state.getIn(['files', 'opened', activeFile, 'name']),
     graphJson: {'cells': state.getIn(['files', 'opened', activeFile,  'history', 'present', 'cells']).toJS()},
     detailNodeId: state.getIn('ui.detailNodeId'.split('.')),
+    saveImage: state.getIn('ui.saveImage'.split('.')),
     showCodeView: state.getIn('ui.showCodeView'.split('.')),
     cursorMode: state.getIn('ui.cursorMode'.split('.')),
     $occupiedPorts: state.getIn(['files', 'opened', activeFile, 'history', 'present', '$occupiedPorts']),
@@ -244,7 +247,8 @@ const mapDispatchToProps = (dispatch) => {
       onPan: (x,y) => dispatch(graphActions.pan(x,y)),
       onZoom: (scale, x, y) => dispatch(graphActions.zoom(scale, x, y)),
       onAddSelected: (nid) => dispatch(graphActions.addSelected(nid)),
-      onRemoveSelected: (nid) => dispatch(graphActions.removeSelected(nid))
+      onRemoveSelected: (nid) => dispatch(graphActions.removeSelected(nid)),
+      onSaveImageReset: () => dispatch(resetSaveImage()),
     }
 };
 

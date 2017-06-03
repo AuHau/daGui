@@ -82,3 +82,7 @@
 .select {
   composes: select from '../layout/Menu.scss'
 }
+
+.contentScrollable{
+  min-height: 100%;
+}

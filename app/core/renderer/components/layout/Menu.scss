@@ -119,16 +119,25 @@ $select-color: $very-light-grey;
 	  &:hover{
 		background-color: darken($light-grey, 3%);
 	  }
+	}
 
+	.Select-option.is-selected{
+	  background-color: darken($light-grey, 3%);
+	}
+  }
+}
+
+.selectWithLastOption{
+  composes: select;
+
+  :global {
+	.Select-option{
 	  &:last-child{
 		border-top: 2px dashed $dark-grey;
 		background-color: $grey;
 	  }
 	}
 
-	.Select-option.is-selected{
-	  background-color: darken($light-grey, 3%);
-	}
   }
 }
 

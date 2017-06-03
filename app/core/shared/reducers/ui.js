@@ -12,6 +12,7 @@ const defaultState = {
   showCodeView: false,
   isExecutionRunning: false,
   showExecutionReporter: false,
+  saveImage: false,
 };
 
 export default (state, action) => {
@@ -35,6 +36,12 @@ export default (state, action) => {
 
     case UI.CHANGE_NODE_DETAIL:
       return state.set('detailNodeId', action.nid);
+
+    case UI.SAVE_IMAGE:
+      return state.set('saveImage', true);
+
+    case UI.RESET_SAVE_IMAGE:
+      return state.set('saveImage', false);
 
     case UI.SHOW_SETTINGS:
       return state.set('showSettingsWindow', true);

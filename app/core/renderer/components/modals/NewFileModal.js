@@ -150,7 +150,7 @@ class NewFileModal extends Component {
       >
         <header>New file</header>
         <div className={styles.contentWrapper}>
-          <Scrollbar className={styles.content}>
+          <Scrollbar className={styles.content} contentClassName={styles.contentScrollable}>
             <h4>Name:</h4>
             <Input name="name" value={this.state.name} onChange={this.handleInputChange}/>
 
