@@ -49,7 +49,7 @@ export default class CodeInput extends Component {
   }
 
   onKeyDown(e){
-    if(e.keyCode == 9) {
+    if(e.keyCode == 9) { // Tab
       const next = e.target.nextElementSibling;
       if(next && next.dataset.parameter){
         const parameter = this.props.nodeTemplate.getCodeParameters()[next.dataset.parameter];
@@ -64,6 +64,10 @@ export default class CodeInput extends Component {
       }
 
       e.preventDefault();
+    }else if(e.keyCode == 39){ // Right arrow
+      window.getSelection().modify("move", "right", "character"); // TODO: [Medium] Rework the CodeInput with proper contenteditable implementation for React, because it is blocking cursor moving. Remove the hackhish fix.
+    }else if(e.keyCode == 37){ // Left arrow
+      window.getSelection().modify("move", "left", "character");
     }
   }
 
