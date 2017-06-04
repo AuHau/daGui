@@ -61,10 +61,11 @@ export default (state, action, wholeState) => {
 
     case FILE.CLOSE:
       let newIndex = action.payload.index;
-      if (wholeState.get('opened').size == 1){
+      const numberOfOpenedFiles = wholeState.get('opened').size;
+      if (numberOfOpenedFiles == 1){
         newIndex = -1;
       }else if (newIndex === 0) {
-        newIndex++;
+        newIndex = 0; // Don't change the index
       } else {
         newIndex--;
       }

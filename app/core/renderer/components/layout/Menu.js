@@ -147,7 +147,8 @@ class Menu extends Component {
           <li><a href="#" onClick={this.getCallback('onCut')} data-tip="Cut node(s)<br><span class='shortcut'>(Ctrl+X)</span>"><i className="icon-take-out"/></a></li>
           <li><a href="#" onClick={this.getCallback('onPaste')} data-tip="Paste node(s)<br><span class='shortcut'>(Ctrl+V)</span>"><i className="icon-paste"/></a></li>
         </ul>
-        <ul className={styles.left}>
+        <ul className={styles
+          .left}>
           <li><a href="#" onClick={this.getCallback('onUndo')} data-tip="Undo<br><span class='shortcut'>(Ctrl+Z)</span>"><i className="icon-left"/></a></li>
           <li><a href="#" onClick={this.getCallback('onRedo')} data-tip="Redo<br><span class='shortcut'>(Ctrl+Shift+Z)</span>"><i className="icon-right"/></a></li>
           <li><a href="#" onClick={this.getCallback('onZoomIn')} data-tip="Zoom in<br><span class='shortcut'>(Ctrl+Mouse Wheel)</span>"><i className="icon-zoom-in"/></a></li>
@@ -162,7 +163,7 @@ class Menu extends Component {
 
         <ul className={styles.right}>
           <li className={this.props.showCodeView ? styles.active : ''}><a href="#" onClick={this.getCallback('onCodeViewToggle')}  data-tip="Display/hide code view"><i className="icon-code"/></a></li>
-          <li><a href="#" data-tip="Settings"><i className="icon-settings"/></a></li>
+          {/*<li><a href="#" data-tip="Settings"><i className="icon-settings"/></a></li>*/}
         </ul>
 
         {execItems}
