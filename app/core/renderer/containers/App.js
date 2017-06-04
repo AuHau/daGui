@@ -102,6 +102,11 @@ class App extends Component {
   componentWillReceiveProps(nextProps){
     const currentFile = nextProps.files.get(nextProps.currentFileIndex);
 
+    if (nextProps.currentFileIndex < 0) {
+      this.graphErrors = [];
+      this.resetHighlights();
+    }
+
     this.handleCodeGeneration(currentFile, nextProps);
     this.handleExecution(currentFile, nextProps);
   }
@@ -134,10 +139,10 @@ class App extends Component {
       this.graphErrors = [];
     }
 
-    if(!nextProps.showCodeView){
-      this.graphHash = validationResult.hash;
-      return; // When code is not displayed, it is not needed to regenerate it.
-    }
+    // if (!nextProps.showCodeView && !this.codeBuilder.isEmpty()) {
+    //   this.graphHash = validationResult.hash;
+    //   return; // When code is not displayed, it is not needed to regenerate it.
+    // }
 
     const result = generateCode(this.codeBuilder, currentFile, null, this.graphHash, true);
 
@@ -254,7 +259,7 @@ class App extends Component {
             onNodeChange={this.props.onNodeChange}/>
         </ToggleDisplay>
 
-        <ToggleDisplay show={this.props.showCodeView}>
+        <ToggleDisplay show={this.props.showCodeView && this.props.currentFileIndex >= 0}>
           <CodeView
             onAddHighlight={this.addHighlight}
             onRemoveHighlight={this.removeHighlight}

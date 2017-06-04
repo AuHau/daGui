@@ -151,6 +151,7 @@ export default class CodeView extends Component {
     }
 
     this.highlights(nextProps.highlights);
+    this.editor.resize(true);
   }
 
   componentWillUnmount(){
