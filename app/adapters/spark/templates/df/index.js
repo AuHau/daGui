@@ -9,6 +9,7 @@ import OrderBy from './orderBy';
 import Limit from './limit';
 import WriteJson from './writeJson';
 import WriteParquet from './writeParquet';
+import Show from './show';
 
 export const allNodeTemplates = {
   [ReadJson.getType()]: ReadJson,
@@ -22,6 +23,7 @@ export const allNodeTemplates = {
   [Limit.getType()]: Limit,
   [WriteParquet.getType()]: WriteParquet,
   [WriteJson.getType()]: WriteJson,
+  [Show.getType()]: Show,
 };
 
 export const groupedTemplates = [
@@ -47,11 +49,12 @@ export const groupedTemplates = [
     ]
   },
   {
-    name: 'DF Writers',
+    name: 'DF Outputs',
     tags: 'df',
     templates: [
       WriteParquet,
       WriteJson,
+      Show,
     ]
   },
 ];
