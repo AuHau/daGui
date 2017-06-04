@@ -135,6 +135,7 @@ class App extends Component {
     }
 
     if(!nextProps.showCodeView){
+      this.graphHash = validationResult.hash;
       return; // When code is not displayed, it is not needed to regenerate it.
     }
 
@@ -189,14 +190,18 @@ class App extends Component {
   }
 
   highlightErrors(){
-    const errHighlights = this.highlightsTemplate.asMutable();
+    const canvasDestination = Immutable.List().asMutable();
     for(let err of this.graphErrors){
       if(err.id){
-        errHighlights.set(HighlightDestination.CANVAS, this.state.highlights.get(HighlightDestination.CANVAS).push({nid: err.id, type: HighlightType.ERROR}));
+        if(canvasDestination.find(highlight => err.id == highlight.id && highlight.type == HighlightType.ERROR)){
+          continue;
+        }
+
+        canvasDestination.push({nid: err.id, type: HighlightType.ERROR});
       }
     }
 
-    this.setState({highlights: errHighlights.asImmutable()});
+    this.setState({highlights: this.state.highlights.set(HighlightDestination.CANVAS, canvasDestination.asImmutable())});
   }
 
   openDialog(msg){

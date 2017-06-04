@@ -6,8 +6,7 @@ import styles from "../Canvas.scss";
 export default class Highlights extends CanvasComponentBase{
   constructor(canvas) {
     super(canvas);
-    this.renderCanvas = document.createElement("canvas");
-    this.gridSize = 15;
+    this.oldHighlights = null;
   }
 
   init() {
@@ -55,9 +54,14 @@ export default class Highlights extends CanvasComponentBase{
   }
 
   highlightNodes(highlights) {
+    // if(this.oldHighlights)
+    //   this.removeAllHighlights(this.oldHighlights);
+
     highlights.forEach(highlight => {
       this.highlightNode(highlight.nid, styles[highlightTypeClasses[highlight.type]])
     });
+
+    this.oldHighlights = highlights;
   }
 
   highlightNode(nid, className = styles.nodeSelected){
@@ -74,6 +78,12 @@ export default class Highlights extends CanvasComponentBase{
       }
     });
   }
+
+  removeAllHighlights(highlights){
+    highlights.forEach(highlight => {
+      this.removeHighlight(highlight.nid, styles[highlightTypeClasses[highlight.type]])
+    });
+  };
 
   removeHighlight(nid, className = styles.nodeSelected){
     const detailNode = this.graph.getCell(nid);
