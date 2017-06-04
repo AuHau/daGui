@@ -71,19 +71,20 @@ export function open(path){
         + language.getCommentChar() + electronConfig.daguiTags.end, "gm");
 
       const daguiData = daguiMetadataRegex.exec(data);
-      if(!daguiData || daguiData.length != 7){
+      if(!daguiData || daguiData.length != 8){
         throw new Error("The file does not contain valid daGui metadata. I am sorry but I can't open this file, I know it is really sad :(")
       }
 
       const pureCode = data.replace(daguiMetadataRegex, '');
-      if(md5(pureCode) != daguiData[1] && !confirmDialog("The hashes of the file does not match!", "You were bad boy and you have modified the code, haven't you?! Well I can load the file, but your changes will not be applied to the graph and eventually they will be overwritten if you save the file!\nAre you REALLY (like REALLY) sure you want to continue?")){
+      if(md5(pureCode) != daguiData[2] && !confirmDialog("The hashes of the file does not match!", "You were bad boy and you have modified the code, haven't you?! Well I can load the file, but your changes will not be applied to the graph and eventually they will be overwritten if you save the file!\nAre you REALLY (like REALLY) sure you want to continue?")){
         return null;
       }
 
+      // TODO: [Future/Medium] Check that the version of daGui and the version in the file are compatible
       const name = remote.require('path').basename(path);
 
       // return [name, adapter, adapterVersion, language, languageVersion, cells]
-      return [name, daguiData[2], daguiData[3], daguiData[4], daguiData[5], daguiData[6]];
+      return [name, daguiData[3], daguiData[4], daguiData[5], daguiData[6], daguiData[7]];
     }).catch(err => {
       remote.dialog.showErrorBox("Error while openning file!", err.message);
     });
