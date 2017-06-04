@@ -79,7 +79,7 @@ export default class CodeInput extends Component {
     if(this.rebindInputs){
       this.bindEventsToInput();
       this.rebindInputs = false;
-      Tooltip.rebuild();
+      // Tooltip.rebuild(); // TODO: [Medium] Better solution for refreshing the tooltips.
     }
   }
 
@@ -103,7 +103,7 @@ export default class CodeInput extends Component {
         <div className={styles.nodesCode}>.{this.props.nodeTemplate.getCodePrefix()}</div>
         {parameters}
         <div className={styles.nodesCode}>{this.props.nodeTemplate.getCodeSuffix()}</div>
-        <Tooltip place="left" type="dark" effect="solid" delayShow={450} className={styles.tooltip} html={true}/>
+        {/*<Tooltip place="left" type="dark" effect="solid" delayShow={450} className={styles.tooltip} html={true}/>*/}
       </div>
     );
   }
