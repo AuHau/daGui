@@ -79,10 +79,10 @@ class Menu extends Component {
         this.getCallback('onSave')();
         break;
       case 'o':
-        this.getCallback('onOpen')();
+        this.getCallback('onOpen', true)();
         break;
       case 'n':
-        this.getCallback('onNew')();
+        this.getCallback('onNew', true)();
         break;
       case 'e':
         this.getCallback('onSaveImage')();
