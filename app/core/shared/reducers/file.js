@@ -117,26 +117,28 @@ function loadFile(state, action){
   };
 
   const usedVariables = {};
-  const $occupiedPorts = {};
-  for(let node of data.cells){
+  const $occupiedPorts = Immutable.Map().asMutable();
+  for (let node of data.history.present.cells) {
     if(node.dfGui && node.dfGui.variableName){
       usedVariables[node.id] = node.dfGui.variableName;
     }
 
     if(node.type == "link"){
-      if(!$occupiedPorts[node.target.id]) $occupiedPorts[node.target.id] = [];
-      $occupiedPorts[node.target.id].push(node.target.port)
+      if (!$occupiedPorts.get(node.target.id)) $occupiedPorts.set(node.target.id, Immutable.Set());
+      $occupiedPorts.set(node.target.id, $occupiedPorts.get(node.target.id).add(node.target.port));
     }
   }
 
   data.history.present['usedVariables'] = usedVariables;
-  data.history.present['$occupiedPorts'] = $occupiedPorts;
 
   delete data.cells;
 
   const indexOfNewFile = state.get('opened').size;
 
+  let serializedData = Immutable.fromJS(data);
+  serializedData = serializedData.setIn(['history', 'present', '$occupiedPorts'], $occupiedPorts.asImmutable());
+
   return state
-    .update('opened', opened => opened.push(Immutable.fromJS(data)))
+    .update('opened', opened => opened.push(serializedData))
     .set('active', indexOfNewFile)
 }
