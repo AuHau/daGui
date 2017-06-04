@@ -65,9 +65,13 @@ export default class CodeInput extends Component {
 
       e.preventDefault();
     }else if(e.keyCode == 39){ // Right arrow
-      window.getSelection().modify("move", "right", "character"); // TODO: [Medium] Rework the CodeInput with proper contenteditable implementation for React, because it is blocking cursor moving. Remove the hackhish fix.
+      const mode = (e.shiftKey ? "extend" : "move");
+      const speed = (e.ctrlKey ? "word" : "character");
+      window.getSelection().modify(mode, "right", speed); // TODO: [Medium] Rework the CodeInput with proper contenteditable implementation for React, because it is blocking cursor moving. Remove the hackhish fix.
     }else if(e.keyCode == 37){ // Left arrow
-      window.getSelection().modify("move", "left", "character");
+      const mode = (e.shiftKey ? "extend" : "move");
+      const speed = (e.ctrlKey ? "word" : "character");
+      window.getSelection().modify(mode, "left", speed);
     }
   }
 
