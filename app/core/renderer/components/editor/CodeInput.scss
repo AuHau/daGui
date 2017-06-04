@@ -28,7 +28,7 @@
 }
 
 .template{
-  color: $dark-grey;
+  color: darken($font-color, 5%);
 }
 
 .required{
