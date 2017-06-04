@@ -52,6 +52,7 @@ class App extends Component {
       dialogMsg: '',
       isExecutionRunning: false,
       executionCode: null,
+      refreshConfs: false
     };
 
     this.codeBuilder = new CodeBuilder();
@@ -63,6 +64,7 @@ class App extends Component {
     this.changeTab = this.changeTab.bind(this);
     this.closeTab = this.closeTab.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
+    this.refreshExecConfs = this.refreshExecConfs.bind(this);
   }
 
   changeTab(newIndex){
@@ -205,6 +207,16 @@ class App extends Component {
     this.setState({showDialog: false, dialogMsg: ''});
   }
 
+  refreshExecConfs(){
+    this.setState({refreshConfs: true});
+  }
+
+  componentDidUpdate(){
+    if(this.state.refreshConfs){
+      this.setState({refreshConfs: false});
+    }
+  }
+
   render() {
     let $currentFile, adapter, adapterName, language, languageName;
     if(this.props.currentFileIndex >= 0){
@@ -217,7 +229,7 @@ class App extends Component {
 
     return (
       <div>
-        <Menu />
+        <Menu refreshConfs={this.state.refreshConfs} />
         <NodesSidebar ref={(n) => {this.refSidebar = n}} adapter={adapter} />
         <Tabs currentFileIndex={this.props.currentFileIndex} $files={this.props.files} onTabClose={this.closeTab} onTabChange={this.changeTab}/>
 
@@ -259,7 +271,7 @@ class App extends Component {
         <Footer messages={this.graphErrors} framework={adapterName} language={languageName}/>
 
         {/*Invisible components*/}
-        <Modals openedModals={this.props.modals} onClose={this.props.onModalClose} />
+        <Modals openedModals={this.props.modals} onClose={this.props.onModalClose} refreshExecConfs={this.refreshExecConfs} />
         <Dialog
           open={this.state.showDialog}
           onRequestClose={this.closeDialog}

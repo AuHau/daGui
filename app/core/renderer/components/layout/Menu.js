@@ -41,7 +41,8 @@ class Menu extends Component {
   };
 
   componentWillReceiveProps(nextProps){
-    if((!this.props.adapter && nextProps.adapter)
+    if(this.props.refreshConfs
+      || (!this.props.adapter && nextProps.adapter)
       || (this.props.adapter && nextProps.adapter && nextProps.adapter.getId() != this.props.adapter.getId()) ){
       this.loadExecConfs(nextProps.adapter.getId());
     }
@@ -147,8 +148,7 @@ class Menu extends Component {
           <li><a href="#" onClick={this.getCallback('onCut')} data-tip="Cut node(s)<br><span class='shortcut'>(Ctrl+X)</span>"><i className="icon-take-out"/></a></li>
           <li><a href="#" onClick={this.getCallback('onPaste')} data-tip="Paste node(s)<br><span class='shortcut'>(Ctrl+V)</span>"><i className="icon-paste"/></a></li>
         </ul>
-        <ul className={styles
-          .left}>
+        <ul className={styles.left}>
           <li><a href="#" onClick={this.getCallback('onUndo')} data-tip="Undo<br><span class='shortcut'>(Ctrl+Z)</span>"><i className="icon-left"/></a></li>
           <li><a href="#" onClick={this.getCallback('onRedo')} data-tip="Redo<br><span class='shortcut'>(Ctrl+Shift+Z)</span>"><i className="icon-right"/></a></li>
           <li><a href="#" onClick={this.getCallback('onZoomIn')} data-tip="Zoom in<br><span class='shortcut'>(Ctrl+Mouse Wheel)</span>"><i className="icon-zoom-in"/></a></li>
@@ -158,7 +158,7 @@ class Menu extends Component {
         <ul className={styles.left}>
           <li className={this.props.cursorMode == CursorMode.MULTISELECT ? styles.active : ''}><a href="#" onClick={this.getCallback('onMultiselectMode', true)} data-tip="Selection mode"><i className="icon-cursor"/></a></li>
           <li className={this.props.cursorMode == CursorMode.PAN  ? styles.active : ''}><a href="#" onClick={this.getCallback('onPanMode', true)} data-tip="Panning mode"><i className="icon-hand"/></a></li>
-          <li><a href="#" data-tip="Group nodes"><i className="fa fa-object-group"/></a></li>
+          {/*<li><a href="#" data-tip="Group nodes"><i className="fa fa-object-group"/></a></li>*/}
         </ul>
 
         <ul className={styles.right}>
@@ -172,6 +172,10 @@ class Menu extends Component {
     );
   }
 }
+
+Menu.propTypes = {
+  refreshConfs: React.PropTypes.bool
+};
 
 const mapStateToProps = (state) => {
   const currentFileIndex = state.getIn('files.active'.split('.'));

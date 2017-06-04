@@ -14,7 +14,7 @@ class ExecutionConfigurations extends Component {
   constructor(props){
     super(props);
 
-    this.state = {active: null, confs: null};
+    this.state = {selected:null, active: null, confs: null};
     this.deleteConf = this.deleteConf.bind(this);
     this.updateConf = this.updateConf.bind(this);
     this.selectConf = this.selectConf.bind(this);
@@ -24,37 +24,56 @@ class ExecutionConfigurations extends Component {
 
   componentWillReceiveProps(nextProps){
     this.getConfs(nextProps.adapter);
-    this.setState({active: null});
+    this.setState({selected: null});
   }
 
   async getConfs(adapter){
     if(!adapter) {
-      return this.setState({confs: {}});
+      return this.setState({confs: {}, active: null});
     }
 
     const confs = await ExecutionConfigurationsWell.getConfigurations(adapter.getId());
-    this.setState({confs: confs});
+    const active = await ExecutionConfigurationsWell.getActive(adapter.getId());
+    this.setState({confs, active});
   }
 
   deleteConf(name){
     if(this.state.confs.hasOwnProperty(name)){
       delete this.state.confs[name];
-      this.saveConfs(this.state.confs);
-      this.setState({confs: this.state.confs, active: null});
+
+      if(name == this.state.active){
+        this.saveActive(null)
+          .then(() => this.saveConfs(this.state.confs))
+          .then(() => this.props.refreshExecConfs());
+        this.setState({confs: this.state.confs, active: null, selected: null});
+      }else{
+        this.saveConfs(this.state.confs);
+        this.setState({confs: this.state.confs, selected: null});
+      }
     }
   }
 
   updateConf(name, data){
     let newConfs;
-    if(name != data.name){
+    if(name != data.name){ // Renaming the configuration
       delete this.state.confs[name];
       newConfs = {...this.state.confs, [data.name]: data};
-      this.setState({active: data.name, confs: newConfs});
+      this.setState({selected: data.name, confs: newConfs});
+
+      if(name == this.state.active){ // Is currently active name ==> rename
+        this.saveActive(data.name)
+          .then(() => this.saveConfs(newConfs))
+          .then(() => this.props.refreshExecConfs());
+      }else{
+        this.saveConfs(newConfs)
+          .then(() => this.props.refreshExecConfs());
+      }
     }else{
       newConfs = {...this.state.confs, [name]: data};
       this.setState({confs: newConfs});
+      this.saveConfs(newConfs)
+        .then(() => this.props.refreshExecConfs());
     }
-    this.saveConfs(newConfs);
   }
 
   createConf(){
@@ -70,11 +89,15 @@ class ExecutionConfigurations extends Component {
   }
 
   selectConf(name){
-    this.setState({active: name});
+    this.setState({selected: name});
   }
 
   isNameValid(name){
     return !(Object.keys(this.state.confs).includes(name) || name.length == 0);
+  }
+
+  async saveActive(active){
+    return ExecutionConfigurationsWell.setActive(this.props.adapter.getId(), active);
   }
 
   async saveConfs(confs){
@@ -102,10 +125,10 @@ class ExecutionConfigurations extends Component {
           Execution Configurations for {this.props.adapter.getName()}
         </header>
         <div className={styles.menu}>
-          <ConfigurationsMenu active={this.state.active} configurations={this.state.confs} onDelete={this.deleteConf} onCreate={this.createConf} onSelection={this.selectConf} />
+          <ConfigurationsMenu active={this.state.selected} configurations={this.state.confs} onDelete={this.deleteConf} onCreate={this.createConf} onSelection={this.selectConf} />
         </div>
         <div className={styles.form}>
-          <AdaptersForm configuration={this.state.active ? this.state.confs[this.state.active] : null} isNameValid={this.isNameValid} onClose={this.props.onClose} onUpdate={(data) => this.updateConf(this.state.active, data)} />
+          <AdaptersForm configuration={this.state.selected ? this.state.confs[this.state.selected] : null} isNameValid={this.isNameValid} onClose={this.props.onClose} onUpdate={(data) => this.updateConf(this.state.selected, data)} />
         </div>
         <a href="#" className={styles.close} onClick={this.props.onClose}><i className="icon-x"/></a>
 
@@ -136,5 +159,6 @@ export default connect(mapStateToProps, () => {return {}})(ExecutionConfiguratio
 
 ExecutionConfigurations.propTypes = {
   isOpened: React.PropTypes.bool.isRequired,
-  onClose: React.PropTypes.func.isRequired
+  onClose: React.PropTypes.func.isRequired,
+  refreshExecConfs: React.PropTypes.func.isRequired
 };

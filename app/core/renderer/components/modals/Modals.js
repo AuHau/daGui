@@ -17,7 +17,7 @@ export default class Modals extends Component {
     return (
       <div>
         <NewFileModal isOpened={this.props.openedModals.includes(modalsList.NEW_FILE)} onClose={() => this.props.onClose(modalsList.NEW_FILE)} />
-        <ExecutionConfigurations isOpened={this.props.openedModals.includes(modalsList.EXEC_CONFS)} onClose={() => this.props.onClose(modalsList.EXEC_CONFS)} />
+        <ExecutionConfigurations refreshExecConfs={this.props.refreshExecConfs} isOpened={this.props.openedModals.includes(modalsList.EXEC_CONFS)} onClose={() => this.props.onClose(modalsList.EXEC_CONFS)} />
       </div>
     );
   }
@@ -25,5 +25,6 @@ export default class Modals extends Component {
 
 Modals.propTypes = {
   openedModals: React.PropTypes.array.isRequired,
-  onClose: React.PropTypes.func.isRequired
+  onClose: React.PropTypes.func.isRequired,
+  refreshExecConfs: React.PropTypes.func.isRequired,
 };
