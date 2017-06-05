@@ -57,10 +57,12 @@ class Menu extends Component {
 
     switch (e.key.toLowerCase()) {
       case 'z':
-        if (e.shiftKey) {
-          this.getCallback('onRedo')();
-        } else {
-          this.getCallback('onUndo')();
+        if (e.target.nodeName == "BODY") {
+          if (e.shiftKey) {
+            this.getCallback('onRedo')();
+          } else {
+            this.getCallback('onUndo')();
+          }
         }
         break;
       case 'c':
@@ -70,10 +72,14 @@ class Menu extends Component {
         }
         break;
       case 'v':
-        this.getCallback('onPaste')();
+        if (e.target.nodeName == "BODY") {
+          this.getCallback('onPaste')();
+        }
         break;
       case 'x':
-        this.getCallback('onCut')();
+        if (e.target.nodeName == "BODY") {
+          this.getCallback('onCut')();
+        }
         break;
       case 's':
         this.getCallback('onSave')();
